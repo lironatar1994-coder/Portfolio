@@ -143,13 +143,24 @@ bdi{unicode-bidi:isolate}
 /* Hand of cards (phone hero) */
 .hand{display:none}
 @media (max-width:760px){
-  .hand{display:block;position:relative;--card:min(60vw,240px);height:calc(var(--card) * 1.62);margin:10px calc(var(--gutter) * -1) 0;padding-inline:var(--gutter);overflow-x:clip;overflow-y:visible;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+  .hand{display:block;position:relative;--card:min(58vw,232px);--fan:9deg;height:calc(var(--card) * 1.62);margin:10px calc(var(--gutter) * -1) 0;padding-inline:var(--gutter);overflow-x:clip;overflow-y:visible;touch-action:pan-y;user-select:none;-webkit-user-select:none}
   .hand-cards{position:absolute;inset:0}
-  .hand-card{position:absolute;top:0;left:50%;width:var(--card);margin-left:calc(var(--card) / -2);transform-origin:50% 140%;transform:rotate(calc(var(--pos,0) * 12deg)) translateY(calc(var(--abs,0) * 6px));z-index:calc(10 - var(--abs,0));transition:transform .8s var(--ease),translate .45s var(--ease),rotate .45s var(--ease);will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;animation:deal .9s var(--ease) both;animation-delay:calc(.15s + var(--i) * .07s)}
+  /* Static fan without JavaScript; the script overrides these inline. */
+  .hand-card:nth-child(1){--pos:0;--abs:0}
+  .hand-card:nth-child(2){--pos:1;--abs:1}
+  .hand-card:nth-child(3){--pos:-1;--abs:1}
+  .hand-card:nth-child(4){--pos:2;--abs:2}
+  .hand-card:nth-child(5){--pos:-2;--abs:2}
+  .hand-card:nth-child(6){--pos:3;--abs:3}
+  .hand-card:nth-child(7){--pos:-3;--abs:3}
+  .hand-card:nth-child(8){--pos:4;--abs:4}
+  .hand-card:nth-child(9){--pos:-4;--abs:4}
+  .hand-card:nth-child(10){--pos:5;--abs:5}
+  .hand-card{position:absolute;top:0;left:50%;width:var(--card);margin-left:calc(var(--card) / -2);transform-origin:50% 140%;transform:rotate(calc(var(--pos,0) * var(--fan))) translateY(calc(var(--abs,0) * 5px));z-index:calc(10 - var(--abs,0));transition:transform .8s var(--ease),translate .45s var(--ease),rotate .45s var(--ease);will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;animation:deal .7s var(--ease) both;animation-delay:calc(.1s + var(--i) * .045s)}
   .hand-card.is-dragging{transition:transform .7s var(--ease);z-index:20}
   .hand-card.is-flying{transition:transform .44s cubic-bezier(.3,0,.55,1);transform:rotate(calc(var(--fly,-1) * 24deg)) translate(calc(var(--fly,-1) * 48vw),-12vh);z-index:20}
   .hand-card.no-transition{transition:none}
-  @keyframes deal{from{translate:0 60vh;opacity:0}}
+  @keyframes deal{from{translate:0 36vh;opacity:0}}
   .hand-link{display:block;-webkit-touch-callout:none;transform:translateZ(0);background:#fff;border-radius:18px;padding:8px 8px 6px;box-shadow:0 22px 44px -20px rgb(0 0 0/.55),0 0 0 1px rgb(0 0 0/.06);color:var(--ink)}
   .hand-face{display:block;position:relative;aspect-ratio:3/3.7;border-radius:12px;overflow:hidden;background:var(--bg,#111)}
   .hand-face img{pointer-events:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
@@ -240,22 +251,22 @@ bdi{unicode-bidi:isolate}
 .strip::-webkit-scrollbar{display:none}
 .strip-item{flex:0 0 clamp(290px,25vw,380px);scroll-snap-align:start}
 .strip-link{display:flex;flex-direction:column;aspect-ratio:4/5.4;background:var(--bg);color:var(--fg);border-radius:28px;overflow:hidden;position:relative;isolation:isolate;transition:transform .55s var(--ease),box-shadow .55s var(--ease);box-shadow:0 1px 0 rgb(0 0 0/.04)}
-.strip-link:hover{transform:translateY(-6px);box-shadow:0 30px 60px -30px rgb(0 0 0/.45)}
+@media (hover:hover){.strip-link:hover{transform:translateY(-6px);box-shadow:0 30px 60px -30px rgb(0 0 0/.45)}}
 .strip-shot{flex:1;min-height:0;position:relative;overflow:hidden}
 .strip-shot::after{content:'';position:absolute;inset:auto 0 0 0;height:30%;background:linear-gradient(to top,var(--bg) 8%,transparent);z-index:2;pointer-events:none}
 .strip-phone{position:absolute;inset:18px 10% -14% 10%;display:flex;flex-direction:column;border-radius:30px 30px 0 0;padding:6px 6px 0;background:color-mix(in srgb,var(--fg) 14%,var(--bg));box-shadow:0 30px 60px -26px rgb(0 0 0/.55),inset 0 0 0 1px color-mix(in srgb,var(--fg) 22%,transparent);transition:transform .7s var(--ease)}
-.strip-link:hover .strip-phone{transform:translateY(-8px)}
+@media (hover:hover){.strip-link:hover .strip-phone{transform:translateY(-8px)}}
 .strip-phone .notch{display:none}
 .strip-phone .shot{flex:1;min-height:0;height:auto;aspect-ratio:auto;border-radius:24px 24px 0 0;background:#fff}
 .strip-phone .shot img{transform:none}
 .strip-phone .shot img{transition:transform 1.2s var(--ease)}
-.strip-link:hover .strip-phone .shot img{transform:translateY(calc(max(-100% + 100cqh,-1800px)));transition:transform 8s linear}
+@media (hover:hover){.strip-link:hover .strip-phone .shot img{transform:translateY(calc(max(-100% + 100cqh,-1800px)));transition:transform 8s linear}}
 .strip-copy{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:0 22px 22px;background:var(--bg);position:relative;z-index:3}
 .strip-copy h3{font-size:clamp(26px,2.3vw,34px);line-height:1.05;margin-inline-end:-.02em}
 .strip-domain{font-size:12px;opacity:.7;margin-top:6px;letter-spacing:.02em}
 .strip-arrow{width:46px;height:46px;flex-shrink:0;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;transition:transform .35s var(--ease),background .3s}
 .strip-arrow svg{width:18px;height:18px}
-.strip-link:hover .strip-arrow{transform:translate(-3px,-3px)}
+@media (hover:hover){.strip-link:hover .strip-arrow{transform:translate(-3px,-3px)}}
 .strip-item.row-light .strip-phone{box-shadow:0 30px 60px -26px rgb(0 0 0/.4),inset 0 0 0 1px rgb(255 255 255/.14)}
 .strip-dots{display:none;justify-content:center;gap:7px;padding:2px var(--gutter) 0}
 .strip-dots i{width:6px;height:6px;border-radius:50%;background:var(--line);transition:background .3s,width .3s}

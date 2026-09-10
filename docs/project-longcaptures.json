@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-09-10T11:12:54.552Z",
+  "capturedAt": "2026-09-10T17:58:02.193Z",
   "projects": [
     {
       "name": "koral",
@@ -190,6 +190,149 @@
         "width": 585,
         "height": 9000,
         "truncated": true
+      }
+    },
+    {
+      "name": "sos",
+      "url": "https://sosbaderech.co.il/",
+      "status": 200,
+      "title": "בדרך אליך - מנעולן מקצועי",
+      "height": 1000,
+      "backgrounds": [
+        "rgb(248, 246, 241)",
+        "rgba(3, 13, 23, 0.95)",
+        "rgba(255, 255, 255, 0.08)"
+      ],
+      "vars": {
+        "--gold-500": "#f4b82f",
+        "--gold-600": "#e3a31f",
+        "--gold-700": "#bd7d13",
+        "--ink": "#101820",
+        "--dark-line": "#ffffff21"
+      },
+      "fonts": {
+        "h1": "Heebo, Assistant, \"Segoe UI\", Arial, sans-serif",
+        "h2": null,
+        "body": "Heebo, Assistant, \"Segoe UI\", Arial, sans-serif",
+        "button": null
+      },
+      "desktopCapture": {
+        "width": 1440,
+        "height": 1000,
+        "truncated": false
+      },
+      "mobileHeight": 844,
+      "mobileCapture": {
+        "width": 585,
+        "height": 1266,
+        "truncated": false
+      }
+    },
+    {
+      "name": "vee",
+      "url": "https://vee-app.co.il/",
+      "status": 200,
+      "title": "Vee - ניהול משימות אישי בעברית",
+      "height": 5605,
+      "backgrounds": [
+        "rgba(255, 255, 255, 0.58)",
+        "rgb(18, 21, 33)",
+        "rgb(243, 244, 246)",
+        "rgba(255, 255, 255, 0.88)",
+        "rgb(255, 255, 255)"
+      ],
+      "vars": {
+        "--bg": "#f9fafb",
+        "--ink": "#1a1a24",
+        "--green": "#10b981"
+      },
+      "fonts": {
+        "h1": "Heebo, sans-serif",
+        "h2": "Heebo, sans-serif",
+        "body": "Heebo, sans-serif",
+        "button": "Arial"
+      },
+      "desktopCapture": {
+        "width": 1440,
+        "height": 5605,
+        "truncated": false
+      },
+      "mobileHeight": 4053,
+      "mobileCapture": {
+        "width": 585,
+        "height": 6079,
+        "truncated": true
+      }
+    },
+    {
+      "name": "seder",
+      "url": "https://lawebs.co.il/seder",
+      "status": 200,
+      "title": "סדר — מנהל משימות בעברית",
+      "height": 3471,
+      "backgrounds": [
+        "oklch(0.974 0.00855 268)",
+        "oklch(0.946 0.006 265)",
+        "oklch(1 0 0)",
+        "oklch(0.958 0.005 265)"
+      ],
+      "vars": {
+        "--ink": "light-dark(oklch(17.5% .008 270),oklch(93% .005 268))",
+        "--ink-2": "light-dark(oklch(33.5% .014 265),oklch(78% .011 268))",
+        "--rail-ink": "light-dark(oklch(96% calc(var(--accent-c) * .05) var(--accent-h)),oklch(93% calc(var(--accent-c-dark) * .04) var(--accent-h)))",
+        "--accent": "light-dark(oklch(50% var(--accent-c) var(--accent-h)),oklch(70% var(--accent-c-dark) var(--accent-h)))",
+        "--accent-hover": "light-dark(oklch(44% var(--accent-c) var(--accent-h)),oklch(76% calc(var(--accent-c-dark) * .92) var(--accent-h)))",
+        "--accent-soft": "light-dark(oklch(94.5% calc(var(--accent-c) * .14) var(--accent-h)),oklch(24% calc(var(--accent-c-dark) * .38) var(--accent-h)))",
+        "--on-accent": "light-dark(oklch(100% 0 0),oklch(14.5% .008 268))"
+      },
+      "fonts": {
+        "h1": "\"Frank Ruhl Libre\", \"Frank Ruhl Libre Fallback\", \"Frank Ruhl Libre\", \"Noto Serif Hebrew\", Georgia, serif",
+        "h2": "\"Frank Ruhl Libre\", \"Frank Ruhl Libre Fallback\", \"Frank Ruhl Libre\", \"Noto Serif Hebrew\", Georgia, serif",
+        "body": "Assistant, \"Assistant Fallback\", Assistant, \"Segoe UI\", Heebo, Arial, sans-serif",
+        "button": "Assistant, \"Assistant Fallback\", Assistant, \"Segoe UI\", Heebo, Arial, sans-serif"
+      },
+      "desktopCapture": {
+        "width": 1440,
+        "height": 3471,
+        "truncated": false
+      },
+      "mobileHeight": 3629,
+      "mobileCapture": {
+        "width": 585,
+        "height": 5443,
+        "truncated": true
+      }
+    },
+    {
+      "name": "pdf",
+      "url": "https://vee-app.co.il/pdf-studio",
+      "status": 200,
+      "title": "עורך PDF חינם בעברית — כל הכלים במקום אחד",
+      "height": 1000,
+      "backgrounds": [
+        "rgb(247, 248, 250)",
+        "rgb(255, 255, 255)"
+      ],
+      "vars": {
+        "--accent": "var(--color-brand-600)",
+        "--accent-soft": "var(--color-brand-50)"
+      },
+      "fonts": {
+        "h1": "Heebo, Assistant, system-ui, sans-serif",
+        "h2": "Heebo, Assistant, system-ui, sans-serif",
+        "body": "Assistant, Heebo, system-ui, sans-serif",
+        "button": "Assistant, Heebo, system-ui, sans-serif"
+      },
+      "desktopCapture": {
+        "width": 1440,
+        "height": 1000,
+        "truncated": false
+      },
+      "mobileHeight": 844,
+      "mobileCapture": {
+        "width": 585,
+        "height": 1266,
+        "truncated": false
       }
     }
   ]

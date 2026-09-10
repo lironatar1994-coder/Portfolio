@@ -76,7 +76,7 @@ const header = `<header class="site-header" id="top">
 </header>`;
 
 const flagship = projects[0];
-const order = ['koral', 'miryam', 'pinhas', 'libi', 'reuven'];
+const order = ['koral', 'miryam', 'pinhas', 'libi', 'reuven', 'sos', 'vee', 'seder', 'pdf'];
 const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
 const pinned = order.slice(0, 3).map(slug => bySlug[slug]);
 const cards = order.slice(3).map(slug => bySlug[slug]);
@@ -107,7 +107,7 @@ const hero = `<section class="hero" aria-labelledby="hero-title">
     ${hand}
   </div>
   <nav class="hero-index wrap" aria-label="הפרויקטים בעמוד">
-    <ol>${order.map((slug, i) => `<li><a href="#project-${slug}"><span class="idx-num">${pad(i + 1)}</span><span class="idx-label">${escape(bySlug[slug].short)}</span></a></li>`).join('')}</ol>
+    <ol>${pinned.map((p, i) => `<li><a href="#project-${p.slug}"><span class="idx-num">${pad(i + 1)}</span><span class="idx-label">${escape(p.short)}</span></a></li>`).join('')}<li><a href="#catalog"><span class="idx-num">${pad(pinned.length + 1)}</span><span class="idx-label">הקטלוג</span></a></li></ol>
     <p class="hero-index-note">מבחר מהעבודות. גללו למטה.</p>
   </nav>
 </section>`;

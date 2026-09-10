@@ -9,6 +9,10 @@ const liveSites = [
   ['miryam', 'מרים זליג', 'https://miryamzelig.co.il/'],
   ['pinhas', 'פנחס רצון', 'https://pinhasratzon.co.il/'],
   ['reuven', 'דפוס ראובן', 'https://www.dfusreuven.co.il/'],
+  ['sos', 'בדרך אליך', 'https://sosbaderech.co.il/'],
+  ['vee', 'Vee', 'https://vee-app.co.il/'],
+  ['seder', 'סדר', 'https://lawebs.co.il/seder'],
+  ['pdf', 'PDF Studio', 'https://vee-app.co.il/pdf-studio/'],
 ];
 
 function observeErrors(page) {
@@ -75,10 +79,10 @@ test('homepage presents Hebrew RTL content, the hero and five project rows witho
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('נבנה לעסק שלך');
   await expect(page.locator('.hero .hero-shot')).toHaveCount(1);
-  await expect(page.locator('.hero-index a')).toHaveCount(5);
-  await expect(page.locator('.work-card')).toHaveCount(8);
+  await expect(page.locator('.hero-index a')).toHaveCount(4);
+  await expect(page.locator('.work-card')).toHaveCount(12);
   await expect(page.locator('.stage-track')).toHaveCount(3);
-  await expect(page.locator('#catalog .strip-item')).toHaveCount(5);
+  await expect(page.locator('#catalog .strip-item')).toHaveCount(9);
   for (const [slug] of liveSites) await expect(page.locator(`.work-card a.work-link[href="/work/${slug}/"]`).first()).toBeVisible();
   await expectImages(page);
   await expectNoOverflow(page);
@@ -144,7 +148,7 @@ test('on phones the pinned stage window fills the screen below the copy', async 
   // the phone hero is a hand of cards: six cards, the front one changes when a card behind it is tapped
   await page.goto('/');
   await ready(page);
-  await expect(page.locator('.hand-card')).toHaveCount(6);
+  await expect(page.locator('.hand-card')).toHaveCount(10);
   await expect(page.locator('.hero-shot')).toBeHidden();
   const front = await page.locator('.hand-card').first().evaluate(el => el.style.getPropertyValue('--pos'));
   expect(front).toBe('0');
@@ -154,7 +158,7 @@ test('on phones the pinned stage window fills the screen below the copy', async 
   await ready(page);
   await expect(page.locator('.case-views')).toBeHidden();
   await expect(page.locator('.case-stage')).toBeVisible();
-  await expect(page.locator('#more .strip-item')).toHaveCount(4);
+  await expect(page.locator('#more .strip-item')).toHaveCount(8);
 });
 
 test('studio section lists three steps and deliverables', async ({ page }) => {
@@ -199,7 +203,7 @@ for (const [slug, name, url] of liveSites) {
     await expect(liveLink).toBeVisible();
     if (await liveLink.getAttribute('target') === '_blank') await expect(liveLink).toHaveAttribute('rel', /noopener/);
     await expect(page.locator('.case-views .frame.window')).toHaveCount(2);
-    await expect(page.locator('#more .strip-item')).toHaveCount(4);
+    await expect(page.locator('#more .strip-item')).toHaveCount(8);
     await expectImages(page);
     await expectNoOverflow(page);
     expect(errors).toEqual([]);
@@ -256,7 +260,8 @@ test('without JavaScript the work, navigation and studio content remain usable',
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.locator(testInfo.project.name === 'mobile' ? '.hand-card' : '.hero .hero-shot').first()).toBeVisible();
-    await expect(page.locator('.work-card')).toHaveCount(8);
+    await page.waitForTimeout(1500); // let the hand finish dealing in (CSS animation, runs without JS)
+    await expect(page.locator('.work-card')).toHaveCount(12);
     await expect(page.locator('.steps li')).toHaveCount(3);
     await expectNoOverflow(page);
     await page.locator('.work-card a[href="/work/koral/"]').first().click();
