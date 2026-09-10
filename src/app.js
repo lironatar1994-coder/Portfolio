@@ -110,8 +110,49 @@ for (const catalog of $$('.catalog')) {
   strip.addEventListener('click', event => { if (moved) { event.preventDefault(); moved = false; } }, true);
 }
 
+/* ---------- Hand of cards (phone hero): fan, shuffle by swipe, gentle auto-shuffle until touched ---------- */
+const hand = $('.hand');
+if (hand) {
+  const cardEls = $$('.hand-card', hand);
+  const count = cardEls.length;
+  let active = 0, touched = false, away = false;
+  const layout = () => cardEls.forEach((card, i) => {
+    let pos = ((i - active) % count + count) % count;
+    if (pos > count / 2) pos -= count; // spread both sides of the front card
+    card.style.setProperty('--pos', pos);
+    card.style.setProperty('--abs', Math.abs(pos));
+  });
+  const shuffle = dir => {
+    const leaving = cardEls[active];
+    leaving.style.setProperty('--dir', dir);
+    leaving.classList.add('is-flying');
+    active = ((active + dir) % count + count) % count;
+    setTimeout(() => { leaving.classList.remove('is-flying'); layout(); }, 360);
+  };
+  layout();
+  if (!reduceMotion.matches) {
+    const timer = setInterval(() => { if (!touched && !away && !document.hidden) shuffle(1); }, 3800);
+    if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { away = !entry.isIntersecting; }, { threshold: 0.2 }).observe(hand);
+    let startX = 0, startY = 0, dragging = false, moved = false;
+    hand.addEventListener('pointerdown', event => { dragging = true; moved = false; startX = event.clientX; startY = event.clientY; }, { passive: true });
+    hand.addEventListener('pointermove', event => {
+      if (!dragging || moved) return;
+      const dx = event.clientX - startX, dy = event.clientY - startY;
+      if (Math.abs(dx) > 28 && Math.abs(dx) > Math.abs(dy) * 1.3) { moved = true; touched = true; hand.classList.add('is-touched'); shuffle(dx < 0 ? 1 : -1); }
+    }, { passive: true });
+    const end = () => { dragging = false; };
+    hand.addEventListener('pointerup', end); hand.addEventListener('pointercancel', end);
+    hand.addEventListener('click', event => {
+      if (moved) { event.preventDefault(); moved = false; return; }
+      const card = event.target.closest('.hand-card');
+      if (card && cardEls.indexOf(card) !== active) { event.preventDefault(); touched = true; hand.classList.add('is-touched'); active = cardEls.indexOf(card); layout(); }
+    });
+    addEventListener('pagehide', () => clearInterval(timer));
+  }
+}
+
 /* ---------- Pre-decode heavy captures just before they enter the viewport ---------- */
-const heavy = $$('.stage-track, .strip-item, .case .row, .case-full, .hero-float');
+const heavy = $$('.hand, .stage-track, .strip-item, .case .row, .case-full, .hero-float');
 if (heavy.length && 'IntersectionObserver' in window) {
   const warm = new IntersectionObserver(entries => {
     for (const entry of entries) {

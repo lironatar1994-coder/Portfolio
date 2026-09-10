@@ -65,6 +65,7 @@ async function expectAccessible(page) {
 
 test('homepage presents Hebrew RTL content, the hero and five project rows without resource errors', async ({ page }) => {
   const errors = observeErrors(page);
+  await page.emulateMedia({ reducedMotion: 'reduce' }); // the phone hero demo never holds still otherwise
   const response = await page.goto('/');
   expect(response.status()).toBe(200);
   await ready(page);
@@ -140,6 +141,15 @@ test('on phones the pinned stage window fills the screen below the copy', async 
   const viewport = page.viewportSize().height;
   expect(box.height).toBeGreaterThan(viewport * 0.38);
   expect(box.y + box.height).toBeLessThanOrEqual(viewport + 1);
+  // the phone hero is a hand of cards: six cards, the front one changes when a card behind it is tapped
+  await page.goto('/');
+  await ready(page);
+  await expect(page.locator('.hand-card')).toHaveCount(6);
+  await expect(page.locator('.hero-shot')).toBeHidden();
+  const front = await page.locator('.hand-card').first().evaluate(el => el.style.getPropertyValue('--pos'));
+  expect(front).toBe('0');
+  await page.locator('.hand-card').nth(2).dispatchEvent('click'); // the front card covers the centres of the fanned ones
+  await expect.poll(() => page.locator('.hand-card').nth(2).evaluate(el => el.style.getPropertyValue('--pos'))).toBe('0');
   await page.goto('/work/koral/');
   await ready(page);
   await expect(page.locator('.case-views')).toBeHidden();
@@ -245,7 +255,7 @@ test('without JavaScript the work, navigation and studio content remain usable',
   try {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.locator('.hero .hero-shot')).toBeVisible();
+    await expect(page.locator(testInfo.project.name === 'mobile' ? '.hand-card' : '.hero .hero-shot').first()).toBeVisible();
     await expect(page.locator('.work-card')).toHaveCount(8);
     await expect(page.locator('.steps li')).toHaveCount(3);
     await expectNoOverflow(page);

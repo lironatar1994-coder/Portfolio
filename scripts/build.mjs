@@ -81,7 +81,15 @@ const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
 const pinned = order.slice(0, 3).map(slug => bySlug[slug]);
 const cards = order.slice(3).map(slug => bySlug[slug]);
 const swapWords = ['מושקע', 'מעוצב', 'מדויק', 'מהיר', 'מצליח'];
-const heroMobile = { src: '/images/koral-hero-mobile.webp', width: 585, height: 1400 };
+const heroMobile = { src: '/images/blank.webp', width: 2, height: 2 }; // phones show the hand of cards instead of the frame
+
+// Phone hero: the work as a hand of cards. Front card upright, the rest fanned behind; swipe to shuffle, tap to open.
+const handOrder = [...pinned, ...cards];
+const hand = `<div class="hand" aria-label="העבודות שלנו, כמו יד של קלפים">
+  <ul class="hand-cards" role="list">${handOrder.map((p, i) => `<li class="hand-card ${tone(p)}" style="${vars(p)};--i:${i}"><a class="hand-link" href="/work/${p.slug}/" draggable="false" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="hand-face"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async"></span><span class="hand-name"><span>${escape(p.hebrew)}</span><i aria-hidden="true"></i></span></a></li>`).join('')}<li class="hand-card hand-back" style="--i:${handOrder.length}"><a class="hand-link" href="#work" draggable="false" aria-label="לכל העבודות"><span class="hand-face"><span class="hand-mark">LA webs<i class="dot"></i></span></span><span class="hand-name"><span>כל העבודות</span><i aria-hidden="true"></i></span></a></li>
+  </ul>
+  <p class="hand-hint" aria-hidden="true">החליקו בין הקלפים</p>
+</div>`;
 
 const hero = `<section class="hero" aria-labelledby="hero-title">
   <div class="wrap hero-grid">
@@ -96,6 +104,7 @@ const hero = `<section class="hero" aria-labelledby="hero-title">
       ${frame(flagship, 'phone', { className: 'float hero-float' })}
       <span class="hero-caption"><span><strong>${escape(flagship.hebrew)}</strong> · ${escape(flagship.kicker)}</span><span class="hero-caption-link">לפרויקט ${arrow}</span></span>
     </a>
+    ${hand}
   </div>
   <nav class="hero-index wrap" aria-label="הפרויקטים בעמוד">
     <ol>${order.map((slug, i) => `<li><a href="#project-${slug}"><span class="idx-num">${pad(i + 1)}</span><span class="idx-label">${escape(bySlug[slug].short)}</span></a></li>`).join('')}</ol>

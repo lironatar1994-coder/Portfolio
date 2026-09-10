@@ -28,7 +28,7 @@ Browser tests run in Microsoft Edge (change `channel` in `playwright.config.js` 
 - Styles: `src/styles.css`. Interactions (menu, scroll progress, reveal, cursor, before/after): `src/app.js`.
 - Live-site captures: run `node scripts/capture-long.cjs` (set `KINDS=mobile` or `KINDS=desktop` to refresh one kind). It writes `public/images/<slug>-desktop-full.webp`, `<slug>-mobile-full.webp` and `docs/project-longcaptures.json`, which the build reads for image dimensions. The script uses the Playwright and sharp installs in the neighbouring `KoralEvents - Copy` project.
 - One-line showcase summaries: `src/presentation.mjs`. The crop coordinates and `basis` record in that file are no longer rendered anywhere and can be removed when convenient.
-- The hero's small mobile image `public/images/koral-hero-mobile.webp` is a 585×1400 crop of the Koral mobile capture; regenerate it after recapturing Koral.
+- Card faces for the phone hero, `public/images/<slug>-card.webp`, are 585×820 crops of the top of each mobile capture; regenerate them after a recapture. `blank.webp` is the 2px mobile source for the desktop hero frame, which phones hide.
 - Add a project: append it to `src/projects.mjs` and `src/presentation.mjs`, capture it, and add a `<slug>-desktop.webp` viewport capture for `og:image`.
 
 ## Deployment
