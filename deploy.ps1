@@ -26,7 +26,7 @@ try {
     if ((Run git @('branch', '--show-current') | Out-String).Trim() -ne 'main') { throw 'Switch to main before publishing.' }
     Run git @('fetch', 'origin')
     if ($Target -eq 'Prod') {
-        if (@(Run git @('status', '--porcelain')).Count) { throw 'Prod requires a clean working tree; use All to commit and push changes.' }
+        if (@(Run git @('status', '--porcelain', '--untracked-files=no')).Count) { throw 'Prod requires no tracked working-tree changes; use All to commit and push changes.' }
     } else {
         $paths = @('src','public','dist','scripts','tests','docs','package.json','package-lock.json','playwright.config.js','README.md','PRODUCT.md','DESIGN.md','deploy.ps1','.gitignore')
         Run git (@('add', '--') + @($paths | Where-Object { Test-Path -LiteralPath $_ }))
