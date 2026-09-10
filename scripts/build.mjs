@@ -84,7 +84,8 @@ const swapWords = ['מושקע', 'מעוצב', 'מדויק', 'מהיר', 'מצל
 const heroMobile = { src: '/images/blank.webp', width: 2, height: 2 }; // phones show the hand of cards instead of the frame
 
 // Phone hero: the work as a hand of cards. Front card upright, the rest fanned behind; swipe to shuffle, tap to open.
-const handOrder = [...pinned, ...cards];
+const catalogOnly = ['sos', 'vee', 'seder']; // in the catalog, not in the hero hand
+const handOrder = [...pinned, ...cards].filter(p => !catalogOnly.includes(p.slug));
 const hand = `<div class="hand" aria-label="העבודות שלנו, כמו יד של קלפים">
   <ul class="hand-cards" role="list">${handOrder.map((p, i) => `<li class="hand-card ${tone(p)}" style="${vars(p)};--i:${i}"><a class="hand-link" href="/work/${p.slug}/" draggable="false" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="hand-face"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async"></span><span class="hand-name"><span>${escape(p.hebrew)}</span><i aria-hidden="true"></i></span></a></li>`).join('')}<li class="hand-card hand-back" style="--i:${handOrder.length}"><a class="hand-link" href="#work" draggable="false" aria-label="לכל העבודות"><span class="hand-face"><span class="hand-mark">LA webs<i class="dot"></i></span></span><span class="hand-name"><span>כל העבודות</span><i aria-hidden="true"></i></span></a></li>
   </ul>

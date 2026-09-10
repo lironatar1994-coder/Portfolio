@@ -148,7 +148,7 @@ test('on phones the pinned stage window fills the screen below the copy', async 
   // the phone hero is a hand of cards: six cards, the front one changes when a card behind it is tapped
   await page.goto('/');
   await ready(page);
-  await expect(page.locator('.hand-card')).toHaveCount(10);
+  await expect(page.locator('.hand-card')).toHaveCount(7);
   await expect(page.locator('.hero-shot')).toBeHidden();
   const front = await page.locator('.hand-card').first().evaluate(el => el.style.getPropertyValue('--pos'));
   expect(front).toBe('0');

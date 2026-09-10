@@ -143,7 +143,7 @@ bdi{unicode-bidi:isolate}
 /* Hand of cards (phone hero) */
 .hand{display:none}
 @media (max-width:760px){
-  .hand{display:block;position:relative;--card:min(58vw,232px);--fan:9deg;height:calc(var(--card) * 1.62);margin:10px calc(var(--gutter) * -1) 0;padding-inline:var(--gutter);overflow-x:clip;overflow-y:visible;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+  .hand{display:block;position:relative;--card:min(60vw,240px);--fan:11deg;height:calc(var(--card) * 1.62);margin:10px calc(var(--gutter) * -1) 0;padding-inline:var(--gutter);overflow-x:clip;overflow-y:visible;touch-action:pan-y;user-select:none;-webkit-user-select:none}
   .hand-cards{position:absolute;inset:0}
   /* Static fan without JavaScript; the script overrides these inline. */
   .hand-card:nth-child(1){--pos:0;--abs:0}
