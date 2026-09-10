@@ -110,7 +110,7 @@ for (const catalog of $$('.catalog')) {
   strip.addEventListener('click', event => { if (moved) { event.preventDefault(); moved = false; } }, true);
 }
 
-/* ---------- Hand of cards (phone hero): fan, shuffle by swipe, gentle auto-shuffle until touched ---------- */
+/* ---------- Hand of cards (phone hero): fan, drag the front card and flick it away, gentle auto-shuffle until touched ---------- */
 const hand = $('.hand');
 if (hand) {
   const cardEls = $$('.hand-card', hand);
@@ -124,6 +124,7 @@ if (hand) {
   });
   const shuffle = dir => {
     const leaving = cardEls[active];
+    leaving.style.translate = ''; leaving.style.rotate = '';
     leaving.style.setProperty('--dir', dir);
     leaving.classList.add('is-flying');
     active = ((active + dir) % count + count) % count;
@@ -133,19 +134,39 @@ if (hand) {
   if (!reduceMotion.matches) {
     const timer = setInterval(() => { if (!touched && !away && !document.hidden) shuffle(1); }, 3800);
     if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { away = !entry.isIntersecting; }, { threshold: 0.2 }).observe(hand);
-    let startX = 0, startY = 0, dragging = false, moved = false;
-    hand.addEventListener('pointerdown', event => { dragging = true; moved = false; startX = event.clientX; startY = event.clientY; }, { passive: true });
+    const markTouched = () => { touched = true; hand.classList.add('is-touched'); };
+    // Drag: the front card follows the pointer; a decisive drag flicks it away, a short one springs back.
+    let startX = 0, startY = 0, dragging = false, moved = false, front = null, pointerId = null;
+    const settle = () => { if (front) { front.classList.remove('is-dragging'); front.style.translate = ''; front.style.rotate = ''; } dragging = false; front = null; };
+    hand.addEventListener('pointerdown', event => {
+      if (event.button !== 0) return;
+      dragging = true; moved = false; startX = event.clientX; startY = event.clientY; pointerId = event.pointerId;
+      front = cardEls[active];
+    });
     hand.addEventListener('pointermove', event => {
-      if (!dragging || moved) return;
+      if (!dragging || event.pointerId !== pointerId) return;
       const dx = event.clientX - startX, dy = event.clientY - startY;
-      if (Math.abs(dx) > 28 && Math.abs(dx) > Math.abs(dy) * 1.3) { moved = true; touched = true; hand.classList.add('is-touched'); shuffle(dx < 0 ? 1 : -1); }
-    }, { passive: true });
-    const end = () => { dragging = false; };
-    hand.addEventListener('pointerup', end); hand.addEventListener('pointercancel', end);
+      if (!moved) {
+        if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+        moved = true; markTouched();
+        front.classList.add('is-dragging');
+        try { hand.setPointerCapture(pointerId); } catch {}
+      }
+      front.style.translate = `${dx}px ${Math.abs(dx) * -0.12}px`;
+      front.style.rotate = `${dx * 0.06}deg`;
+    });
+    const release = event => {
+      if (!dragging) return;
+      const dx = event.clientX - startX;
+      if (moved && Math.abs(dx) > 56) { const leaving = front; front = null; dragging = false; leaving.classList.remove('is-dragging'); shuffle(dx < 0 ? 1 : -1); }
+      else settle();
+    };
+    hand.addEventListener('pointerup', release);
+    hand.addEventListener('pointercancel', settle);
     hand.addEventListener('click', event => {
       if (moved) { event.preventDefault(); moved = false; return; }
       const card = event.target.closest('.hand-card');
-      if (card && cardEls.indexOf(card) !== active) { event.preventDefault(); touched = true; hand.classList.add('is-touched'); active = cardEls.indexOf(card); layout(); }
+      if (card && cardEls.indexOf(card) !== active) { event.preventDefault(); markTouched(); active = cardEls.indexOf(card); layout(); }
     });
     addEventListener('pagehide', () => clearInterval(timer));
   }
