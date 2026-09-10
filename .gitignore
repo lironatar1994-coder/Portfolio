@@ -1,0 +1,7 @@
+node_modules/
+test-results/
+playwright-report/
+.impeccable/
+.env
+.env.*
+!.env.example

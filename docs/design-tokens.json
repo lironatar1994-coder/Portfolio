@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "name": "LA Webs implemented design tokens",
+  "sourceOfTruth": "src/styles.css",
+  "direction": "rtl",
+  "language": "he",
+  "paletteDecision": "Deliberate warm paper, ink and vermilion default selected through studio reference research; no claim of unprecedented novelty.",
+  "cssVariables": {
+    "--paper": "#f5f3ed",
+    "--ink": "#23251f",
+    "--accent": "#cd371f",
+    "--muted": "#686b61",
+    "--rule": "#d9d9cf",
+    "--dark": "#252821",
+    "--gutter": "clamp(22px,4.2vw,76px)",
+    "--ease": "cubic-bezier(.16,1,.3,1)"
+  },
+  "colors": {
+    "contactText": "#fff8ed",
+    "studioHeadingSecondary": "#b7bea8",
+    "studioBody": "#d6d8ce",
+    "caseMobileSurface": "#e7e8df"
+  },
+  "typography": {
+    "body": {
+      "fontFamily": "'Noto Hebrew',sans-serif",
+      "fontSize": "16px",
+      "lineHeight": 1.65,
+      "fontWeightRange": [400, 900],
+      "fontFiles": ["/fonts/noto-sans-hebrew.woff2", "/fonts/noto-sans-latin.woff2"]
+    },
+    "latin": {
+      "fontFamily": "Manrope,sans-serif",
+      "fontWeightRange": [700, 800],
+      "fontFile": "/fonts/manrope-latin.woff2",
+      "letterSpacing": "-.035em"
+    },
+    "fontDisplay": "swap",
+    "wordmark": {"fontSize": "32px", "mobileFontSize": "27px", "fontWeight": 800, "letterSpacing": "-.04em"},
+    "hero": {"fontSize": "clamp(66px,7.55vw,118px)", "fontWeight": 800, "lineHeight": 1.13, "letterSpacing": "-.04em"},
+    "mobileHero": {"fontSize": "clamp(49px,10.3vw,77px)", "lineHeight": 1.15},
+    "smallMobileHero": {"fontSize": "45px"},
+    "sectionHeading": {"fontSize": "clamp(42px,4.35vw,68px)", "fontWeight": 700, "lineHeight": 1.2},
+    "projectTitle": {"fontSize": "23px", "mobileFontSize": "20px", "fontWeight": 600},
+    "projectCaption": {"fontSize": "12px"}
+  },
+  "layout": {
+    "pageMaxWidth": "1680px",
+    "headerHeight": "104px",
+    "mobileHeaderHeight": "80px",
+    "scrollPaddingTop": "110px",
+    "mobileScrollPaddingTop": "88px",
+    "desktopWorkColumns": 12,
+    "desktopWorkSpans": [7, 5, 5, 7, 12],
+    "desktopWorkGap": {"column": "32px", "row": "74px"},
+    "filteredWorkSpan": 6,
+    "phoneWorkColumns": 1,
+    "midMobileWorkColumns": 2,
+    "mobileGutter": "22px",
+    "smallMobileGutter": "18px"
+  },
+  "breakpoints": {
+    "wide": "(min-width:1600px)",
+    "tablet": "(max-width:1100px)",
+    "mobile": "(max-width:760px)",
+    "desktopMenuReturn": "(min-width:761px)",
+    "midMobile": "(min-width:500px) and (max-width:760px)",
+    "smallMobile": "(max-width:359px)"
+  },
+  "hero": {
+    "desktopProjects": ["miryam", "koral", "libi"],
+    "mobileProjects": ["koral", "libi"],
+    "mobileHidden": ["miryam", "gallery-seal"],
+    "mobileDominantProjectWidth": "90%",
+    "mobilePhoneWidth": "23%",
+    "mobileHeight": "300px",
+    "midMobileHeight": "420px",
+    "smallMobileHeight": "253px",
+    "mobilePointerTranslation": false
+  },
+  "shape": {
+    "projectVisualRadius": "4px",
+    "desktopGalleryRadius": "8px",
+    "desktopPhoneRadius": "20px",
+    "mobilePhoneRadius": "12px",
+    "filterRadius": "30px",
+    "contactButtonRadius": "50px",
+    "mark": "six-spoke filled SVG",
+    "iconSize": "24px",
+    "iconStrokeWidth": 1.5
+  },
+  "motion": {
+    "galleryEligibility": "(prefers-reduced-motion: no-preference) and (pointer: fine)",
+    "galleryMaximumTranslationPx": {"x": 8, "y": 5},
+    "galleryTranslationDuration": "0.7s",
+    "projectImageDuration": "1s",
+    "typicalControlDuration": "0.3s",
+    "reducedMotion": {"animations": false, "transitions": false, "smoothScrolling": false, "galleryTranslation": false},
+    "scrollHijacking": false
+  },
+  "accessibility": {
+    "focusOutline": "3px solid var(--accent)",
+    "focusOutlineOffset": "6px",
+    "contactFocusColor": "#ffffff",
+    "menuControlSize": "48px",
+    "filterMinimumHeight": "44px",
+    "skipLink": true,
+    "filterStatusAnnouncement": true,
+    "nativeServiceDisclosure": true,
+    "noScriptNavigationFallback": true
+  },
+  "projectColors": {
+    "koral": "#302034",
+    "libi": "#193f3e",
+    "miryam": "#e7d6c8",
+    "pinhas": "#c9cec3",
+    "reuven": "#ded9ed"
+  },
+  "projectPresentationOverrides": {
+    "pinhasWorkSurface": "#d3d8cd",
+    "reuvenWorkSurface": "#c5c6db",
+    "libiCaseCover": "#153e3d"
+  },
+  "implementation": {
+    "build": "dependency-free Node static generation",
+    "pages": {"homepage": 1, "caseStudies": 5, "notFound": 1},
+    "projectData": "src/projects.mjs",
+    "outputDirectory": "dist",
+    "navigation": "native anchors and static documents",
+    "services": "native details and summary",
+    "enhancements": ["mobile menu", "category filtering", "gallery pointer response", "scroll-aware header rule"],
+    "contact": ["WhatsApp link", "telephone link"],
+    "adminPanel": false,
+    "inquiryForm": false,
+    "defaultWithoutSiteOrigin": "noindex,nofollow"
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "verifiedAt": "2026-09-10T09:49:44.175Z",
+  "projects": [
+    {
+      "name": "libi",
+      "url": "https://www.libidiamonds.co.il/",
+      "status": 200,
+      "title": "LIBI Diamonds | תכשיטי יהלומים",
+      "imageSources": [
+        {
+          "src": "https://www.libidiamonds.co.il/images/home/hero-01.jpg",
+          "alt": "טבעת אירוסין סוליטר בזהב לבן על משי בצבע טורקיז כהה"
+        },
+        {
+          "src": "https://www.libidiamonds.co.il/images/products/ring-01-front.jpg",
+          "alt": "טבעת אירוסין סוליטר בזהב לבן 18K"
+        },
+        {
+          "src": "https://www.libidiamonds.co.il/images/products/tennis-01-front.jpg",
+          "alt": "צמיד טניס יהלומי מעבדה בזהב לבן"
+        },
+        {
+          "src": "https://www.libidiamonds.co.il/images/products/studs-01-front.jpg",
+          "alt": "עגילי סוליטר יהלום צמודים"
+        },
+        {
+          "src": "https://www.libidiamonds.co.il/images/products/pendant-01-front.jpg",
+          "alt": "תליון יהלום סוליטר על שרשרת עדינה"
+        },
+        {
+          "src": "https://www.libidiamonds.co.il/images/products/ring-04-front.jpg",
+          "alt": "טבעת אירוסין סוליטר בזהב ורוד"
+        },
+        {
+          "src": "https://www.libidiamonds.co.il/images/categories/engagement-01.jpg",
+          "alt": "טבעות אירוסין יהלום בזהב לבן"
+        },
+        {
+          "src": "https://www.libidiamonds.co.il/images/categories/bands-01.jpg",
+          "alt": "טבעות נישואין יהלומים בזהב לבן"
+        }
+      ]
+    },
+    {
+      "name": "koral",
+      "url": "https://lawebs.co.il/koralevents",
+      "status": 200,
+      "title": "״אישה לאישה מלכה״ | ערבי נשים לזיכוי הרבות",
+      "imageSources": [
+        {
+          "src": "https://lawebs.co.il/Koralevents/brand/hero-signature-landscape.webp",
+          "alt": ""
+        },
+        {
+          "src": "https://lawebs.co.il/Koralevents/api/media/35d14797-8427-4283-aa8b-c7f30b73797f.webp",
+          "alt": "סיור סליחות בכותל"
+        },
+        {
+          "src": "https://lawebs.co.il/Koralevents/api/media/10fb0dde-a770-4aab-afe4-777233ef27f6.webp",
+          "alt": "מסיבת פורים"
+        },
+        {
+          "src": "https://lawebs.co.il/Koralevents/api/media/f28a2984-0eb2-44ef-9ad4-fc04529fb928.webp",
+          "alt": "שיעור עם הרבנית"
+        },
+        {
+          "src": "https://lawebs.co.il/Koralevents/api/media/231ac530-ad35-4fee-a332-61044e6c85ec.webp",
+          "alt": "הפרשת חלה"
+        },
+        {
+          "src": "https://lawebs.co.il/Koralevents/api/media/3e99698c-aada-4c27-9995-ee4fe7c87eea.webp",
+          "alt": "ערב העצמה נשית"
+        }
+      ]
+    },
+    {
+      "name": "miryam",
+      "url": "https://miryamzelig.co.il/",
+      "status": 200,
+      "title": "מרים זליג · מאפרת כלות, ערב ואירועים — איפור עד הבית",
+      "imageSources": [
+        {
+          "src": "https://miryamzelig.co.il/Miryam_Zelig/gallery/img1.jpeg?v=1783262465709",
+          "alt": "איפור מקצועי - מרים זליג"
+        },
+        {
+          "src": "https://miryamzelig.co.il/Miryam_Zelig/gallery/img9.jpeg?v=1783804999460.0698",
+          "alt": "תמונת גלריה 8"
+        },
+        {
+          "src": "https://miryamzelig.co.il/Miryam_Zelig/gallery/img3.jpeg?v=1783083871025.5366",
+          "alt": "תמונת גלריה 2"
+        },
+        {
+          "src": "https://miryamzelig.co.il/Miryam_Zelig/gallery/img5.jpeg?v=1783800319659.0837",
+          "alt": "תמונת גלריה 4"
+        },
+        {
+          "src": "https://miryamzelig.co.il/Miryam_Zelig/gallery/img7.jpeg?v=1783083871026.5366",
+          "alt": "תמונת גלריה 6"
+        },
+        {
+          "src": "https://miryamzelig.co.il/Miryam_Zelig/gallery/img10.jpeg?v=1785745693647.195",
+          "alt": "תמונת גלריה 9"
+        },
+        {
+          "src": "https://miryamzelig.co.il/Miryam_Zelig/gallery/before-after-before.jpeg?v=1783059420",
+          "alt": "לפני האיפור"
+        },
+        {
+          "src": "https://miryamzelig.co.il/Miryam_Zelig/gallery/before-after-after.jpeg?v=1783059420",
+          "alt": "אחרי האיפור"
+        }
+      ]
+    },
+    {
+      "name": "reuven",
+      "url": "https://www.dfusreuven.co.il/",
+      "status": 200,
+      "title": "דפוס ראובן | בית דפוס, עיצוב גרפי ושילוט לעסקים",
+      "imageSources": [
+        {
+          "src": "https://www.dfusreuven.co.il/images/logo-r.png",
+          "alt": ""
+        },
+        {
+          "src": "https://www.dfusreuven.co.il/_next/image?url=%2Fimages%2Fhero-collage.webp&w=1080&q=75",
+          "alt": "קולאז' של מוצרי דפוס: כרטיסי ביקור, הזמנה עם פויל זהב, פלייר, אריזה ממותגת ומדבקות בגליל"
+        },
+        {
+          "src": "https://www.dfusreuven.co.il/_next/image?url=%2Fimages%2Fprod-business-cards.webp&w=384&q=75",
+          "alt": "כרטיסי ביקור כהים עם הדפסה בצבע מלא ולמינציה מטית"
+        },
+        {
+          "src": "https://www.dfusreuven.co.il/_next/image?url=%2Fimages%2Fprod-flyers.webp&w=384&q=75",
+          "alt": "פליירים צבעוניים בגודל A5 ו-A4"
+        },
+        {
+          "src": "https://www.dfusreuven.co.il/_next/image?url=%2Fimages%2Fprod-invitations.webp&w=384&q=75",
+          "alt": "הזמנה לחתונה עם פויל זהב ומעטפה"
+        },
+        {
+          "src": "https://www.dfusreuven.co.il/_next/image?url=%2Fimages%2Fprod-stickers.webp&w=384&q=75",
+          "alt": "מדבקות עגולות ומדבקות דייקאט בגזירה אישית"
+        },
+        {
+          "src": "https://www.dfusreuven.co.il/_next/image?url=%2Fimages%2Fprod-receipts.webp&w=384&q=75",
+          "alt": "פנקס קבלות ממוספר עם העתקים"
+        },
+        {
+          "src": "https://www.dfusreuven.co.il/_next/image?url=%2Fimages%2Fprod-rollup.webp&w=384&q=75",
+          "alt": "רולאפ שיווקי 85 על 200 ס״מ עם מעמד"
+        }
+      ]
+    },
+    {
+      "name": "pinhas",
+      "url": "https://pinhasratzon.co.il/",
+      "status": 200,
+      "title": "עורך דין מקרקעין וצוואות בפתח תקווה | עו״ד פנחס רצון",
+      "imageSources": [
+        {
+          "src": "https://pinhasratzon.co.il/assets/img/hero-room.jpg?v=1788040582314",
+          "alt": "עו״ד פנחס רצון — עורך דין מקרקעין, מיסוי מקרקעין ועיזבונות בפתח תקווה"
+        },
+        {
+          "src": "",
+          "alt": ""
+        },
+        {
+          "src": "https://pinhasratzon.co.il/assets/img/closing-portrait-left.webp",
+          "alt": ""
+        },
+        {
+          "src": "https://pinhasratzon.co.il/assets/img/pinchas-ratzon.jpg",
+          "alt": "עו״ד פנחס רצון, עורך דין מקרקעין ועיזבונות בפתח תקווה"
+        },
+        {
+          "src": "https://pinhasratzon.co.il/assets/img/band-stamp-light-v1.jpg",
+          "alt": ""
+        },
+        {
+          "src": "",
+          "alt": ""
+        },
+        {
+          "src": "",
+          "alt": ""
+        }
+      ]
+    }
+  ]
+}
