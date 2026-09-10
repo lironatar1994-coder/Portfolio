@@ -1,47 +1,43 @@
-# LA Webs — implemented design
+# LA webs — design (v2, September 2026)
 
-<!-- impeccable:design-schema 1 -->
+This records the redesign implemented in `src/styles.css`, `src/index.html`, `src/app.js`, `src/projects.mjs` and `scripts/build.mjs`. Product truth is in [PRODUCT.md](PRODUCT.md); the reference research is in [docs/studio-research.md](docs/studio-research.md). CSS is the source of truth for values.
 
-This records the finished implementation in `src/styles.css`, `src/index.html`, `src/app.js`, `src/projects.mjs`, and `scripts/build.mjs`. Product truth lives in [PRODUCT.md](PRODUCT.md); research is in [docs/studio-research.md](docs/studio-research.md). Machine-readable values are in [docs/design-tokens.json](docs/design-tokens.json). CSS remains the rendering source of truth.
+## Direction
 
-## Visual direction
+A bright, high-contrast canvas that lets the work carry the color. The studio's own surfaces are near-white paper and near-black ink with one vermilion accent. Every project section takes the client's real brand color (sampled from the live site, see `docs/project-longcaptures.json`), so darkness and color appear only where the work brings them. This follows what Israeli studios serving brands and small businesses do (light canvases), rather than the dark canvases common among startup-facing studios.
 
-A Hebrew studio portfolio built around real production websites, large typography, and open editorial spacing. Warm paper, dark ink, and vermilion were deliberately selected from the researched studio vocabulary. This is a considered default palette for this build, not a claim of unprecedented visual invention. The studio's distinction comes from its work, Hebrew composition, and consistent execution.
+Identity is typographic: the wordmark `LA webs` set in Frank Ruhl Libre with a vermilion square "period" that recurs as kicker bullet, list marker, favicon and cursor dot. The previous asterisk mark was retired.
 
-The recurring identity is the tightly spaced **LA webs** wordmark and an abstract six-spoke SVG mark. The page moves from paper and project imagery to a dark olive studio section, then a vermilion contact section and oversized wordmark footer. Fine rules organize content; shadows and shallow corners primarily frame website screenshots.
+## Tokens
 
-## Core tokens
-
-| Token | Implemented value | Use |
+| Token | Value | Use |
 | --- | --- | --- |
-| `--paper` | `#f5f3ed` | Page, header, light controls |
-| `--ink` | `#23251f` | Primary type and selected filters |
-| `--accent` | `#cd371f` | Hero emphasis, mark, contact surface, focus |
-| `--muted` | `#686b61` | Captions and secondary labels |
-| `--rule` | `#d9d9cf` | Light section borders |
-| `--dark` | `#252821` | Studio section |
-| `--gutter` | `clamp(22px,4.2vw,76px)` | Main horizontal spacing |
-| `--ease` | `cubic-bezier(.16,1,.3,1)` | Gallery and image transitions |
+| `--paper` | `#fbfaf7` | Page, header pills, studio and footer |
+| `--ink` | `#14130f` | Type, CTA pills |
+| `--muted` | `#66635a` | Kickers, captions |
+| `--line` | `#e6e2d9` | Rules |
+| `--accent` | `#d1341c` | Brand dot, kickers, contact block, focus rings |
+| `--bg` / `--fg` / `--accent` / `--soft` | per project | Set inline on every project row, reel slide and case cover from `projects[].colors` |
 
-All fonts are self-hosted with `font-display: swap`. **Noto Hebrew** uses Hebrew and Latin subsets at weights 400–900. **Manrope**, weights 700–800, supplies the Latin wordmark and selected Latin labels. Base copy is 16px/1.65. Display headings use tight `-.04em` tracking and balanced wrapping. Desktop hero type is `clamp(66px,7.55vw,118px)` at weight 800; mobile uses `clamp(49px,10.3vw,77px)` and natural wrapping. The page container caps at 1680px.
+Type: **Frank Ruhl Libre** (variable 300–900, self-hosted) for display, weight 800, line-height ≈1.0, tracking −0.015em to −0.02em. **IBM Plex Sans Hebrew** (400–700, self-hosted as "Plex Hebrew") for body and UI at 17px/1.65. Both are OFL; licenses sit next to the files in `public/fonts/`.
 
-## Composition and responsive behavior
+## Composition
 
-- **Desktop hero:** Right-aligned two-line Hebrew headline, shorter introduction opposite it, then three linked screenshots. Miryam and Koral sit in tilted browser frames; LIBI appears as a phone. A small vermilion seal sits beside the composition.
-- **Mobile at 760px and below:** 80px header, collapsible navigation, 22px gutters, stacked hero copy. The hero shows exactly two projects: dominant Koral and a smaller LIBI phone inset. Miryam and the seal are hidden. Pointer translation is disabled. Below 360px, gutters reduce to 18px and the intro/link stack.
-- **Selected work:** A 12-column desktop grid alternates 7/5 and 5/7 spans, with a full-width fifth project. Filtered desktop results use equal columns. Cards stack below 500px; 500–760px uses two columns. Captions remain outside imagery and every card opens its static case page.
-- **Case pages:** Shared identity, live-site link, real screenshot, project story and scope, mobile view, and next-project navigation. LIBI intentionally uses a phone-led cover because its verified live layout is phone-focused.
+- **Hero:** speaks to the client. "נבנה לעסק שלך אתר תדמית [מושקע]." with the last word rotating every 2.6s (מושקע, מעוצב, מדויק, מהיר, מצליח) in a fixed-width slot while a vermilion underline redraws; the period is vermilion like the wordmark's. The heading keeps a static `aria-label`, updated per word. Two-line intro, actions, a fact line, and the Koral flagship (browser plus floating phone on desktop, a phone on mobile fed by a small dedicated crop `koral-hero-mobile.webp` so the first screen never waits on a huge decode). The five-project index follows.
+- **Work, three pinned then two cards.** Koral, Miryam and Pinhas are sticky stages (`100svh + --scroll`, about one screen of pinned scrolling each, derived from the phone capture length). Scroll progress drives the registered `--p` property (`animation-timeline: view()`, `animation-range: contain`, JavaScript fallback elsewhere) and moves the captures top to bottom, with travel capped at 2,600px for phones and 2,200px for browsers so the phone never races the finger. Each stage has its own composition: Koral browser plus floating phone; Miryam phone beside the draggable before/after; Pinhas one wide browser frame. Phones show a wide phone window only. Libi and Reuven follow as two compact cards ("שני קטלוגים") in their own colors; on desktop hovering a card scrolls its capture. Short-height screens and reduced motion use ordinary rows.
+- **Studio:** statement, three numbered steps, and deliverables; unchanged by the refinement.
+- **Contact:** vermilion block with deliberately grouped headline lines and separated phone text. The small paper-colored floating WhatsApp control appears after the hero and hides only over the contact section, so the direct contact route stays available throughout the work.
+- **Footer:** oversized wordmark with the vermilion period.
+- **Case pages, visual first:** title, two sentences, scope chips and the live link, then a row in the project's color with two windows side by side, the desktop capture and the phone capture, each the whole home page scrolling inside itself (keyboard-focusable regions). The two windows are desktop only: on phones nested scrolling fights the page, so the case page uses the same pinned phone stage as the home page there, the capture scrolling with the finger. Miryam adds the draggable before/after. "הפרויקט הבא" was replaced by a swipeable strip of the other projects (native scroll-snap, image plus name and category, hover scrolls the preview on desktop). No story blocks, palette, or crops; the visitor reads two sentences and then uses the site. `src/presentation.mjs` keeps only the one-line showcase summaries.
 
-The tablet adjustment begins at 1100px; the wider gallery adjustment begins at 1600px. Project background colors stay project-specific, with a few contextual presentation overrides recorded in the JSON file.
+## Phones
 
-## Interaction and accessibility behavior
+Phones get their own composition rather than a squeezed desktop. In each pinned stage the copy sits at the top under the header and the site window stretches to fill everything below it, so the capture is as large as the screen allows and scrolls with the finger; a small "גללו כדי לדפדף באתר" pill fades out as progress begins. Catalog cards use the same wide-window language, and on touch devices their captures scroll with the page instead of on hover (the hover hint is hidden there). Case pages show the phone capture in the cover window instead of a shrunken desktop screenshot, and drop the separate "בטלפון" section since the visitor is already on one. Tap targets are at least 40–48px, the header respects the notch safe area, and the studio steps put the numeral beside the title to save height. Short landscape screens and reduced motion fall back to unpinned rows with a fixed-height window. No count of projects appears anywhere in the copy; the studio speaks about experience, not quantity.
 
-Navigation uses normal anchors and generated HTML pages. Services use native `details`/`summary`. Small JavaScript enhancements provide category filters with pressed states and result announcements, the mobile menu, and a header rule after scrolling. The menu closes on Escape, link activation, outside click, focus leaving the header, and return to desktop width. Without JavaScript, projects remain visible and a `noscript` fallback exposes mobile navigation.
+## Motion and accessibility
 
-The only pointer-driven effect translates the hero gallery by at most 8px horizontally and 5px vertically on fine-pointer devices without a reduced-motion preference. Hover adds small screenshot lifts and arrow movement. Reduced motion disables animations/transitions, pointer translation, and smooth scrolling. Focus uses a 3px accent outline with a 6px offset; the contact section uses a white focus outline. A skip link, image alternatives, Hebrew language metadata, RTL direction, and isolated Latin/phone text are present.
+Reveal-on-scroll, a one-time hero entrance, scroll-linked captures, a cursor dot with a "לצפייה" label over work (fine pointers only), magnetic pills and cross-document view transitions. `prefers-reduced-motion` disables all of it and shows captures at their top. Focus rings are 3px accent. Header controls sit in translucent pills so they read over any project color. Skip link, RTL, isolated Latin and labelled comparison controls are in place. Playwright + axe cover serious/critical WCAG 2.1 AA issues on home and a case page.
 
-## Content and maintenance
+## Assets
 
-Five hard-coded projects come from `src/projects.mjs`: Koral Events, LIBI Diamonds, Miryam Zelig, Pinhas Ratzon, and Dfus Reuven. Imagery is captured production work or source artwork from those projects; provenance is recorded in `docs/project-inventory.md`, `docs/project-captures.json`, and `docs/project-assets.json`. No admin panel, inquiry form, invented awards, or business-result claims are part of this version. Contact links open WhatsApp or the phone dialer.
-
-The dependency-free Node build writes a homepage, five case pages, a 404 page, CSS, JavaScript, fonts, and images to `dist`. Set `SITE_ORIGIN` for canonical URLs and a sitemap; builds without it carry `noindex,nofollow`. This document records source behavior and makes no additional testing or deployment claim.
+`scripts/capture-long.cjs` captures each live site full-page at 1440px (desktop, ≤6400px tall) and 390px (phone, 1.5× → 585px wide, ≤6000px tall), converts to WebP and records height, dominant background colors, CSS custom properties and computed font families in `docs/project-longcaptures.json`. The build reads that file for image dimensions. `*-desktop.webp` viewport captures are kept for `og:image`.

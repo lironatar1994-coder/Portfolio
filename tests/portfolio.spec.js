@@ -16,9 +16,7 @@ function observeErrors(page) {
   page.on('pageerror', error => errors.push(`JavaScript: ${error.message}`));
   page.on('console', message => { if (message.type() === 'error') errors.push(`Console: ${message.text()}`); });
   page.on('response', response => {
-    if (response.url().startsWith('http://127.0.0.1:4173') && response.status() >= 400) {
-      errors.push(`HTTP ${response.status()}: ${response.url()}`);
-    }
+    if (response.url().startsWith('http://127.0.0.1:4173') && response.status() >= 400) errors.push(`HTTP ${response.status()}: ${response.url()}`);
   });
   return errors;
 }
@@ -26,6 +24,11 @@ function observeErrors(page) {
 async function ready(page) {
   await page.waitForLoadState('networkidle');
   await page.evaluate(() => document.fonts.ready);
+  // Let entrance animations finish (scroll-driven ones never "finish", so they are skipped and a 2.5s cap applies).
+  await page.evaluate(() => Promise.race([
+    Promise.allSettled(document.getAnimations().filter(a => !(typeof ScrollTimeline !== 'undefined' && a.timeline instanceof ScrollTimeline)).map(a => a.finished)),
+    new Promise(resolve => setTimeout(resolve, 2500)),
+  ]));
 }
 
 async function expectImages(page) {
@@ -60,7 +63,7 @@ async function expectAccessible(page) {
   }))).toEqual([]);
 }
 
-test('homepage presents Hebrew RTL content and five projects without resource errors', async ({ page }) => {
+test('homepage presents Hebrew RTL content, the hero and five project rows without resource errors', async ({ page }) => {
   const errors = observeErrors(page);
   const response = await page.goto('/');
   expect(response.status()).toBe(200);
@@ -69,53 +72,98 @@ test('homepage presents Hebrew RTL content and five projects without resource er
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await expect(page.locator('main')).toHaveCount(1);
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('אתר עם אופי');
-  await expect(page.locator('.work-card:visible')).toHaveCount(5);
-  for (const [slug] of liveSites) await expect(page.locator(`.work-card a[href="/work/${slug}/"], a.work-card[href="/work/${slug}/"]`).first()).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('נבנה לעסק שלך');
+  await expect(page.locator('.hero .hero-shot')).toHaveCount(1);
+  await expect(page.locator('.hero-index a')).toHaveCount(5);
+  await expect(page.locator('.work-card')).toHaveCount(5);
+  await expect(page.locator('.stage-track')).toHaveCount(3);
+  await expect(page.locator('.card')).toHaveCount(2);
+  for (const [slug] of liveSites) await expect(page.locator(`.work-card a.work-link[href="/work/${slug}/"]`).first()).toBeVisible();
   await expectImages(page);
   await expectNoOverflow(page);
   expect(errors).toEqual([]);
 });
 
-test('work filters show matching projects and reset completely', async ({ page }) => {
+test('hero index links jump to the matching project row', async ({ page }) => {
   await page.goto('/');
-  for (const [filter, count] of [['brand', 2], ['commerce', 2], ['systems', 1], ['all', 5]]) {
-    const button = page.locator(`[data-filter="${filter}"]`);
-    await button.click();
-    await expect(button).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.locator('.filter[aria-pressed="true"]')).toHaveCount(1);
-    await expect(page.locator('.work-card:visible')).toHaveCount(count);
-    await expect(page.locator('#filter-status')).toContainText(String(count));
-    await expectNoOverflow(page);
+  await ready(page);
+  const link = page.locator('.hero-index a').nth(1);
+  await expect(link).toHaveAttribute('href', '#project-miryam');
+  await link.click();
+  await expect(page).toHaveURL(/#project-miryam$/);
+  await expect.poll(() => page.locator('#project-miryam').evaluate(el => el.getBoundingClientRect().top < window.innerHeight)).toBe(true);
+  await expectNoOverflow(page);
+});
+
+test('pinned project stage stays fixed while its capture scrolls with the page', async ({ page }) => {
+  await page.goto('/');
+  await ready(page);
+  const track = page.locator('#project-koral');
+  await track.evaluate(el => scrollTo({ top: el.offsetTop + (el.offsetHeight - innerHeight) * 0.5, behavior: 'instant' }));
+  await page.waitForTimeout(500);
+  const progress = await track.evaluate(el => parseFloat(getComputedStyle(el).getPropertyValue('--p')));
+  expect(progress).toBeGreaterThan(0.2);
+  expect(progress).toBeLessThan(0.8);
+  expect(await track.locator('.stage').evaluate(el => Math.abs(Math.round(el.getBoundingClientRect().top)))).toBeLessThanOrEqual(1);
+  expect(await track.locator('.frame.phone .shot img').evaluate(img => getComputedStyle(img).transform)).not.toBe('none');
+  await expectNoOverflow(page);
+});
+
+test('hero word rotates and keeps the heading label in sync', async ({ page }) => {
+  await page.goto('/');
+  await ready(page);
+  const first = await page.locator('.swap-word.is-active').textContent();
+  await expect.poll(() => page.locator('.swap-word.is-active').textContent(), { timeout: 5000 }).not.toBe(first);
+  const active = await page.locator('.swap-word.is-active').textContent();
+  await expect(page.locator('#hero-title')).toHaveAttribute('aria-label', `נבנה לעסק שלך אתר תדמית ${active}.`);
+});
+
+test('case page desktop and phone windows scroll inside themselves', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'Windows are desktop only');
+  await page.goto('/work/koral/');
+  await ready(page);
+  for (const shot of await page.locator('.case-views .frame.window .shot').all()) {
+    await shot.scrollIntoViewIfNeeded();
+    expect(await shot.evaluate(el => el.scrollHeight > el.clientHeight + 200)).toBe(true);
+    await expect(shot).toHaveAttribute('tabindex', '0');
   }
 });
 
-test('native service disclosures open and close with keyboard', async ({ page }) => {
+test('on phones the pinned stage window fills the screen below the copy', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'Phone layout only');
   await page.goto('/');
-  const details = page.locator('.services details');
-  await expect(details).toHaveCount(3);
-  const second = details.nth(1);
-  await expect(second).not.toHaveAttribute('open', '');
-  await second.locator('summary').focus();
-  await page.keyboard.press('Enter');
-  await expect(second).toHaveAttribute('open', '');
-  await expect(second.locator('p')).toBeVisible();
-  await page.keyboard.press('Enter');
-  await expect(second).not.toHaveAttribute('open', '');
+  await ready(page);
+  const track = page.locator('#project-koral');
+  await track.evaluate(el => scrollTo({ top: el.offsetTop + (el.offsetHeight - innerHeight) * 0.4, behavior: 'instant' }));
+  await page.waitForTimeout(400);
+  const box = await track.locator('.frame.phone .shot').first().boundingBox();
+  const viewport = page.viewportSize().height;
+  expect(box.height).toBeGreaterThan(viewport * 0.38);
+  expect(box.y + box.height).toBeLessThanOrEqual(viewport + 1);
+  await page.goto('/work/koral/');
+  await ready(page);
+  await expect(page.locator('.case-views')).toBeHidden();
+  await expect(page.locator('.case-stage')).toBeVisible();
+  await expect(page.locator('.strip-item')).toHaveCount(4);
+});
+
+test('studio section lists three steps and deliverables', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.steps li')).toHaveCount(3);
+  await expect(page.locator('.deliverables li')).toHaveCount(6);
 });
 
 test('mobile navigation supports keyboard, Escape and closing after a link', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'Mobile navigation only');
   await page.goto('/');
   const toggle = page.locator('.menu-toggle');
-  const navigation = page.locator('#site-navigation');
+  const navigation = page.locator('#site-nav');
   await expect(toggle).toBeVisible();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await toggle.focus();
   await page.keyboard.press('Enter');
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
   await expect(navigation).toBeVisible();
-  await page.keyboard.press('Tab');
   await expect.poll(() => navigation.evaluate(nav => nav.contains(document.activeElement))).toBe(true);
   await page.keyboard.press('Escape');
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
@@ -129,7 +177,7 @@ test('mobile navigation supports keyboard, Escape and closing after a link', asy
 });
 
 for (const [slug, name, url] of liveSites) {
-  test(`direct project route /work/${slug}/ has live link and intact imagery`, async ({ page }) => {
+  test(`direct project route /work/${slug}/ has live link, palette and intact imagery`, async ({ page }) => {
     const errors = observeErrors(page);
     const response = await page.goto(`/work/${slug}/`);
     expect(response.status()).toBe(200);
@@ -140,11 +188,22 @@ for (const [slug, name, url] of liveSites) {
     const liveLink = page.locator(`main a[href="${url}"]`).first();
     await expect(liveLink).toBeVisible();
     if (await liveLink.getAttribute('target') === '_blank') await expect(liveLink).toHaveAttribute('rel', /noopener/);
+    await expect(page.locator('.case-views .frame.window')).toHaveCount(2);
+    await expect(page.locator('.strip-item')).toHaveCount(4);
     await expectImages(page);
     await expectNoOverflow(page);
     expect(errors).toEqual([]);
   });
 }
+
+test('before/after slider on Miryam responds to the range input', async ({ page }) => {
+  await page.goto('/work/miryam/');
+  await ready(page);
+  const compare = page.locator('.ba');
+  await compare.scrollIntoViewIfNeeded();
+  await compare.locator('input[type="range"]').fill('20');
+  await expect.poll(() => compare.evaluate(el => el.style.getPropertyValue('--cut'))).toBe('20%');
+});
 
 test('homepage and project remain within narrow, tablet and laptop widths', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'Dimension sweep runs once');
@@ -170,39 +229,27 @@ test('case study has no serious or critical WCAG violations', async ({ page }) =
   await expectAccessible(page);
 });
 
-test('reduced motion keeps gallery steady during pointer movement', async ({ page }) => {
+test('reduced motion keeps the hero capture still while scrolling', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await ready(page);
-  const gallery = page.locator('.hero-gallery');
-  const track = page.locator('.gallery-track');
-  await gallery.scrollIntoViewIfNeeded();
-  const before = await track.evaluate(element => getComputedStyle(element).transform);
-  const bounds = await gallery.boundingBox();
-  await page.mouse.move(bounds.x + bounds.width * .85, bounds.y + bounds.height * .5);
-  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-  expect(await track.evaluate(element => getComputedStyle(element).transform)).toBe(before);
-  expect(await gallery.evaluate(element => element.style.getPropertyValue('--pointer-x'))).toMatch(/^(|0px)$/);
+  const image = page.locator('.hero .hero-frame .shot img');
+  await page.mouse.wheel(0, 400);
+  await page.waitForTimeout(300);
+  expect(await image.evaluate(img => getComputedStyle(img).transform)).toBe('none');
 });
 
-test('without JavaScript the work, navigation and service content remain usable', async ({ browser }, testInfo) => {
-  const context = await browser.newContext({
-    javaScriptEnabled: false,
-    viewport: testInfo.project.use.viewport,
-    baseURL: 'http://127.0.0.1:4173',
-  });
+test('without JavaScript the work, navigation and studio content remain usable', async ({ browser }, testInfo) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: testInfo.project.use.viewport, baseURL: 'http://127.0.0.1:4173' });
   const page = await context.newPage();
   try {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.locator('.work-card:visible')).toHaveCount(5);
-    await expect(page.locator('.filters')).toBeHidden();
-    await expect(page.locator('#site-navigation a').first()).toBeVisible();
-    const summary = page.locator('.services details').nth(1).locator('summary');
-    await summary.click();
-    await expect(page.locator('.services details').nth(1).locator('p')).toBeVisible();
+    await expect(page.locator('.hero .hero-shot')).toBeVisible();
+    await expect(page.locator('.work-card')).toHaveCount(5);
+    await expect(page.locator('.steps li')).toHaveCount(3);
     await expectNoOverflow(page);
-    await page.locator('a[href="/work/koral/"]').first().click();
+    await page.locator('.work-card a[href="/work/koral/"]').first().click();
     await expect(page.getByRole('heading', { level: 1 })).toContainText('קורל אירועים');
   } finally {
     await context.close();
@@ -213,7 +260,7 @@ test('capture public portfolio QA screenshots', async ({ page }, testInfo) => {
   test.skip(process.env.CAPTURE_QA !== '1', 'Set CAPTURE_QA=1 for a single intentional capture batch');
   await mkdir(path.resolve('docs/qa'), { recursive: true });
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  for (const [route, name] of [['/', 'home'], ['/work/koral/', 'case-koral'], ['/work/libi/', 'case-libi']]) {
+  for (const [route, name] of [['/', 'home'], ['/work/koral/', 'case-koral'], ['/work/miryam/', 'case-miryam'], ['/work/libi/', 'case-libi']]) {
     await page.goto(route);
     await ready(page);
     await expectImages(page);

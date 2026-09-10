@@ -1,0 +1,196 @@
+{
+  "capturedAt": "2026-09-10T11:12:54.552Z",
+  "projects": [
+    {
+      "name": "koral",
+      "url": "https://lawebs.co.il/koralevents",
+      "status": 200,
+      "title": "״אישה לאישה מלכה״ | ערבי נשים לזיכוי הרבות",
+      "height": 3452,
+      "backgrounds": [
+        "rgb(247, 241, 232)",
+        "rgb(22, 12, 29)",
+        "rgb(26, 17, 32)",
+        "rgb(255, 255, 255)",
+        "rgb(35, 23, 43)",
+        "rgb(18, 11, 22)",
+        "rgba(26, 17, 32, 0.5)",
+        "rgb(198, 64, 95)"
+      ],
+      "vars": {
+        "--bg": "#160c1d",
+        "--panel-light": "#2e1b38",
+        "--gold": "#e8607f",
+        "--ink": "#2a0714",
+        "--lightningcss-light": "",
+        "--lightningcss-dark": "initial"
+      },
+      "fonts": {
+        "h1": "\"Frank Ruhl Libre\", David, \"Times New Roman\", serif",
+        "h2": "\"Frank Ruhl Libre\", David, \"Times New Roman\", serif",
+        "body": "Heebo, Arial, sans-serif",
+        "button": null
+      },
+      "desktopCapture": {
+        "width": 1440,
+        "height": 3452,
+        "truncated": false
+      },
+      "mobileHeight": 5242,
+      "mobileCapture": {
+        "width": 585,
+        "height": 7863,
+        "truncated": false
+      }
+    },
+    {
+      "name": "libi",
+      "url": "https://www.libidiamonds.co.il/",
+      "status": 200,
+      "title": "LIBI Diamonds | תכשיטי יהלומים",
+      "height": 7745,
+      "backgrounds": [
+        "rgb(16, 24, 28)",
+        "rgb(232, 234, 234)",
+        "rgb(255, 255, 255)",
+        "rgb(20, 26, 29)",
+        "rgb(247, 248, 248)",
+        "rgb(241, 244, 245)",
+        "rgb(250, 251, 251)",
+        "rgb(237, 241, 242)"
+      ],
+      "vars": {},
+      "fonts": {
+        "h1": "Heebo, system-ui, sans-serif",
+        "h2": "Heebo, system-ui, sans-serif",
+        "body": "\"Times New Roman\"",
+        "button": "Arial"
+      },
+      "desktopCapture": {
+        "width": 1440,
+        "height": 6400,
+        "truncated": true
+      },
+      "mobileHeight": 7731,
+      "mobileCapture": {
+        "width": 585,
+        "height": 9000,
+        "truncated": true
+      }
+    },
+    {
+      "name": "miryam",
+      "url": "https://miryamzelig.co.il/",
+      "status": 200,
+      "title": "מרים זליג · מאפרת כלות, ערב ואירועים — איפור עד הבית",
+      "height": 5487,
+      "backgrounds": [
+        "rgb(253, 248, 246)",
+        "rgb(247, 233, 228)",
+        "rgba(255, 255, 255, 0.9)",
+        "rgba(255, 255, 255, 0.86)",
+        "rgba(253, 248, 246, 0.78)",
+        "rgba(255, 255, 255, 0.72)"
+      ],
+      "vars": {},
+      "fonts": {
+        "h1": "Bellefair, serif",
+        "h2": "Bellefair, serif",
+        "body": "Heebo, sans-serif",
+        "button": "Heebo, sans-serif"
+      },
+      "desktopCapture": {
+        "width": 1440,
+        "height": 5487,
+        "truncated": false
+      },
+      "mobileHeight": 5213,
+      "mobileCapture": {
+        "width": 585,
+        "height": 7819,
+        "truncated": true
+      }
+    },
+    {
+      "name": "pinhas",
+      "url": "https://pinhasratzon.co.il/",
+      "status": 200,
+      "title": "עורך דין מקרקעין וצוואות בפתח תקווה | עו״ד פנחס רצון",
+      "height": 6544,
+      "backgrounds": [
+        "rgb(251, 250, 247)",
+        "rgb(14, 12, 9)",
+        "rgb(243, 239, 232)",
+        "rgb(26, 23, 18)",
+        "rgb(193, 155, 69)"
+      ],
+      "vars": {
+        "--ink": "#14110c",
+        "--ink-2": "#3a352c",
+        "--accent": "#86641f",
+        "--accent-lt": "#c19b45",
+        "--gold-line": "rgba(193, 155, 69, .45)"
+      },
+      "fonts": {
+        "h1": "Heebo, \"Segoe UI\", Arial, sans-serif",
+        "h2": "Heebo, \"Segoe UI\", Arial, sans-serif",
+        "body": "Heebo, \"Segoe UI\", Arial, sans-serif",
+        "button": "Arial"
+      },
+      "desktopCapture": {
+        "width": 1440,
+        "height": 6400,
+        "truncated": true
+      },
+      "mobileHeight": 6629,
+      "mobileCapture": {
+        "width": 585,
+        "height": 9000,
+        "truncated": true
+      }
+    },
+    {
+      "name": "reuven",
+      "url": "https://www.dfusreuven.co.il/",
+      "status": 200,
+      "title": "דפוס ראובן | בית דפוס, עיצוב גרפי ושילוט לעסקים",
+      "height": 6227,
+      "backgrounds": [
+        "rgb(255, 255, 255)",
+        "rgb(238, 242, 245)",
+        "rgb(16, 32, 51)",
+        "rgba(16, 32, 51, 0.55)",
+        "rgb(214, 228, 248)",
+        "rgb(247, 247, 245)",
+        "rgba(255, 255, 255, 0.16)",
+        "rgba(255, 255, 255, 0.94)"
+      ],
+      "vars": {
+        "--ink": "#102033",
+        "--ink-soft": "#2C3A4B",
+        "--ink-body": "#202326",
+        "--muted-light": "#8A93A0",
+        "--blue-dark": "#0F55BD",
+        "--rule-ink": "rgba(16,32,51,0.14)",
+        "--wa-btn-dark": "#09622F"
+      },
+      "fonts": {
+        "h1": "\"Miriam Libre\", \"Miriam Libre Fallback\", \"Miriam Libre\", Georgia, serif",
+        "h2": "\"Miriam Libre\", \"Miriam Libre Fallback\", \"Miriam Libre\", Georgia, serif",
+        "body": "Heebo, \"Heebo Fallback\", Heebo, Assistant, Arial, sans-serif",
+        "button": "Heebo, \"Heebo Fallback\", Heebo, Assistant, Arial, sans-serif"
+      },
+      "desktopCapture": {
+        "width": 1440,
+        "height": 6227,
+        "truncated": false
+      },
+      "mobileHeight": 7661,
+      "mobileCapture": {
+        "width": 585,
+        "height": 9000,
+        "truncated": true
+      }
+    }
+  ]
+}

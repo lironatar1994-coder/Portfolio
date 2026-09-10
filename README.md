@@ -1,6 +1,6 @@
-# LA Webs portfolio
+# LA webs portfolio
 
-Hebrew-only, RTL studio portfolio with five verified projects, static case-study pages, mobile navigation, category filtering, native service disclosures, and direct phone/WhatsApp contact. No admin panel, database, analytics, or external font requests.
+Hebrew-only, RTL studio portfolio. A typographic hero, five individually composed showcases in the clients' own brand colors, static case-study pages with curated capture details, palette and typography facts sampled from each live site, a before/after demo for Miryam, and direct WhatsApp/phone contact. No admin panel, database, framework, analytics or external requests. Design notes are in [DESIGN.md](DESIGN.md).
 
 ## Run
 
@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:4173. Source and asset changes rebuild automatically; refresh the browser to see them. Changes to the server script require restarting it.
+Open http://127.0.0.1:4173. Source and asset changes rebuild automatically; refresh to see them. Restart the server after editing `scripts/serve.mjs`.
 
 ```powershell
 npm run build
@@ -19,21 +19,21 @@ npm run check
 npm run test:browser
 ```
 
-The browser tests use Microsoft Edge. To use another installed Playwright browser, update `channel` in `playwright.config.js`. The development server must be running for browser tests.
+Browser tests run in Microsoft Edge (change `channel` in `playwright.config.js` for another installed browser). The dev server must be running for browser tests. Set `CAPTURE_QA=1` to refresh the screenshots in `docs/qa/`.
 
 ## Update the portfolio
 
-- Edit projects, case-study text, production links, and studio contact in `src/projects.mjs`.
-- Edit homepage copy in `src/index.html` and shared header/footer/project templates in `scripts/build.mjs`.
-- Styles and interactions are in `src/styles.css` and `src/app.js`.
-- Place optimized images in `public/images`. Each project needs `<slug>-desktop.webp` and `<slug>-mobile.webp`; custom image compositions are defined in `projectVisual()`.
-- Rebuild and verify after changing content. Filter totals and bespoke gallery compositions currently reflect the five selected projects.
+- Projects, copy, scope, brand colors, palette and typefaces: `src/projects.mjs`. `colors.bg/fg/accent` drive the work row and the case-page covers.
+- Homepage copy (statement, studio section): `src/index.html`. Shared header, hero, rows, contact, footer and case templates: `scripts/build.mjs`.
+- Styles: `src/styles.css`. Interactions (menu, scroll progress, reveal, cursor, before/after): `src/app.js`.
+- Live-site captures: run `node scripts/capture-long.cjs` (set `KINDS=mobile` or `KINDS=desktop` to refresh one kind). It writes `public/images/<slug>-desktop-full.webp`, `<slug>-mobile-full.webp` and `docs/project-longcaptures.json`, which the build reads for image dimensions. The script uses the Playwright and sharp installs in the neighbouring `KoralEvents - Copy` project.
+- One-line showcase summaries: `src/presentation.mjs`. The crop coordinates and `basis` record in that file are no longer rendered anywhere and can be removed when convenient.
+- The hero's small mobile image `public/images/koral-hero-mobile.webp` is a 585×1400 crop of the Koral mobile capture; regenerate it after recapturing Koral.
+- Add a project: append it to `src/projects.mjs` and `src/presentation.mjs`, capture it, and add a `<slug>-desktop.webp` viewport capture for `og:image`.
 
 ## Deployment
 
-`dist/` is the standalone static site. It contains the homepage, five directly accessible `/work/<slug>/` routes, a 404 page, and local assets. Configure a static host to serve each directory's `index.html` and `404.html` for missing pages. There is no server runtime and no SPA fallback.
-
-The default build is a private review version with `noindex,nofollow` and a disallowing robots file. For a public production build, set the confirmed domain explicitly:
+`dist/` is the standalone static site: the homepage, five `/work/<slug>/` routes, a 404 page, fonts and images. Serve each directory's `index.html` and use `404.html` for missing pages. The default build is a private review build with `noindex,nofollow` and a disallowing robots file. For production set the confirmed domain:
 
 ```powershell
 $env:SITE_ORIGIN = 'https://your-confirmed-domain.example'
@@ -41,14 +41,13 @@ npm run build
 npm run check
 ```
 
-This adds canonical URLs and a sitemap, allows indexing, and removes the preview noindex tag. The example domain must be replaced. Existing client production sites are linked to, not modified. `.openai/hosting.json` identifies the separate private Sites preview.
+This adds canonical URLs, `og:image` and a sitemap and allows indexing.
 
 ## Research and evidence
 
-- `docs/studio-research.md`: eight Israeli/international studio references and concrete design observations.
-- `docs/build-plan.md`: direction and implementation plan.
-- `docs/project-inventory.md`: verified public websites, factual scope, contact source, and asset provenance.
-- `docs/project-captures.json` / `docs/project-assets.json`: original screenshot/image sources.
-- `docs/qa/`: browser screenshot evidence. Set `CAPTURE_QA=1` when intentionally refreshing captures.
+- `docs/studio-research.md`: studio references and the design conclusions drawn from them.
+- `docs/project-inventory.md`: verified public websites, scope, contact source and asset provenance.
+- `docs/project-longcaptures.json`: capture dimensions, dominant colors, CSS variables and font families read from each live site on 10 September 2026.
+- `docs/qa/`: browser screenshots and the Playwright report.
 
-All project screenshots were captured from public production sites on 10 September 2026. The Libi showcase deliberately uses its real mobile layout. Font licenses are included in `public/fonts/`.
+Font licenses (SIL OFL) for Frank Ruhl Libre and IBM Plex Sans Hebrew are in `public/fonts/`.
