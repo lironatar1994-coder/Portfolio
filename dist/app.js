@@ -56,8 +56,8 @@ if (swap && !reduceMotion.matches) {
 
 /* ---------- Scroll-progress fallback where CSS scroll timelines are missing (older Safari, Firefox) ---------- */
 const timelines = window.CSS && CSS.supports('animation-timeline: view()');
-const tracks = $$('.stage-track');
-const hero = $('.hero');
+const tracks = mobile.matches ? [] : $$('.stage-track'); // phones are unpinned and still
+const hero = mobile.matches ? null : $('.hero');
 const stripCards = []; // catalog cards show the top of each site; no scroll-linked motion
 if (!timelines && !reduceMotion.matches && (tracks.length || hero || stripCards.length)) {
   let queued = false;

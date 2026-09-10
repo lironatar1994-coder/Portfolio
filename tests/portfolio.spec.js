@@ -100,7 +100,8 @@ test('hero index links jump to the matching project row', async ({ page }) => {
   await expectNoOverflow(page);
 });
 
-test('pinned project stage stays fixed while its capture scrolls with the page', async ({ page }) => {
+test('pinned project stage stays fixed while its capture scrolls with the page', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'Pinned showcases are desktop only');
   await page.goto('/');
   await ready(page);
   const track = page.locator('#project-koral');
@@ -134,17 +135,20 @@ test('case page desktop and phone windows scroll inside themselves', async ({ pa
   }
 });
 
-test('on phones the pinned stage window fills the screen below the copy', async ({ page }, testInfo) => {
+test('on phones the project blocks are unpinned, still, and show a large view of the site', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'Phone layout only');
   await page.goto('/');
   await ready(page);
   const track = page.locator('#project-koral');
-  await track.evaluate(el => scrollTo({ top: el.offsetTop + (el.offsetHeight - innerHeight) * 0.4, behavior: 'instant' }));
+  expect(await track.locator('.stage').evaluate(el => getComputedStyle(el).position)).toBe('static');
+  await track.scrollIntoViewIfNeeded();
   await page.waitForTimeout(400);
   const box = await track.locator('.frame.phone .shot').first().boundingBox();
   const viewport = page.viewportSize().height;
-  expect(box.height).toBeGreaterThan(viewport * 0.38);
-  expect(box.y + box.height).toBeLessThanOrEqual(viewport + 1);
+  expect(box.height).toBeGreaterThan(viewport * 0.45);
+  await page.mouse.wheel(0, 300);
+  await page.waitForTimeout(300);
+  expect(await track.locator('.frame.phone .shot img').first().evaluate(img => getComputedStyle(img).transform)).toBe('none');
   // the phone hero is a hand of cards: six cards, the front one changes when a card behind it is tapped
   await page.goto('/');
   await ready(page);
