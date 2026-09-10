@@ -90,7 +90,6 @@ const hero = `<section class="hero" aria-labelledby="hero-title">
       <h1 id="hero-title" class="display" aria-label="נבנה לעסק שלך אתר תדמית ${swapWords[0]}.">נבנה לעסק שלך<br>אתר תדמית <span class="swap-group"><span class="swap" aria-hidden="true">${swapWords.map((w, i) => `<span class="swap-word${i === 0 ? ' is-active' : ''}">${w}</span>`).join('')}<i class="swap-line"></i></span><span class="period">.</span></span></h1>
       <p class="lede">אנחנו <bdi>LA webs</bdi>. כל אתר כאן נכתב מאפס סביב העסק שמאחוריו, וכולם חיים באוויר.</p>
       <div class="hero-actions"><a class="pill pill-cta" href="#work">לעבודות ${arrow}</a><a class="text-link" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer">נדבר בוואטסאפ ${arrowOut}</a></div>
-      <p class="hero-fact">אתרים באוויר, לא הדמיות. אפס תבניות.</p>
     </div>
     <a class="hero-shot work-link" href="/work/${flagship.slug}/" aria-label="לפרויקט ${escape(flagship.hebrew)}">
       ${frame(flagship, 'browser', { loading: 'eager', priority: true, className: 'hero-frame', mobileImage: true, mobileSrc: heroMobile })}
@@ -119,7 +118,6 @@ const stages = pinned.map((p, i) => `<article class="row work-card project-${p.s
     <div class="wrap stage-grid">
       <div class="row-copy">
         <p class="row-index"><span>${pad(i + 1)}</span></p>
-        <p class="kicker">${escape(p.categoryLabel)}</p>
         <h3 class="row-title display" style="view-transition-name:title-${p.slug}">${escape(p.hebrew)}</h3>
         <p class="row-desc">${escape(presentation[p.slug].summary)}</p>
         <ul class="tags" aria-label="תחומי הפרויקט">${p.scope.map(s => `<li>${escape(s)}</li>`).join('')}</ul>
@@ -137,7 +135,7 @@ const stages = pinned.map((p, i) => `<article class="row work-card project-${p.s
 const cardFor = (p, i) => `<article class="card work-card ${tone(p)}${p.mobileFirst ? ' mobile-first' : ''}" id="project-${p.slug}" style="${vars(p)}">
   <a class="card-link work-link" href="/work/${p.slug}/" aria-label="לפרויקט ${escape(p.hebrew)}">
     <div class="card-visual">${p.mobileFirst ? frame(p, 'phone', { vt: `cover-${p.slug}`, className: 'lead' }) : frame(p, 'browser', { vt: `cover-${p.slug}` })}</div>
-    <div class="card-copy"><p class="row-index"><span>${pad(i + 4)}</span></p><p class="kicker">${escape(p.categoryLabel)}</p><h3 class="card-title display" style="view-transition-name:title-${p.slug}">${escape(p.hebrew)}</h3><p class="card-desc">${escape(presentation[p.slug].summary)}</p><span class="card-cta">לפרויקט המלא ${arrow}</span></div>
+    <div class="card-copy"><p class="row-index"><span>${pad(i + 4)}</span></p><h3 class="card-title display" style="view-transition-name:title-${p.slug}">${escape(p.hebrew)}</h3><p class="card-desc">${escape(presentation[p.slug].summary)}</p><span class="card-cta">לפרויקט המלא ${arrow}</span></div>
   </a>
   <a class="text-link card-live" href="${p.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר החי של ${escape(p.hebrew)} — נפתח בחלון חדש"><bdi>${escape(p.domain)}</bdi> ${arrowOut}</a>
 </article>`;
@@ -182,7 +180,6 @@ function casePage(project, index) {
   const body = `
     <section class="case-hero wrap">
       <a class="back-link" href="/#project-${project.slug}">${arrow} כל העבודות</a>
-      <p class="kicker">${escape(project.categoryLabel)}</p>
       <h1 class="case-title display" style="view-transition-name:title-${project.slug}">${escape(project.hebrew)}</h1>
       <div class="case-hero-grid">
         <p class="lede">${escape(project.description)}</p>
@@ -211,7 +208,7 @@ function casePage(project, index) {
     ${beforeAfter}
     <section class="more-work" aria-labelledby="more-work-title">
       <div class="wrap more-work-head"><p class="kicker reveal">עוד עבודות</p><h2 id="more-work-title" class="display reveal">ממשיכים לדפדף.</h2><p class="strip-hint reveal">החליקו הצידה</p></div>
-      <ul class="strip" role="list">${others.map(p => `<li class="strip-item"><a href="/work/${p.slug}/" class="strip-link"><div class="strip-shot" style="${vars(p)}"><span class="strip-frame"><img src="/images/${p.slug}-desktop.webp" width="1440" height="1000" alt="" loading="lazy" decoding="async"></span></div><div class="strip-copy"><h3 class="display">${escape(p.hebrew)}</h3><p>${escape(p.categoryLabel)}</p></div></a></li>`).join('')}</ul>
+      <ul class="strip" role="list">${others.map(p => `<li class="strip-item"><a href="/work/${p.slug}/" class="strip-link"><div class="strip-shot" style="${vars(p)}"><span class="strip-frame"><img src="/images/${p.slug}-desktop.webp" width="1440" height="1000" alt="" loading="lazy" decoding="async"></span></div><div class="strip-copy"><h3 class="display">${escape(p.hebrew)}</h3></div></a></li>`).join('')}</ul>
     </section>
     ${contact}`;
   return page({ title: `${project.hebrew} — ${project.headline} | LA webs`, description: project.description, body, bodyClass: 'case', pathname: `/work/${project.slug}/`, image: `/images/${project.slug}-desktop.webp`, themeColor: project.colors.bg });
