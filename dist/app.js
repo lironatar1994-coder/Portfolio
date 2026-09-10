@@ -90,6 +90,14 @@ for (const catalog of $$('.catalog')) {
   const strip = $('.strip', catalog);
   if (!strip) continue;
   const step = () => { const item = $('.strip-item', strip); return item ? item.getBoundingClientRect().width + 20 : strip.clientWidth * 0.8; };
+  const dots = $$('.strip-dots i', catalog);
+  if (dots.length && 'IntersectionObserver' in window) {
+    const items = $$('.strip-item', strip);
+    const follow = new IntersectionObserver(entries => {
+      for (const entry of entries) if (entry.isIntersecting) dots.forEach((dot, i) => dot.classList.toggle('is-on', i === items.indexOf(entry.target)));
+    }, { root: strip, threshold: 0.6 });
+    items.forEach(item => follow.observe(item));
+  }
   for (const button of $$('.strip-btn', catalog)) button.addEventListener('click', () => strip.scrollBy({ left: -Number(button.dataset.dir) * step(), behavior: 'smooth' }));
   if (!finePointer.matches) continue;
   let startX = 0, startLeft = 0, dragging = false, moved = false;

@@ -119,10 +119,10 @@ const down = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M
 function stageScroll(project) {
   const capture = captures[project.slug].mobileCapture;
   const content = (capture.height / 1.5) * (300 / 390);
-  return Math.round(Math.max(600, content - 620) / 2.6);
+  return Math.round(Math.max(600, content - 620) / 4.5);
 }
 
-const stages = pinned.map((p, i) => `<article class="row work-card project-${p.slug} stage-track ${tone(p)}${i % 2 ? ' flip' : ''}" id="project-${p.slug}" style="${vars(p)};--scroll:clamp(80svh,${stageScroll(p)}px,100svh)">
+const stages = pinned.map((p, i) => `<article class="row work-card project-${p.slug} stage-track ${tone(p)}${i % 2 ? ' flip' : ''}" id="project-${p.slug}" style="${vars(p)};--scroll:clamp(38svh,${stageScroll(p)}px,52svh)">
   <div class="stage">
     <div class="wrap stage-grid">
       <div class="row-copy">
@@ -154,9 +154,10 @@ function catalogStrip(items, { id = 'catalog', withIds = false } = {}) {
   <ul class="strip" role="list">${items.map(p => `<li class="strip-item work-card ${tone(p)}"${withIds && !pinned.some(x => x.slug === p.slug) ? ` id="project-${p.slug}"` : ''} style="${vars(p)}">
     <a class="strip-link work-link" href="/work/${p.slug}/" aria-label="לפרויקט ${escape(p.hebrew)}" draggable="false">
       <div class="strip-shot">${frame(p, 'phone', { className: 'strip-phone' })}</div>
-      <div class="strip-copy"><h3 class="display">${escape(p.hebrew)}</h3><span class="strip-arrow">${arrow}</span></div>
+      <div class="strip-copy"><div><h3 class="display">${escape(p.hebrew)}</h3><p class="strip-domain"><bdi>${escape(p.domain)}</bdi></p></div><span class="strip-arrow">${arrow}</span></div>
     </a>
   </li>`).join('')}</ul>
+  <div class="strip-dots" aria-hidden="true">${items.map(() => '<i></i>').join('')}</div>
 </section>`;
 }
 
@@ -211,7 +212,7 @@ function casePage(project, index) {
         </div>
       </div>
     </section>
-    <section class="case-stage row stage-track ${tone(project)}" style="${vars(project)};--scroll:clamp(80svh,${stageScroll(project)}px,100svh)" aria-label="האתר בתצוגת טלפון">
+    <section class="case-stage row stage-track ${tone(project)}" style="${vars(project)};--scroll:clamp(38svh,${stageScroll(project)}px,52svh)" aria-label="האתר בתצוגת טלפון">
       <div class="stage">
         <div class="wrap stage-grid">
           <div class="row-copy"><p class="kicker">האתר בטלפון</p><p class="row-desc">גללו, והאתר מדפדף איתכם מלמעלה למטה.</p></div>
