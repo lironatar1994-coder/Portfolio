@@ -147,7 +147,8 @@ bdi{unicode-bidi:isolate}
   .hand-cards{position:absolute;inset:0}
   .hand-card{position:absolute;top:0;left:50%;width:var(--card);margin-left:calc(var(--card) / -2);transform-origin:50% 140%;transform:rotate(calc(var(--pos,0) * 12deg)) translateY(calc(var(--abs,0) * 6px));z-index:calc(10 - var(--abs,0));transition:transform .7s var(--ease),translate .45s var(--ease),rotate .45s var(--ease);animation:deal .9s var(--ease) both;animation-delay:calc(.15s + var(--i) * .07s)}
   .hand-card.is-dragging{transition:transform .7s var(--ease);z-index:20}
-  .hand-card.is-flying{transition:transform .45s cubic-bezier(.4,0,.6,1);transform:rotate(calc(var(--dir,1) * 28deg)) translate(calc(var(--dir,1) * 40vw),-14vh)}
+  .hand-card.is-flying{transition:transform .42s cubic-bezier(.4,0,.6,1);transform:rotate(calc(var(--fly,-1) * 24deg)) translate(calc(var(--fly,-1) * 48vw),-12vh);z-index:20}
+  .hand-card.no-transition{transition:none}
   @keyframes deal{from{translate:0 60vh;opacity:0}}
   .hand-link{display:block;-webkit-touch-callout:none;background:#fff;border-radius:18px;padding:8px 8px 6px;box-shadow:0 22px 44px -20px rgb(0 0 0/.55),0 0 0 1px rgb(0 0 0/.06);color:var(--ink)}
   .hand-face{display:block;position:relative;aspect-ratio:3/3.7;border-radius:12px;overflow:hidden;background:var(--bg,#111)}

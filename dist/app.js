@@ -122,13 +122,21 @@ if (hand) {
     card.style.setProperty('--pos', pos);
     card.style.setProperty('--abs', Math.abs(pos));
   });
+  // dir = +1 brings the next card forward (swipe toward the start side in RTL), the leaving card flies the way the finger went
   const shuffle = dir => {
     const leaving = cardEls[active];
-    leaving.style.translate = ''; leaving.style.rotate = '';
-    leaving.style.setProperty('--dir', dir);
+    leaving.style.setProperty('--fly', -dir);
+    leaving.classList.remove('is-dragging');
     leaving.classList.add('is-flying');
     active = ((active + dir) % count + count) % count;
-    setTimeout(() => { leaving.classList.remove('is-flying'); layout(); }, 360);
+    setTimeout(() => {
+      leaving.classList.add('no-transition');
+      leaving.classList.remove('is-flying');
+      leaving.style.translate = ''; leaving.style.rotate = '';
+      layout();
+      void leaving.offsetWidth;
+      leaving.classList.remove('no-transition');
+    }, 400);
   };
   layout();
   if (!reduceMotion.matches) {
