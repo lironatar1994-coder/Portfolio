@@ -129,14 +129,14 @@ if (hand) {
     leaving.classList.remove('is-dragging');
     leaving.classList.add('is-flying');
     active = ((active + dir) % count + count) % count;
+    layout(); // the others start sliding forward while the leaving card is still on top
     setTimeout(() => {
       leaving.classList.add('no-transition');
       leaving.classList.remove('is-flying');
       leaving.style.translate = ''; leaving.style.rotate = '';
-      layout();
       void leaving.offsetWidth;
       leaving.classList.remove('no-transition');
-    }, 400);
+    }, 440);
   };
   layout();
   if (!reduceMotion.matches) {
