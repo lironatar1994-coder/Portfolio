@@ -132,19 +132,26 @@ const stages = pinned.map((p, i) => `<article class="row work-card project-${p.s
   </div>
 </article>`).join('\n');
 
-const cardFor = (p, i) => `<article class="card work-card ${tone(p)}${p.mobileFirst ? ' mobile-first' : ''}" id="project-${p.slug}" style="${vars(p)}">
-  <a class="card-link work-link" href="/work/${p.slug}/" aria-label="לפרויקט ${escape(p.hebrew)}">
-    <div class="card-visual">${p.mobileFirst ? frame(p, 'phone', { vt: `cover-${p.slug}`, className: 'lead' }) : frame(p, 'browser', { vt: `cover-${p.slug}` })}</div>
-    <div class="card-copy"><p class="row-index"><span>${pad(i + 4)}</span></p><h3 class="card-title display" style="view-transition-name:title-${p.slug}">${escape(p.hebrew)}</h3><p class="card-desc">${escape(presentation[p.slug].summary)}</p><span class="card-cta">לפרויקט המלא ${arrow}</span></div>
-  </a>
-  <a class="text-link card-live" href="${p.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר החי של ${escape(p.hebrew)} — נפתח בחלון חדש"><bdi>${escape(p.domain)}</bdi> ${arrowOut}</a>
-</article>`;
-const more = `<section class="more wrap" aria-labelledby="more-title">
-  <div class="more-head"><p class="kicker reveal">ועוד מהסטודיו</p><h3 id="more-title" class="display reveal">וגם קטלוגים.<br>אותה תשומת לב לפרטים.</h3><p class="more-note reveal">עברו עם העכבר על כרטיס כדי לדפדף באתר.</p></div>
-  <div class="cards">${cards.map(cardFor).join('')}</div>
-</section>`;
+const arrowLeft = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+const arrowRight = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
 
-const rows = stages + more;
+/** One-line carousel of projects: native scroll-snap, swipe on touch, drag + arrows on desktop. */
+function catalogStrip(items, { id = 'catalog', withIds = false } = {}) {
+  return `<section class="catalog" id="${id}" aria-labelledby="${id}-title">
+  <div class="wrap catalog-head">
+    <h2 id="${id}-title" class="display reveal">הקטלוג שלנו<span class="period">.</span></h2>
+    <div class="catalog-nav"><button type="button" class="strip-btn" data-dir="-1" aria-label="הקודם">${arrowRight}</button><button type="button" class="strip-btn" data-dir="1" aria-label="הבא">${arrowLeft}</button></div>
+  </div>
+  <ul class="strip" role="list">${items.map(p => `<li class="strip-item work-card ${tone(p)}"${withIds && !pinned.some(x => x.slug === p.slug) ? ` id="project-${p.slug}"` : ''} style="${vars(p)}">
+    <a class="strip-link work-link" href="/work/${p.slug}/" aria-label="לפרויקט ${escape(p.hebrew)}" draggable="false">
+      <div class="strip-shot">${frame(p, 'phone', { className: 'strip-phone' })}</div>
+      <div class="strip-copy"><h3 class="display">${escape(p.hebrew)}</h3><span class="strip-arrow">${arrow}</span></div>
+    </a>
+  </li>`).join('')}</ul>
+</section>`;
+}
+
+const rows = stages + catalogStrip([...cards, ...pinned], { withIds: true });
 
 const contact = `<section class="contact" id="contact" aria-labelledby="contact-title"><div class="wrap">
   <p class="kicker reveal">בואו נדבר</p>
@@ -206,10 +213,7 @@ function casePage(project, index) {
       </div>
     </section>
     ${beforeAfter}
-    <section class="more-work" aria-labelledby="more-work-title">
-      <div class="wrap more-work-head"><p class="kicker reveal">עוד עבודות</p><h2 id="more-work-title" class="display reveal">ממשיכים לדפדף.</h2><p class="strip-hint reveal">החליקו הצידה</p></div>
-      <ul class="strip" role="list">${others.map(p => `<li class="strip-item"><a href="/work/${p.slug}/" class="strip-link"><div class="strip-shot" style="${vars(p)}"><span class="strip-frame"><img src="/images/${p.slug}-desktop.webp" width="1440" height="1000" alt="" loading="lazy" decoding="async"></span></div><div class="strip-copy"><h3 class="display">${escape(p.hebrew)}</h3></div></a></li>`).join('')}</ul>
-    </section>
+    ${catalogStrip(others, { id: 'more' })}
     ${contact}`;
   return page({ title: `${project.hebrew} — ${project.headline} | LA webs`, description: project.description, body, bodyClass: 'case', pathname: `/work/${project.slug}/`, image: `/images/${project.slug}-desktop.webp`, themeColor: project.colors.bg });
 }

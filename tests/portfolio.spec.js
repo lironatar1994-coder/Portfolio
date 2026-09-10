@@ -75,9 +75,9 @@ test('homepage presents Hebrew RTL content, the hero and five project rows witho
   await expect(page.getByRole('heading', { level: 1 })).toContainText('נבנה לעסק שלך');
   await expect(page.locator('.hero .hero-shot')).toHaveCount(1);
   await expect(page.locator('.hero-index a')).toHaveCount(5);
-  await expect(page.locator('.work-card')).toHaveCount(5);
+  await expect(page.locator('.work-card')).toHaveCount(8);
   await expect(page.locator('.stage-track')).toHaveCount(3);
-  await expect(page.locator('.card')).toHaveCount(2);
+  await expect(page.locator('#catalog .strip-item')).toHaveCount(5);
   for (const [slug] of liveSites) await expect(page.locator(`.work-card a.work-link[href="/work/${slug}/"]`).first()).toBeVisible();
   await expectImages(page);
   await expectNoOverflow(page);
@@ -144,7 +144,7 @@ test('on phones the pinned stage window fills the screen below the copy', async 
   await ready(page);
   await expect(page.locator('.case-views')).toBeHidden();
   await expect(page.locator('.case-stage')).toBeVisible();
-  await expect(page.locator('.strip-item')).toHaveCount(4);
+  await expect(page.locator('#more .strip-item')).toHaveCount(4);
 });
 
 test('studio section lists three steps and deliverables', async ({ page }) => {
@@ -189,7 +189,7 @@ for (const [slug, name, url] of liveSites) {
     await expect(liveLink).toBeVisible();
     if (await liveLink.getAttribute('target') === '_blank') await expect(liveLink).toHaveAttribute('rel', /noopener/);
     await expect(page.locator('.case-views .frame.window')).toHaveCount(2);
-    await expect(page.locator('.strip-item')).toHaveCount(4);
+    await expect(page.locator('#more .strip-item')).toHaveCount(4);
     await expectImages(page);
     await expectNoOverflow(page);
     expect(errors).toEqual([]);
@@ -246,7 +246,7 @@ test('without JavaScript the work, navigation and studio content remain usable',
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.locator('.hero .hero-shot')).toBeVisible();
-    await expect(page.locator('.work-card')).toHaveCount(5);
+    await expect(page.locator('.work-card')).toHaveCount(8);
     await expect(page.locator('.steps li')).toHaveCount(3);
     await expectNoOverflow(page);
     await page.locator('.work-card a[href="/work/koral/"]').first().click();

@@ -54,18 +54,30 @@ if (swap && !reduceMotion.matches) {
   }, 2600);
 }
 
-/* ---------- Pinned stages: progress fallback where CSS scroll timelines are missing ---------- */
+/* ---------- Scroll-progress fallback where CSS scroll timelines are missing (older Safari, Firefox) ---------- */
+const timelines = window.CSS && CSS.supports('animation-timeline: view()');
 const tracks = $$('.stage-track');
-if (tracks.length && !reduceMotion.matches && !(window.CSS && CSS.supports('animation-timeline: view()'))) {
+const hero = $('.hero');
+const stripCards = matchMedia('(hover: none)').matches ? $$('.strip-item') : [];
+if (!timelines && !reduceMotion.matches && (tracks.length || hero || stripCards.length)) {
   let queued = false;
+  const clamp = value => Math.min(1, Math.max(0, value));
   const update = () => {
     queued = false;
     const viewport = innerHeight;
+    if (hero) hero.style.setProperty('--p', clamp(scrollY / (viewport * 1.1)).toFixed(4));
     for (const track of tracks) {
       const rect = track.getBoundingClientRect();
       const total = rect.height - viewport;
       if (total <= 0 || rect.bottom < 0 || rect.top > viewport) continue;
-      track.style.setProperty('--p', Math.min(1, Math.max(0, -rect.top / total)).toFixed(4));
+      track.style.setProperty('--p', clamp(-rect.top / total).toFixed(4));
+    }
+    for (const card of stripCards) {
+      const rect = card.getBoundingClientRect();
+      if (rect.bottom < 0 || rect.top > viewport) continue;
+      // mirrors animation-range "entry 30% exit 70%"
+      const start = viewport - rect.height * 0.3, end = -rect.height * 0.7;
+      card.style.setProperty('--p', clamp((start - rect.top) / (start - end)).toFixed(4));
     }
   };
   addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
@@ -73,8 +85,33 @@ if (tracks.length && !reduceMotion.matches && !(window.CSS && CSS.supports('anim
   update();
 }
 
+/* ---------- Catalog strip: arrows and drag-to-scroll on desktop ---------- */
+for (const catalog of $$('.catalog')) {
+  const strip = $('.strip', catalog);
+  if (!strip) continue;
+  const step = () => { const item = $('.strip-item', strip); return item ? item.getBoundingClientRect().width + 20 : strip.clientWidth * 0.8; };
+  for (const button of $$('.strip-btn', catalog)) button.addEventListener('click', () => strip.scrollBy({ left: -Number(button.dataset.dir) * step(), behavior: 'smooth' }));
+  if (!finePointer.matches) continue;
+  let startX = 0, startLeft = 0, dragging = false, moved = false;
+  strip.addEventListener('pointerdown', event => {
+    if (event.pointerType !== 'mouse' || event.button !== 0) return;
+    dragging = true; moved = false; startX = event.clientX; startLeft = strip.scrollLeft;
+    strip.setPointerCapture(event.pointerId);
+  });
+  strip.addEventListener('pointermove', event => {
+    if (!dragging) return;
+    const dx = event.clientX - startX;
+    if (Math.abs(dx) > 5 && !moved) { moved = true; strip.classList.add('is-dragging'); }
+    if (moved) strip.scrollLeft = startLeft - dx;
+  });
+  const release = () => { if (!dragging) return; dragging = false; strip.classList.remove('is-dragging'); };
+  strip.addEventListener('pointerup', release);
+  strip.addEventListener('pointercancel', release);
+  strip.addEventListener('click', event => { if (moved) { event.preventDefault(); moved = false; } }, true);
+}
+
 /* ---------- Pre-decode heavy captures just before they enter the viewport ---------- */
-const heavy = $$('.stage-track, .card, .case .row, .case-full, .hero-float');
+const heavy = $$('.stage-track, .strip-item, .case .row, .case-full, .hero-float');
 if (heavy.length && 'IntersectionObserver' in window) {
   const warm = new IntersectionObserver(entries => {
     for (const entry of entries) {
