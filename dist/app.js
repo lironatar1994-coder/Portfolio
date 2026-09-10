@@ -58,7 +58,7 @@ if (swap && !reduceMotion.matches) {
 const timelines = window.CSS && CSS.supports('animation-timeline: view()');
 const tracks = $$('.stage-track');
 const hero = $('.hero');
-const stripCards = matchMedia('(hover: none)').matches ? $$('.strip-item') : [];
+const stripCards = []; // catalog cards show the top of each site; no scroll-linked motion
 if (!timelines && !reduceMotion.matches && (tracks.length || hero || stripCards.length)) {
   let queued = false;
   const clamp = value => Math.min(1, Math.max(0, value));

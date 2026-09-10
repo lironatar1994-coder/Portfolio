@@ -153,7 +153,7 @@ function catalogStrip(items, { id = 'catalog', withIds = false } = {}) {
   </div>
   <ul class="strip" role="list">${items.map(p => `<li class="strip-item work-card ${tone(p)}"${withIds && !pinned.some(x => x.slug === p.slug) ? ` id="project-${p.slug}"` : ''} style="${vars(p)}">
     <a class="strip-link work-link" href="/work/${p.slug}/" aria-label="לפרויקט ${escape(p.hebrew)}" draggable="false">
-      <div class="strip-shot">${frame(p, 'phone', { className: 'strip-phone' })}</div>
+      <div class="strip-shot"><span class="frame phone strip-phone"><span class="shot"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="lazy" decoding="async"></span></span></div>
       <div class="strip-copy"><div><h3 class="display">${escape(p.hebrew)}</h3><p class="strip-domain"><bdi>${escape(p.domain)}</bdi></p></div><span class="strip-arrow">${arrow}</span></div>
     </a>
   </li>`).join('')}</ul>
