@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir, cp } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, cp, rm } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { projects, studio } from '../src/projects.mjs';
@@ -12,6 +12,7 @@ const captures = JSON.parse(await readFile(resolve(root, 'docs/project-longcaptu
 const escape = value => String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 const pad = n => String(n).padStart(2, '0');
 const arrow = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 18 6 6M6 17V6h11"/></svg>';
+const down = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>';
 const arrowOut = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 7 7 17M7 7h10v10"/></svg>';
 const chat = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v9a1.5 1.5 0 0 1-1.5 1.5H10l-4.6 3.6c-.6.5-1.4 0-1.4-.7z"/></svg>';
 const brand = '<a class="brand" href="/" aria-label="LA webs — לעמוד הבית">LA<span>webs</span><i class="dot" aria-hidden="true"></i></a>';
@@ -27,13 +28,6 @@ function comparison({ scrollDriven = false } = {}) {
     <span class="ba-tag ba-tag-before" aria-hidden="true">לפני</span><span class="ba-tag ba-tag-after" aria-hidden="true">אחרי</span>
     <label class="ba-control"><span class="sr-only">מיקום קו ההשוואה בין לפני לאחרי</span><input type="range" min="0" max="100" value="50"></label>
   </div>`;
-}
-
-function showcase(project) {
-  const link = content => `<a class="row-shot-link work-link" href="/work/${project.slug}/" aria-label="לפרויקט ${escape(project.hebrew)}">${content}</a>`;
-  if (project.slug === 'koral') return link(frame(project, 'browser', { vt: 'cover-koral' }) + frame(project, 'phone', { className: 'float' }));
-  if (project.beforeAfter) return `<div class="stage-duo">${link(frame(project, 'phone', { vt: 'cover-miryam', className: 'lead' }))}<div class="showcase-comparison">${comparison({ scrollDriven: true })}<p class="visual-caption">גללו או גררו כדי לראות את השינוי</p></div></div>`;
-  return link(frame(project, 'browser', { vt: `cover-${project.slug}`, className: 'wide' }) + frame(project, 'phone', { className: 'float only-mobile' }));
 }
 
 /** A framed full-page capture of a live site. kind: browser | phone. */
@@ -76,16 +70,15 @@ const header = `<header class="site-header" id="top">
 </header>`;
 
 const flagship = projects[0];
-const order = ['koral', 'miryam', 'pinhas', 'libi', 'reuven', 'sos', 'vee', 'seder', 'pdf'];
+const order = ['koral', 'miryam', 'pinhas', 'libi', 'reuven', 'sos', 'seder', 'pdf'];
 const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
-const pinned = order.slice(0, 3).map(slug => bySlug[slug]);
-const cards = order.slice(3).map(slug => bySlug[slug]);
+const work = order.map(slug => bySlug[slug]);
 const swapWords = ['מושקע', 'מעוצב', 'מדויק', 'מהיר', 'מצליח'];
 const heroMobile = { src: '/images/blank.webp', width: 2, height: 2 }; // phones show the hand of cards instead of the frame
 
 // Phone hero: the work as a hand of cards. Front card upright, the rest fanned behind; swipe to shuffle, tap to open.
-const catalogOnly = ['sos', 'vee', 'seder']; // in the catalog, not in the hero hand
-const handOrder = [...pinned, ...cards].filter(p => !catalogOnly.includes(p.slug));
+const catalogOnly = ['sos', 'seder']; // in the work grid, not in the hero hand
+const handOrder = work.filter(p => !catalogOnly.includes(p.slug));
 const hand = `<div class="hand" aria-label="העבודות שלנו, כמו יד של קלפים">
   <ul class="hand-cards" role="list">${handOrder.map((p, i) => `<li class="hand-card ${tone(p)}" style="${vars(p)};--i:${i}"><a class="hand-link" href="/work/${p.slug}/" draggable="false" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="hand-face"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async"></span><span class="hand-name"><span>${escape(p.hebrew)}</span><i aria-hidden="true"></i></span></a></li>`).join('')}<li class="hand-card hand-back" style="--i:${handOrder.length}"><a class="hand-link" href="#work" draggable="false" aria-label="לכל העבודות"><span class="hand-face"><span class="hand-mark">LA webs<i class="dot"></i></span></span><span class="hand-name"><span>כל העבודות</span><i aria-hidden="true"></i></span></a></li>
   </ul>
@@ -98,7 +91,7 @@ const hero = `<section class="hero" aria-labelledby="hero-title">
       <p class="kicker">סטודיו לעיצוב ופיתוח אתרים</p>
       <h1 id="hero-title" class="display" aria-label="נבנה לעסק שלך אתר תדמית ${swapWords[0]}.">נבנה לעסק שלך<br>אתר תדמית <span class="swap-group"><span class="swap" aria-hidden="true">${swapWords.map((w, i) => `<span class="swap-word${i === 0 ? ' is-active' : ''}">${w}</span>`).join('')}<i class="swap-line"></i></span><span class="period">.</span></span></h1>
       <p class="lede">אנחנו <bdi>LA webs</bdi>. כל אתר כאן נכתב מאפס סביב העסק שמאחוריו, וכולם חיים באוויר.</p>
-      <div class="hero-actions"><a class="pill pill-cta" href="#work">לעבודות ${arrow}</a><a class="text-link" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer">נדבר בוואטסאפ ${arrowOut}</a></div>
+      <div class="hero-actions"><a class="pill pill-cta" href="#work">לעבודות ${down}</a><a class="text-link" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer">נדבר בוואטסאפ ${arrowOut}</a></div>
     </div>
     <a class="hero-shot work-link" href="/work/${flagship.slug}/" aria-label="לפרויקט ${escape(flagship.hebrew)}">
       ${frame(flagship, 'browser', { loading: 'eager', priority: true, className: 'hero-frame', mobileImage: true, mobileSrc: heroMobile })}
@@ -107,71 +100,47 @@ const hero = `<section class="hero" aria-labelledby="hero-title">
     </a>
     ${hand}
   </div>
-  <nav class="hero-index wrap" aria-label="הפרויקטים בעמוד">
-    <ol>${pinned.map((p, i) => `<li><a href="#project-${p.slug}"><span class="idx-num">${pad(i + 1)}</span><span class="idx-label">${escape(p.short)}</span></a></li>`).join('')}<li><a href="#catalog"><span class="idx-num">${pad(pinned.length + 1)}</span><span class="idx-label">הקטלוג</span></a></li></ol>
-    <p class="hero-index-note">מבחר מהעבודות. גללו למטה.</p>
-  </nav>
 </section>`;
-
-const down = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>';
-
-// Pinned stage: page scroll while a project stays pinned, derived from the phone capture (shown ~300px wide)
-// so the phone moves about 2.6x the page, clamped to roughly one screen.
-function stageScroll(project) {
-  const capture = captures[project.slug].mobileCapture;
-  const content = (capture.height / 1.5) * (300 / 390);
-  return Math.round(Math.max(600, content - 620) / 4.5);
-}
-
-const stages = pinned.map((p, i) => `<article class="row work-card project-${p.slug} stage-track ${tone(p)}${i % 2 ? ' flip' : ''}" id="project-${p.slug}" style="${vars(p)};--scroll:clamp(38svh,${stageScroll(p)}px,52svh)">
-  <div class="stage">
-    <div class="wrap stage-grid">
-      <div class="row-copy">
-        <p class="row-index"><span>${pad(i + 1)}</span></p>
-        <h3 class="row-title display" style="view-transition-name:title-${p.slug}">${escape(p.hebrew)}</h3>
-        <p class="row-desc">${escape(presentation[p.slug].summary)}</p>
-        <ul class="tags" aria-label="תחומי הפרויקט">${p.scope.map(s => `<li>${escape(s)}</li>`).join('')}</ul>
-        <div class="row-links"><a class="pill work-link" href="/work/${p.slug}/">לפרויקט המלא ${arrow}</a><a class="text-link" href="${p.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר החי של ${escape(p.hebrew)} — נפתח בחלון חדש"><bdi>${escape(p.domain)}</bdi> ${arrowOut}</a></div>
-      </div>
-      <div class="row-visual">
-        ${showcase(p)}
-      </div>
-    </div>
-    <span class="stage-bar" aria-hidden="true"><i></i></span>
-    <p class="stage-cue" aria-hidden="true">גללו כדי לדפדף באתר ${down}</p>
-  </div>
-</article>`).join('\n');
 
 const arrowLeft = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
 const arrowRight = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
 
-/** One-line carousel of projects: native scroll-snap, swipe on touch, drag + arrows on desktop. */
-function catalogStrip(items, { id = 'catalog', withIds = false } = {}) {
+/** A project card in the project's own color: the phone capture rising from the bottom, name, domain and an arrow. */
+function card(p, { className = '', withId = false, summary = false } = {}) {
+  return `<li class="work-card card ${tone(p)}${className ? ' ' + className : ''}"${withId ? ` id="project-${p.slug}"` : ''} style="${vars(p)}">
+    <a class="card-link work-link" href="/work/${p.slug}/" aria-label="לפרויקט ${escape(p.hebrew)}" draggable="false">
+      <div class="card-shot"><span class="frame phone card-phone"><span class="shot"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="lazy" decoding="async"></span></span></div>
+      <div class="card-copy"><div><h3 class="display" style="view-transition-name:title-${p.slug}">${escape(p.hebrew)}</h3>${summary ? `<p class="card-desc">${escape(presentation[p.slug].summary)}</p>` : ''}<p class="card-domain"><bdi>${escape(p.domain)}</bdi></p></div><span class="card-arrow">${arrow}</span></div>
+    </a>
+  </li>`;
+}
+
+/** Home: every project in one grid (three columns on desktop, two on phones). Nothing hidden behind a swipe. */
+const rows = `<ul class="work-grid wrap" role="list">${work.map(p => card(p, { withId: true, summary: true })).join('')}</ul>`;
+
+/** Case pages: one-line carousel of the other projects. Native scroll-snap, swipe on touch, drag + arrows on desktop. */
+function catalogStrip(items, { id = 'more' } = {}) {
   return `<section class="catalog" id="${id}" aria-labelledby="${id}-title">
   <div class="wrap catalog-head">
-    <h2 id="${id}-title" class="display reveal">הקטלוג שלנו<span class="period">.</span></h2>
+    <h2 id="${id}-title" class="display reveal">עוד עבודות<span class="period">.</span></h2>
     <div class="catalog-nav"><button type="button" class="strip-btn" data-dir="-1" aria-label="הקודם">${arrowRight}</button><button type="button" class="strip-btn" data-dir="1" aria-label="הבא">${arrowLeft}</button></div>
   </div>
-  <ul class="strip" role="list">${items.map(p => `<li class="strip-item work-card ${tone(p)}"${withIds && !pinned.some(x => x.slug === p.slug) ? ` id="project-${p.slug}"` : ''} style="${vars(p)}">
-    <a class="strip-link work-link" href="/work/${p.slug}/" aria-label="לפרויקט ${escape(p.hebrew)}" draggable="false">
-      <div class="strip-shot"><span class="frame phone strip-phone"><span class="shot"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="lazy" decoding="async"></span></span></div>
-      <div class="strip-copy"><div><h3 class="display">${escape(p.hebrew)}</h3><p class="strip-domain"><bdi>${escape(p.domain)}</bdi></p></div><span class="strip-arrow">${arrow}</span></div>
-    </a>
-  </li>`).join('')}</ul>
+  <ul class="strip" role="list">${items.map(p => card(p, { className: 'strip-item' })).join('')}</ul>
   <div class="strip-dots" aria-hidden="true">${items.map(() => '<i></i>').join('')}</div>
 </section>`;
 }
 
-const rows = stages + catalogStrip([...cards, ...pinned], { withIds: true });
-
 const contact = `<section class="contact" id="contact" aria-labelledby="contact-title"><div class="wrap">
+  <div class="contact-copy">
   <p class="kicker reveal">בואו נדבר</p>
   <h2 id="contact-title" class="display reveal">יש לכם עסק?<br>מגיע לו אתר<br><span class="keep-together">עם אופי.</span></h2>
   <div class="contact-actions reveal">
     <a class="pill pill-light" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a>
-    <a class="phone-link" href="tel:${studio.tel}"><span>או בטלפון</span><bdi>${studio.phone}</bdi></a>
+    <a class="phone-link" href="tel:${studio.tel}"><span>או בטלפון</span><bdi class="display">${studio.phone}</bdi></a>
   </div>
   <p class="contact-note reveal">מענה אישי, בלי טפסים ארוכים. מספרים לנו על העסק, ואנחנו חוזרים עם כיוון.</p>
+  </div>
+  <figure class="contact-visual reveal"><img src="/images/contact.webp" width="1000" height="1200" alt="" loading="lazy" decoding="async"></figure>
 </div></section>`;
 
 const footer = `<footer class="site-footer"><div class="wrap">
@@ -213,24 +182,22 @@ function casePage(project, index) {
         </div>
       </div>
     </section>
-    <section class="case-stage row stage-track ${tone(project)}" style="${vars(project)};--scroll:clamp(38svh,${stageScroll(project)}px,52svh)" aria-label="האתר בתצוגת טלפון">
-      <div class="stage">
-        <div class="wrap stage-grid">
-          <div class="row-copy"><p class="kicker">האתר בטלפון</p><p class="row-desc">גללו, והאתר מדפדף איתכם מלמעלה למטה.</p></div>
-          <div class="row-visual"><a class="row-shot-link" href="${project.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר הפעיל של ${escape(project.hebrew)} — נפתח בחלון חדש">${frame(project, 'phone', { className: 'float' })}</a></div>
-        </div>
-        <span class="stage-bar" aria-hidden="true"><i></i></span>
-        <p class="stage-cue" aria-hidden="true">גללו כדי לדפדף באתר ${down}</p>
+    <section class="case-stage row ${tone(project)}" style="${vars(project)}" aria-label="האתר בתצוגת טלפון">
+      <div class="wrap stage-grid">
+        <div class="row-copy"><p class="kicker">האתר בטלפון</p><p class="row-desc">כך נראה העמוד הראשי, מלמעלה למטה.</p></div>
+        <div class="row-visual"><a class="row-shot-link" href="${project.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר הפעיל של ${escape(project.hebrew)} — נפתח בחלון חדש">${frame(project, 'phone', { className: 'float' })}</a></div>
       </div>
     </section>
     ${beforeAfter}
-    ${catalogStrip(others, { id: 'more' })}
+    ${catalogStrip(others)}
     ${contact}`;
   return page({ title: `${project.hebrew} — ${project.headline} | LA webs`, description: project.description, body, bodyClass: 'case', pathname: `/work/${project.slug}/`, image: `/images/${project.slug}-desktop.webp`, themeColor: project.colors.bg });
 }
 
 export async function build() {
   await mkdir(destination, { recursive: true });
+  // Retire the removed Vee case page even when building over an older output.
+  await rm(resolve(destination, 'work/vee'), { recursive: true, force: true });
   await cp(resolve(root, 'public'), destination, { recursive: true });
   for (const file of ['styles.css', 'app.js']) await cp(resolve(root, 'src', file), resolve(destination, file));
   let home = await readFile(resolve(root, 'src/index.html'), 'utf8');

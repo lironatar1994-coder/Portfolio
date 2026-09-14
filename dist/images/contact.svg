@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1200" width="1000" height="1200">
+<defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e6e2d9" stroke-width="1"/></pattern></defs>
+<rect width="1000" height="1200" fill="#f3f1ec"/><rect width="1000" height="1200" fill="url(#g)"/>
+<rect x="80" y="96" width="840" height="1008" fill="none" stroke="#c9c4b8" stroke-width="2" stroke-dasharray="10 10"/>
+<rect x="478" y="530" width="44" height="44" rx="8" fill="#d1341c"/>
+<text x="500" y="624" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#14130f" text-anchor="middle" direction="rtl">תמונה ליצירת קשר</text>
+<text x="500" y="680" font-family="Arial, sans-serif" font-size="25" fill="#66635a" text-anchor="middle" direction="rtl">למשל: פורטרט, או ידיים על מקלדת. 5:6</text>
+</svg>

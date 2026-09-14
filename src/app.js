@@ -54,35 +54,19 @@ if (swap && !reduceMotion.matches) {
   }, 2600);
 }
 
-/* ---------- Scroll-progress fallback where CSS scroll timelines are missing (older Safari, Firefox) ---------- */
-const timelines = window.CSS && CSS.supports('animation-timeline: view()');
-const tracks = mobile.matches ? [] : $$('.stage-track'); // phones are unpinned and still
-const hero = mobile.matches ? null : $('.hero');
-const stripCards = []; // catalog cards show the top of each site; no scroll-linked motion
-if (!timelines && !reduceMotion.matches && (tracks.length || hero || stripCards.length)) {
-  let queued = false;
-  const clamp = value => Math.min(1, Math.max(0, value));
+/* ---------- Header: slides away while scrolling down, returns on the first scroll up ---------- */
+const header = $('.site-header');
+if (header) {
+  let lastY = scrollY, queued = false;
   const update = () => {
     queued = false;
-    const viewport = innerHeight;
-    if (hero) hero.style.setProperty('--p', clamp(scrollY / (viewport * 1.1)).toFixed(4));
-    for (const track of tracks) {
-      const rect = track.getBoundingClientRect();
-      const total = rect.height - viewport;
-      if (total <= 0 || rect.bottom < 0 || rect.top > viewport) continue;
-      track.style.setProperty('--p', clamp(-rect.top / total).toFixed(4));
-    }
-    for (const card of stripCards) {
-      const rect = card.getBoundingClientRect();
-      if (rect.bottom < 0 || rect.top > viewport) continue;
-      // mirrors animation-range "entry 30% exit 70%"
-      const start = viewport - rect.height * 0.3, end = -rect.height * 0.7;
-      card.style.setProperty('--p', clamp((start - rect.top) / (start - end)).toFixed(4));
-    }
+    const y = scrollY;
+    const menuOpen = menuButton?.getAttribute('aria-expanded') === 'true';
+    if (!menuOpen) header.classList.toggle('is-hidden', y > lastY + 4 && y > 160);
+    lastY = y;
   };
   addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
-  addEventListener('resize', update);
-  update();
+  document.addEventListener('focusin', event => { if (event.target.closest('.site-header')) header.classList.remove('is-hidden'); });
 }
 
 /* ---------- Catalog strip: arrows and drag-to-scroll on desktop ---------- */
@@ -189,7 +173,7 @@ if (hand) {
 }
 
 /* ---------- Pre-decode heavy captures just before they enter the viewport ---------- */
-const heavy = $$('.hand, .stage-track, .strip-item, .case .row, .case-full, .hero-float');
+const heavy = $$('.hand, .card, .case .row, .hero-float');
 if (heavy.length && 'IntersectionObserver' in window) {
   const warm = new IntersectionObserver(entries => {
     for (const entry of entries) {
@@ -210,16 +194,21 @@ if (revealTargets.length && 'IntersectionObserver' in window && !reduceMotion.ma
   revealTargets.forEach(target => observer.observe(target));
 } else revealTargets.forEach(target => target.classList.add('in'));
 
-/* ---------- Floating WhatsApp: visible after the hero, hidden over the contact block ---------- */
+/* ---------- Floating WhatsApp: appears once the visitor is into the work, hidden over the contact block ---------- */
 const floating = $('.wa-float');
 const contact = $('#contact');
-if (floating && 'IntersectionObserver' in window) {
-  const covering = new Set();
-  const watcher = new IntersectionObserver(entries => {
-    for (const entry of entries) entry.isIntersecting ? covering.add(entry.target) : covering.delete(entry.target);
-    floating.classList.toggle('is-hidden', covering.size > 0);
-  }, { threshold: 0.15 });
-  for (const section of [contact, $('.hero')]) if (section) watcher.observe(section);
+if (floating) {
+  const start = $('#work') || $('main');
+  let overContact = false, queued = false;
+  const update = () => {
+    queued = false;
+    const past = start.getBoundingClientRect().top < innerHeight * 0.5;
+    floating.classList.toggle('is-hidden', !past || overContact);
+  };
+  if (contact && 'IntersectionObserver' in window) new IntersectionObserver(([entry]) => { overContact = entry.isIntersecting; update(); }, { threshold: 0.1 }).observe(contact);
+  addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
+  addEventListener('resize', update);
+  update();
 }
 
 /* ---------- Cursor dot (fine pointers only) ---------- */

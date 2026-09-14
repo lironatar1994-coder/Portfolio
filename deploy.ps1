@@ -41,7 +41,7 @@ try {
     $prepare = @'
 set -eu
 repo=/opt/lawebs-portfolio/source.git
-test "$(git --git-dir="$repo" remote get-url origin)" = '__ORIGIN__'
+test "$(git --git-dir="$repo" remote get-url origin | tr '[:upper:]' '[:lower:]')" = '__ORIGIN__'
 git --git-dir="$repo" fetch origin main
 test "$(git --git-dir="$repo" rev-parse FETCH_HEAD)" = '__REV__'
 install -d -m 755 /opt/lawebs-portfolio/incoming
@@ -50,7 +50,7 @@ trap 'rm -f "$archive"' EXIT
 git --git-dir="$repo" archive --format=tar.gz --output="$archive" '__REV__'
 mv "$archive" '/opt/lawebs-portfolio/incoming/__REV__.tar.gz'
 '@
-    Run ssh @('-o','BatchMode=yes','-o','ConnectTimeout=15',$SSHHost,$prepare.Replace('__REV__',$revision).Replace('__ORIGIN__',$Origin).Replace([string][char]13,''))
+    Run ssh @('-o','BatchMode=yes','-o','ConnectTimeout=15',$SSHHost,$prepare.Replace('__REV__',$revision).Replace('__ORIGIN__',$Origin.ToLowerInvariant()).Replace([string][char]13,''))
     Run ssh @('-o','BatchMode=yes',$SSHHost,"tar -xOf /opt/lawebs-portfolio/incoming/$revision.tar.gz scripts/deploy-linux.sh | bash -s -- $revision")
     $response = Invoke-WebRequest $SiteOrigin -UseBasicParsing
     if ($response.StatusCode -ne 200 -or $response.Content -notmatch 'LAwebs') { throw 'Public homepage verification failed.' }

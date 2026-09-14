@@ -1,0 +1,47 @@
+{
+  "tool": "built-in image_gen",
+  "brief": "docs/image-prompts.md",
+  "contactOption": "B",
+  "assets": [
+    {
+      "name": "studio",
+      "w": 1200,
+      "h": 1500,
+      "scene": "Vertical 4:5 image, target 1200x1500. A designer's desk photographed from slightly above at an angle. An open sketchbook with a hand-drawn website wireframe — stacked rectangles and lines in pencil, no legible writing. A laptop at the edge of the frame showing a blurred clean website layout. A single vermilion red #d1341c pen lying across the sketchbook as the only saturated color in the frame. No people.",
+      "path": "C:\\Users\\User\\.codex\\generated_images\\01a0a047-39cd-77e0-a794-4cf7c99e8087\\exec-fc85a801-c988-4be5-893c-2d094b439de7.png",
+      "prompt": "Vertical 4:5 image, target 1200x1500. A designer's desk photographed from slightly above at an angle. An open sketchbook with a hand-drawn website wireframe — stacked rectangles and lines in pencil, no legible writing. A laptop at the edge of the frame showing a blurred clean website layout. A single vermilion red #d1341c pen lying across the sketchbook as the only saturated color in the frame. No people.\nUse case: photorealistic-natural. Matte editorial photograph, soft natural window light from the side, warm neutral palette of off-white #fbfaf7, cream, oat and pale grey, dark charcoal #14130f details, shallow depth of field, calm uncluttered composition, shot on a 50mm lens, subtle film-like grain. No text, letters, words, numbers, watermarks, logos, brand names, clutter, dark moody lighting, blue or teal color grade, neon, HDR, oversaturation, heavy vignette, extra fingers or distorted hands. Screen content is abstract blocks with no readable characters."
+    },
+    {
+      "name": "process-listen",
+      "w": 800,
+      "h": 600,
+      "scene": "Horizontal 4:3 image, target 800x600. An open notebook on a pale linen table, showing a hand-drawn diagram of a website structure: simple stacked rectangles connected by thin lines, pencil only, no legible writing. A vermilion red #d1341c marker resting beside the notebook as the only saturated color. A cup of coffee half out of frame. Morning light. No people.",
+      "path": "C:\\Users\\User\\.codex\\generated_images\\01a0a047-39cd-77e0-a794-4cf7c99e8087\\exec-48c9f2c0-2909-47d7-bd87-d3ce5882e578.png",
+      "prompt": "Horizontal 4:3 image, target 800x600. An open notebook on a pale linen table, showing a hand-drawn diagram of a website structure: simple stacked rectangles connected by thin lines, pencil only, no legible writing. A vermilion red #d1341c marker resting beside the notebook as the only saturated color. A cup of coffee half out of frame. Morning light. No people.\nUse case: photorealistic-natural. Matte editorial photograph, soft natural window light from the side, warm neutral palette of off-white #fbfaf7, cream, oat and pale grey, dark charcoal #14130f details, shallow depth of field, calm uncluttered composition, shot on a 50mm lens, subtle film-like grain. No text, letters, words, numbers, watermarks, logos, brand names, clutter, dark moody lighting, blue or teal color grade, neon, HDR, oversaturation, heavy vignette, extra fingers or distorted hands. Screen content is abstract blocks with no readable characters."
+    },
+    {
+      "name": "process-build",
+      "w": 800,
+      "h": 600,
+      "scene": "Horizontal 4:3 image, target 800x600. A laptop on a bright desk showing an abstract website layout made of clean geometric blocks in off-white and dark charcoal. Beside it a tablet showing out-of-focus colored code lines, unreadable. A vermilion red #d1341c sticky note on the desk edge as the only saturated color. No people.",
+      "path": "C:\\Users\\User\\.codex\\generated_images\\01a0a047-39cd-77e0-a794-4cf7c99e8087\\exec-06d0a61c-c256-43c3-bf9c-60e14bd955f8.png",
+      "prompt": "Horizontal 4:3 image, target 800x600. A laptop on a bright desk showing an abstract website layout made of clean geometric blocks in off-white and dark charcoal. Beside it a tablet showing out-of-focus colored code lines, unreadable. A vermilion red #d1341c sticky note on the desk edge as the only saturated color. No people.\nUse case: photorealistic-natural. Matte editorial photograph, soft natural window light from the side, warm neutral palette of off-white #fbfaf7, cream, oat and pale grey, dark charcoal #14130f details, shallow depth of field, calm uncluttered composition, shot on a 50mm lens, subtle film-like grain. No text, letters, words, numbers, watermarks, logos, brand names, clutter, dark moody lighting, blue or teal color grade, neon, HDR, oversaturation, heavy vignette, extra fingers or distorted hands. Screen content is abstract blocks with no readable characters."
+    },
+    {
+      "name": "process-launch",
+      "w": 800,
+      "h": 600,
+      "scene": "Horizontal 4:3 image, target 800x600. A hand holding a smartphone above a bright off-white desk. The phone screen shows a clean minimal website of abstract blocks and one photograph, nothing readable. A small vermilion red #d1341c element on the screen as the only saturated color. Only the hand and forearm visible, no face.",
+      "path": "C:\\Users\\User\\.codex\\generated_images\\01a0a047-39cd-77e0-a794-4cf7c99e8087\\exec-f2bdf022-cdf0-4b94-850e-f2608600c51b.png",
+      "prompt": "Horizontal 4:3 image, target 800x600. A hand holding a smartphone above a bright off-white desk. The phone screen shows a clean minimal website of abstract blocks and one photograph, nothing readable. A small vermilion red #d1341c element on the screen as the only saturated color. Only the hand and forearm visible, no face.\nUse case: photorealistic-natural. Matte editorial photograph, soft natural window light from the side, warm neutral palette of off-white #fbfaf7, cream, oat and pale grey, dark charcoal #14130f details, shallow depth of field, calm uncluttered composition, shot on a 50mm lens, subtle film-like grain. No text, letters, words, numbers, watermarks, logos, brand names, clutter, dark moody lighting, blue or teal color grade, neon, HDR, oversaturation, heavy vignette, extra fingers or distorted hands. Screen content is abstract blocks with no readable characters."
+    },
+    {
+      "name": "contact",
+      "w": 1000,
+      "h": 1200,
+      "scene": "Vertical 5:6 image, target 1000x1200. Two hands resting on a laptop keyboard on a bright off-white desk, a phone and a notebook beside them. Warm natural light, cream and pale grey only. Absolutely no red, orange or pink anywhere in the frame, no colored accents. No face. Natural neutral skin tones.",
+      "path": "C:\\Users\\User\\.codex\\generated_images\\01a0a047-39cd-77e0-a794-4cf7c99e8087\\exec-702a3f45-ae05-4542-8e43-ea269a1a8cca.png",
+      "prompt": "Vertical 5:6 image, target 1000x1200. Two hands resting on a laptop keyboard on a bright off-white desk, a phone and a notebook beside them. Warm natural light, cream and pale grey only. Absolutely no red, orange or pink anywhere in the frame, no colored accents. No face. Natural neutral skin tones.\nUse case: photorealistic-natural. Matte editorial photograph, soft natural window light from the side, warm neutral palette of off-white #fbfaf7, cream, oat and pale grey, dark charcoal #14130f details, shallow depth of field, calm uncluttered composition, shot on a 50mm lens, subtle film-like grain. No text, letters, words, numbers, watermarks, logos, brand names, clutter, dark moody lighting, blue or teal color grade, neon, HDR, oversaturation, heavy vignette, extra fingers or distorted hands. Screen content is abstract blocks with no readable characters."
+    }
+  ]
+}

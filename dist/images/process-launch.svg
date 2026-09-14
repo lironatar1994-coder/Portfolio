@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+<defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e6e2d9" stroke-width="1"/></pattern></defs>
+<rect width="800" height="600" fill="#f3f1ec"/><rect width="800" height="600" fill="url(#g)"/>
+<rect x="64" y="48" width="672" height="504" fill="none" stroke="#c9c4b8" stroke-width="2" stroke-dasharray="10 10"/>
+<rect x="378" y="230" width="44" height="44" rx="8" fill="#d1341c"/>
+<text x="400" y="324" font-family="Arial, sans-serif" font-size="31" font-weight="700" fill="#14130f" text-anchor="middle" direction="rtl">מלטשים ומעלים</text>
+<text x="400" y="368" font-family="Arial, sans-serif" font-size="20" fill="#66635a" text-anchor="middle" direction="rtl">למשל: טלפון ביד עם האתר החדש. 4:3</text>
+</svg>

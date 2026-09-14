@@ -30,7 +30,6 @@ export const presentation = {
     ],
   },
   sos: { summary: 'מנעולן שמגיע אליכם: מסך אחד, מסר אחד וכפתור חיוג.', moments: [] },
-  vee: { summary: 'מנהל משימות אישי בעברית: ללכוד, לסדר, להתמקד.', moments: [] },
   seder: { summary: 'מנהל משימות שנכתב בעברית מההתחלה, לא תורגם אליה.', moments: [] },
   pdf: { summary: 'עורך PDF חינמי בעברית: כל הכלים במקום אחד, בלי הרשמה.', moments: [] },
   reuven: {
