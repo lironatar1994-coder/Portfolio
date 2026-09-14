@@ -66,3 +66,8 @@ Reveal-on-scroll, a one-time hero entrance, hover-scrolled captures on the cards
 ## Assets
 
 `scripts/capture-long.cjs` captures each live site full-page at 1440px (desktop, ≤6400px tall) and 390px (phone, 1.5× → 585px wide, ≤6000px tall), converts to WebP and records height, dominant background colors, CSS custom properties and computed font families in `docs/project-longcaptures.json`. The build reads that file for image dimensions. `*-desktop.webp` viewport captures are kept for `og:image`.
+
+
+## Mobile card ordering (14 September 2026)
+
+The all-work red card is the last item in the hand and now also starts at its deepest visual layer. Fan slots follow forward deck order (center, right, left, outward), while stacking follows each card's unique forward depth. This avoids circular-distance placement bringing the last card beside the first. Autoplay/swiping reaches all project cards before the all-work card, then cycles back to the first. Without JavaScript, the existing alternating CSS slots use each card's source index for stacking. A source-level cycle check verified initial depth, each front card in order, wraparound, and the static CSS fallback; build/check passed.

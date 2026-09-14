@@ -109,10 +109,13 @@ if (hand) {
   const count = cardEls.length;
   let active = 0, touched = false, away = false;
   const layout = () => cardEls.forEach((card, i) => {
-    let pos = ((i - active) % count + count) % count;
-    if (pos > count / 2) pos -= count; // spread both sides of the front card
+    const depth = ((i - active) % count + count) % count;
+    // Fan out in reading order: 0, +1, -1, +2, -2... .
+    // Circular distance pulled the final all-work card beside the first project.
+    const pos = depth === 0 ? 0 : Math.ceil(depth / 2) * (depth % 2 ? 1 : -1);
     card.style.setProperty('--pos', pos);
     card.style.setProperty('--abs', Math.abs(pos));
+    card.style.setProperty('--depth', depth);
   });
   // dir = +1 brings the next card forward (swipe toward the start side in RTL), the leaving card flies the way the finger went
   const shuffle = dir => {

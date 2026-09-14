@@ -152,7 +152,7 @@ bdi{unicode-bidi:isolate}
   .hand-card:nth-child(8){--pos:4;--abs:4}
   .hand-card:nth-child(9){--pos:-4;--abs:4}
   .hand-card:nth-child(10){--pos:5;--abs:5}
-  .hand-card{position:absolute;top:0;left:50%;width:var(--card);margin-left:calc(var(--card) / -2);transform-origin:50% 140%;transform:rotate(calc(var(--pos,0) * var(--fan))) translateY(calc(var(--abs,0) * 5px));z-index:calc(10 - var(--abs,0));transition:transform .8s var(--ease),translate .45s var(--ease),rotate .45s var(--ease);will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;animation:deal .7s var(--ease) both;animation-delay:calc(.1s + var(--i) * .045s)}
+  .hand-card{position:absolute;top:0;left:50%;width:var(--card);margin-left:calc(var(--card) / -2);transform-origin:50% 140%;transform:rotate(calc(var(--pos,0) * var(--fan))) translateY(calc(var(--abs,0) * 5px));z-index:calc(10 - var(--depth,var(--i,0)));transition:transform .8s var(--ease),translate .45s var(--ease),rotate .45s var(--ease);will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;animation:deal .7s var(--ease) both;animation-delay:calc(.1s + var(--i) * .045s)}
   .hand-card.is-dragging{transition:transform .7s var(--ease);z-index:20}
   .hand-card.is-flying{transition:transform .44s cubic-bezier(.3,0,.55,1);transform:rotate(calc(var(--fly,-1) * 24deg)) translate(calc(var(--fly,-1) * 48vw),-12vh);z-index:20}
   .hand-card.no-transition{transition:none}
