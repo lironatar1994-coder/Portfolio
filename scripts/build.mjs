@@ -169,11 +169,11 @@ function casePage(project, index) {
     </section>` : '';
   const body = `
     <section class="case-hero wrap">
-      <a class="back-link" href="/#project-${project.slug}">${arrow} כל העבודות</a>
+      <a class="back-link" href="/#project-${project.slug}">${arrowRight} כל העבודות</a>
       <h1 class="case-title display" style="view-transition-name:title-${project.slug}">${escape(project.hebrew)}</h1>
       <div class="case-hero-grid">
         <p class="lede">${escape(project.description)}</p>
-        <div class="case-meta"><ul class="tags" aria-label="תחומי הפרויקט">${project.scope.map(s => `<li>${escape(s)}</li>`).join('')}</ul><div class="case-actions">${live}<a class="text-link" href="${project.url}" target="_blank" rel="noopener noreferrer"><bdi>${escape(project.domain)}</bdi></a></div></div>
+        <div class="case-meta"><div class="case-actions">${live}<a class="text-link" href="${project.url}" target="_blank" rel="noopener noreferrer"><bdi>${escape(project.domain)}</bdi></a></div></div>
       </div>
     </section>
     <section class="case-views row ${tone(project)}${project.mobileFirst ? ' mobile-first' : ''}" style="${vars(project)}" aria-label="האתר בתצוגת מחשב ובתצוגת טלפון">
@@ -187,7 +187,6 @@ function casePage(project, index) {
     </section>
     <section class="case-stage row ${tone(project)}" style="${vars(project)}" aria-label="האתר בתצוגת טלפון">
       <div class="wrap stage-grid">
-        <div class="row-copy"><p class="kicker">האתר בטלפון</p><p class="row-desc">כך נראה העמוד הראשי, מלמעלה למטה.</p></div>
         <div class="row-visual"><a class="row-shot-link" href="${project.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר הפעיל של ${escape(project.hebrew)} — נפתח בחלון חדש">${frame(project, 'phone', { className: 'float' })}</a></div>
       </div>
     </section>
