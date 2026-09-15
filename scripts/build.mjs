@@ -137,18 +137,16 @@ const contact = `<section class="contact" id="contact" aria-labelledby="contact-
   <div class="contact-copy">
   <p class="kicker reveal">בואו נדבר</p>
   <h2 id="contact-title" class="display reveal">יש לכם עסק?<br>מגיע לו אתר<br><span class="keep-together">עם אופי.</span></h2>
+  </div>
   <div class="contact-actions reveal">
     <a class="pill pill-light" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a>
     <a class="phone-link" href="tel:${studio.tel}"><span>או בטלפון</span><bdi class="display">${studio.phone}</bdi></a>
   </div>
-  <p class="contact-note reveal">מענה אישי, בלי טפסים ארוכים. מספרים לנו על העסק, ואנחנו חוזרים עם כיוון.</p>
-  </div>
-  <figure class="contact-visual reveal"><img src="/images/contact.webp" width="1000" height="1200" alt="" loading="lazy" decoding="async"></figure>
 </div></section>`;
 
 const footer = `<footer class="site-footer"><div class="wrap">
-  <div class="footer-row"><p>סטודיו לעיצוב ופיתוח אתרים. מהרעיון ועד לפרט האחרון.</p><nav class="footer-links" aria-label="ניווט בתחתית העמוד"><a href="/#work">העבודות</a><a href="/#studio">הסטודיו</a><a href="tel:${studio.tel}">טלפון</a><a href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer">וואטסאפ</a></nav></div>
   <p class="footer-mark" aria-hidden="true">LA webs<i class="dot"></i></p>
+  <nav class="footer-links" aria-label="ניווט בתחתית העמוד"><a href="/#work">העבודות</a><a href="/#studio">הסטודיו</a><a href="tel:${studio.tel}">טלפון</a><a href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer">וואטסאפ</a></nav>
   <div class="footer-bottom"><span>© ${new Date().getFullYear()} LA webs. מעוצב ומפותח אצלנו.</span><a class="back-top" href="#top">למעלה <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></a></div>
 </div></footer>
 <a class="wa-float" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat}<span>וואטסאפ</span></a>

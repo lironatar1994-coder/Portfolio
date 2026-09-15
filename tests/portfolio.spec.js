@@ -186,7 +186,7 @@ test('website value presents real WhatsApp previews with accessible full-size li
     expect(response.headers()['content-type']).toMatch(/^image\//);
   }
   await expect(page.locator('a[href="/work/vee/"]')).toHaveCount(0);
-  await expect(page.locator('.contact-visual img')).toHaveCount(1);
+  await expect(page.locator('.contact-visual')).toHaveCount(0); // the contact block is typographic since 16 September 2026
 });
 
 test('mobile navigation supports keyboard, Escape and closing after a link', async ({ page }, testInfo) => {
