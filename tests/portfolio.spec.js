@@ -339,7 +339,7 @@ test('without JavaScript the work, navigation and studio content remain usable',
     await expect(page.locator(testInfo.project.name === 'mobile' ? '.hand-card' : '.hero .hero-shot').first()).toBeVisible();
     await page.waitForTimeout(1500); // let the hand finish dealing in (CSS animation, runs without JS)
     await expect(page.locator('#work .work-card')).toHaveCount(liveSites.length);
-    await expect(page.locator('.reason h3')).toHaveCount(4);
+    await expect(page.locator('.proof h3')).toHaveCount(4);
     await expectNoOverflow(page);
     await page.locator('.work-card a[href="/work/koral/"]').first().click();
     await expect(page.getByRole('heading', { level: 1 })).toContainText('קורל אירועים');

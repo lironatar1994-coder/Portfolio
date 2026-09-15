@@ -228,7 +228,7 @@ if (hand) {
 }
 
 /* ---------- Pre-decode heavy captures just before they enter the viewport ---------- */
-const heavy = $$('.hand, .card, .case .row, .hero-float');
+const heavy = $('.hand, .card, .case .row, .hero-float, .proof-visual');
 if (heavy.length && 'IntersectionObserver' in window) {
   const warm = new IntersectionObserver(entries => {
     for (const entry of entries) {

@@ -88,6 +88,37 @@ const hand = `<div class="hand" aria-label="העבודות שלנו, כמו יד
   </ul>
 </div>`;
 
+// Proof panels show the top of each site, so they use the light crops (the same faces as the cards) instead of the full-page captures.
+const proofFrame = (p, kind) => frame(p, kind, { className: 'proof-frame' })
+  .replace(`/images/${p.slug}-mobile-full.webp`, `/images/${p.slug}-card.webp`)
+  .replace(`/images/${p.slug}-desktop-full.webp`, `/images/${p.slug}-desktop.webp`)
+  .replace(/width="\d+" height="\d+"/, kind === 'phone' ? 'width="585" height="820"' : 'width="1440" height="1000"')
+  .replace('לאורך כל העמוד', 'בראש העמוד');
+const proofs = [
+  { slug: 'pinhas', kind: 'browser', title: 'מוצאים אתכם בגוגל.', line: 'כתובת משלכם, שמופיעה כשמחפשים את השירות באזור.' },
+  { slug: 'miryam', kind: 'phone', title: 'רושם ראשון, עוד לפני השיחה.', line: 'הלקוח רואה את העבודות והאופי שלכם, ומתקשר משוכנע.' },
+  { slug: 'reuven', kind: 'phone', title: 'התשובות כבר באתר.', line: 'שירותים, מחירים ודרכי הגעה, גם כשאתם עסוקים.' },
+];
+// Website value: four statements, each proven by a real client site in the site's own device frames, on an ink chapter.
+const value = `<section class="studio website-value" id="studio" aria-labelledby="studio-title"><div class="wrap">
+  <h2 id="studio-title" class="display value-title reveal">למה העסק שלכם<br>צריך אתר<span class="period">?</span></h2>
+  <ol class="proofs" role="list">
+${proofs.map(x => { const p = bySlug[x.slug]; return `    <li class="proof reveal"><div class="proof-copy"><h3 class="display">${x.title}</h3><p>${x.line}</p></div><a class="proof-visual ${tone(p)}" style="${vars(p)}" href="/work/${p.slug}/" aria-label="לפרויקט ${escape(p.hebrew)}">${proofFrame(p, x.kind)}<span class="proof-caption"><strong>${escape(p.hebrew)}</strong><bdi>${escape(p.domain)}</bdi></span></a></li>`; }).join('\n')}
+    <li class="proof proof-share reveal"><div class="proof-copy"><h3 class="display">כרטיס ביקור בקישור אחד.</h3><p>שולחים בוואטסאפ, וכבר בהודעה רואים תמונה, כותרת ותיאור.</p></div>
+      <div class="share-examples" role="region" aria-label="דוגמאות לשיתוף אתרים בוואטסאפ" tabindex="0">
+        <figure>
+          <a href="/images/whatsapp-koral-example.png" target="_blank" rel="noopener" aria-label="הגדלת דוגמת השיתוף של קורל אירועים — נפתח בחלון חדש"><img src="/images/whatsapp-koral-example.png" width="528" height="405" alt="תצוגת קישור לאתר קורל אירועים בתוך וואטסאפ, עם תמונת האירוע, כותרת ותיאור" loading="lazy" decoding="async"></a>
+          <figcaption>קורל אירועים <span>שיתוף בוואטסאפ · לחצו להגדלה</span></figcaption>
+        </figure>
+        <figure>
+          <a href="/images/whatsapp-pinhas-example.jpg" target="_blank" rel="noopener" aria-label="הגדלת דוגמת השיתוף של עורך דין פנחס רצון — נפתח בחלון חדש"><img src="/images/whatsapp-pinhas-example.jpg" width="780" height="786" alt="תצוגת קישור לאתר עורך דין פנחס רצון בוואטסאפ, עם תמונת עורך הדין ותחומי העיסוק" loading="lazy" decoding="async"></a>
+          <figcaption>עו״ד פנחס רצון <span>שיתוף בוואטסאפ · לחצו להגדלה</span></figcaption>
+        </figure>
+      </div>
+    </li>
+  </ol>
+</div></section>`;
+
 const hero = `<section class="hero" aria-labelledby="hero-title">
   <div class="wrap hero-grid">
     <div class="hero-copy">
@@ -202,7 +233,7 @@ export async function build() {
   let home = await readFile(resolve(root, 'src/index.html'), 'utf8');
   const homeTitle = home.match(/<title>(.*?)<\/title>/)[1];
   const homeDescription = home.match(/<meta name="description" content="(.*?)">/)[1];
-  home = home.replace('<!--HEAD-->', head(homeTitle, homeDescription)).replace('<!--HEADER-->', header).replace('<!--HERO-->', hero).replace('<!--ROWS-->', rows).replace('<!--CONTACT-->', contact).replace('<!--FOOTER-->', footer).replace('<!--CURSOR-->', '');
+  home = home.replace('<!--HEAD-->', head(homeTitle, homeDescription)).replace('<!--HEADER-->', header).replace('<!--HERO-->', hero).replace('<!--ROWS-->', rows).replace('<!--VALUE-->', value).replace('<!--CONTACT-->', contact).replace('<!--FOOTER-->', footer).replace('<!--CURSOR-->', '');
   await writeFile(resolve(destination, 'index.html'), home.replace(/[\t ]+$/gm, ''));
   for (const [index, project] of projects.entries()) {
     const dir = resolve(destination, 'work', project.slug);
