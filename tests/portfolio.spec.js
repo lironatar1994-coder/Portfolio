@@ -87,10 +87,11 @@ test('homepage presents Hebrew RTL content, the hero and the work grid without r
   expect(errors).toEqual([]);
 });
 
-test('the hero call to action scrolls to the work grid and the header hides on the way down', async ({ page }) => {
+test('the hero call to action scrolls to the work grid and the header hides on the way down', async ({ page }, testInfo) => {
   await page.goto('/');
   await ready(page);
-  const link = page.locator('.hero-actions .pill');
+  // phones hide the text link; there the peeking cards under the headline are the link to the work
+  const link = page.locator(testInfo.project.name === 'mobile' ? '.hero-peek' : '.hero-actions .hero-work-link');
   await expect(link).toHaveAttribute('href', '#work');
   await link.click();
   await expect(page).toHaveURL(/#work$/);

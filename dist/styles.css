@@ -137,7 +137,7 @@ bdi{unicode-bidi:isolate}
 .hero-shot{animation:rise 1.1s var(--ease) .2s both}
 
 /* Hand of cards (phone hero) */
-.hand,.hero-cue{display:none}
+.hand,.hero-peek{display:none}
 @media (max-width:760px){
   .hand{display:grid;align-content:center;gap:14px;position:relative;--card:min(72vw,320px,40svh);--fan:7.5deg;min-height:min(100svh,900px);margin:0 calc(var(--gutter) * -1);padding:calc(var(--header) + 10px) var(--gutter) calc(20px + env(safe-area-inset-bottom));box-sizing:border-box;overflow-x:clip;overflow-y:visible;touch-action:pan-y;user-select:none;-webkit-user-select:none}
   .hand-cards{position:relative;height:calc(var(--card) * 1.62);margin-top:6px}
@@ -424,12 +424,15 @@ bdi{unicode-bidi:isolate}
   .hero-shot{display:none}
   .hero{padding-top:0}
   .hero-grid{gap:0;padding-bottom:0}
-  .hero-copy{position:relative;min-height:min(100svh,900px);box-sizing:border-box;padding:calc(var(--header) + 4px) 0 72px;justify-content:center;gap:18px}
-  .hero-copy .display{font-size:clamp(44px,min(13.5vw,8.6svh),76px)}
+  .hero-copy{position:relative;min-height:min(100svh,900px);box-sizing:border-box;padding:calc(var(--header) + 4px) 0 200px;justify-content:center;gap:18px;overflow:clip}
+  .hero-copy .display{font-size:clamp(46px,min(14.5vw,9svh),80px)}
   .hero-copy .lede{font-size:clamp(17px,4.6vw,20px);max-width:30ch}
-  .hero-cue{position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom));display:flex;justify-content:center;align-items:center;gap:8px;animation:none;font-size:14px;font-weight:600;color:var(--muted)}
-  .hero-cue svg{width:18px;height:18px;animation:cue 1.8s var(--ease) infinite}
-  @keyframes cue{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  .hero-work-link{display:none}
+  .hero-actions .pill{min-height:52px;padding:0 24px;font-size:16px;gap:10px}
+  .hero-actions .pill svg{width:20px;height:20px}
+  .hero-peek{display:block;position:absolute;left:calc(var(--gutter) * -1);right:calc(var(--gutter) * -1);bottom:-6px;height:180px;--pc:min(56vw,240px);animation:none}
+  .peek-card{position:absolute;top:0;left:50%;width:var(--pc);margin-left:calc(var(--pc) / -2);aspect-ratio:585/820;border-radius:18px;padding:8px;box-sizing:border-box;background:#fff;box-shadow:0 22px 44px -20px rgb(0 0 0/.55),0 0 0 1px rgb(0 0 0/.06);transform-origin:50% 140%;transform:rotate(calc(var(--pos) * 7.5deg)) translateY(calc(var(--abs) * 5px));z-index:calc(10 - var(--abs))}
+  .peek-card img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;border-radius:12px;background:var(--bg)}
   .hero-shot .hero-caption{width:100%;margin-top:16px;font-size:13px;flex-direction:column;align-items:flex-start;gap:6px}
   .work{padding-top:36px}
   .work-head{gap:8px;padding-top:32px;padding-bottom:22px}
@@ -518,7 +521,6 @@ bdi{unicode-bidi:isolate}
   .swap-word{transition:none}
   .shot img,.card-link:hover .card-phone .shot img{transform:none}
   .hand-card{animation:none;transition:none}
-  .hero-cue svg{animation:none}
   .js .reveal{opacity:1;transform:none}
   .js .cursor{display:none}
   .site-header{transition:none}
