@@ -158,12 +158,16 @@ if (hand) {
     if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { away = !entry.isIntersecting; }, { threshold: 0.2 }).observe(hand);
     const markTouched = () => { touched = true; hand.classList.add('is-touched'); };
     // Drag: the front card follows the pointer; a decisive drag turns the ring that way, a short one springs back.
-    let startX = 0, startY = 0, dragging = false, moved = false, held = null, pointerId = null;
+    let startX = 0, startY = 0, dragging = false, moved = false, held = null, pointerId = null, pressed = null;
+    // Phones nudge a tap toward the nearest large link, so a touch on the thin edge of a card behind lands on its
+    // bigger neighbour. The card under the raw touch point is the one the visitor meant.
+    const cardAt = (x, y) => { const el = document.elementFromPoint(x, y); return el && el.closest('.hand-card'); };
     const settle = () => { if (held) { held.classList.remove('is-dragging'); held.style.translate = ''; held.style.rotate = ''; } dragging = false; held = null; };
     hand.addEventListener('pointerdown', event => {
       if (event.button !== 0) return;
       dragging = true; moved = false; startX = event.clientX; startY = event.clientY; pointerId = event.pointerId;
       held = front();
+      pressed = cardAt(event.clientX, event.clientY) || event.target.closest('.hand-card');
     });
     hand.addEventListener('pointermove', event => {
       if (!dragging || event.pointerId !== pointerId) return;
@@ -188,9 +192,14 @@ if (hand) {
     hand.addEventListener('pointercancel', settle);
     hand.addEventListener('click', event => {
       if (moved) { event.preventDefault(); moved = false; return; }
-      const card = event.target.closest('.hand-card');
+      if (event.detail === 0) return; // keyboard activation: let the focused link work as a link
+      const card = pressed || event.target.closest('.hand-card');
+      pressed = null;
+      if (!card) return;
+      event.preventDefault();
       const i = cardEls.indexOf(card);
-      if (card && posOf(i) !== 0) { event.preventDefault(); markTouched(); turn(posOf(i)); }
+      if (posOf(i) !== 0) { markTouched(); turn(posOf(i)); }
+      else location.assign(card.querySelector('a').href);
     });
     addEventListener('pagehide', () => clearInterval(timer));
   }

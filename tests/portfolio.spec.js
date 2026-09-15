@@ -157,7 +157,7 @@ test('on phones the hero is a hand of cards and case pages show a still phone ca
   await expect(page.locator('.hero-shot')).toBeHidden();
   const front = await page.locator('.hand-card').first().evaluate(el => el.style.getPropertyValue('--pos'));
   expect(front).toBe('0');
-  await page.locator('.hand-card').nth(2).dispatchEvent('click'); // the front card covers the centres of the fanned ones
+  await page.locator('.hand-card').nth(2).dispatchEvent('click', { detail: 1 }); // the front card covers the centres of the fanned ones; detail 1 marks it as a pointer click, not keyboard
   await expect.poll(() => page.locator('.hand-card').nth(2).evaluate(el => el.style.getPropertyValue('--pos'))).toBe('0');
   await page.goto('/work/koral/');
   await ready(page);
