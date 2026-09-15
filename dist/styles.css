@@ -139,7 +139,7 @@ bdi{unicode-bidi:isolate}
 /* Hand of cards (phone hero) */
 .hand,.hero-peek{display:none}
 @media (max-width:760px){
-  .hand{display:grid;align-content:center;gap:14px;position:relative;--card:min(72vw,320px,40svh);--fan:7.5deg;min-height:min(100svh,900px);margin:0 calc(var(--gutter) * -1);padding:calc(var(--header) + 10px) var(--gutter) calc(20px + env(safe-area-inset-bottom));box-sizing:border-box;overflow-x:clip;overflow-y:visible;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+  .hand{display:grid;align-content:center;gap:14px;position:relative;--card:min(72vw,320px,40svh);--fan:7.5deg;min-height:min(100svh,900px);margin:0 calc(var(--gutter) * -1);padding:calc(var(--header) + 10px) var(--gutter) calc(110px + env(safe-area-inset-bottom));box-sizing:border-box;overflow-x:clip;overflow-y:visible;touch-action:pan-y;user-select:none;-webkit-user-select:none}
   .hand-cards{position:relative;height:calc(var(--card) * 1.62);margin-top:6px}
   .hand-head{font-size:clamp(44px,13vw,64px);margin-bottom:8px}
   /* Static fan without JavaScript; the script overrides these inline. */
@@ -154,10 +154,15 @@ bdi{unicode-bidi:isolate}
   .hand-card:nth-child(9){--pos:-4;--abs:4}
   .hand-card:nth-child(10){--pos:5;--abs:5}
   .hand-card{position:absolute;top:0;left:50%;width:var(--card);margin-left:calc(var(--card) / -2);transform-origin:50% 140%;transform:rotate(calc(var(--pos,0) * var(--fan))) translateY(calc(var(--abs,0) * 5px));z-index:calc(10 - var(--depth,var(--i,0)));transition:transform .8s var(--ease),translate .45s var(--ease),rotate .45s var(--ease);will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;animation:deal .7s var(--ease) both;animation-delay:calc(.1s + var(--i) * .045s)}
+  .js .hand.is-waiting .hand-card{animation:none;opacity:0}
+  .js .hand.is-dealing .hand-card{animation:deal .75s cubic-bezier(.3,1.25,.5,1) both;animation-delay:calc(var(--abs,0) * 55ms)}
+  .hero-peek{transition:opacity .2s}
+  .hero-peek.is-gone{opacity:0}
   .hand-card.is-dragging{transition:transform .7s var(--ease);z-index:20}
   .hand-card.is-flying{transition:transform .44s cubic-bezier(.3,0,.55,1);transform:rotate(calc(var(--fly,-1) * 24deg)) translate(calc(var(--fly,-1) * 48vw),-12vh);z-index:20}
   .hand-card.no-transition{transition:none}
-  @keyframes deal{from{translate:0 36vh;opacity:0}}
+  @keyframes deal{from{translate:0 var(--from-y,36vh);scale:var(--from-s,1);opacity:var(--from-o,0)}}
+  .js .hand.is-dealing{--from-o:1}
   .hand-link{display:block;-webkit-touch-callout:none;transform:translateZ(0);background:#fff;border-radius:18px;padding:8px 8px 6px;box-shadow:0 22px 44px -20px rgb(0 0 0/.55),0 0 0 1px rgb(0 0 0/.06);color:var(--ink)}
   .hand-face{display:block;position:relative;aspect-ratio:3/3.7;border-radius:12px;overflow:hidden;background:var(--bg,#111)}
   .hand-face img{pointer-events:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
@@ -306,6 +311,7 @@ bdi{unicode-bidi:isolate}
 /* Reveal */
 .js .reveal{opacity:0;transform:translateY(22px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
 .js .reveal.in{opacity:1;transform:none}
+.js .work-grid .reveal{transform:translateY(40px);transition-delay:0s}.js .work-grid .reveal:nth-child(even){transition-delay:.1s}
 .js .reveal:nth-child(2){transition-delay:.06s}.js .reveal:nth-child(3){transition-delay:.12s}.js .reveal:nth-child(4){transition-delay:.18s}.js .reveal:nth-child(5){transition-delay:.24s}.js .reveal:nth-child(6){transition-delay:.3s}
 
 /* Case pages */
