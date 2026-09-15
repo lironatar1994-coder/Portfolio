@@ -47,6 +47,17 @@ async function expectImages(page) {
   }
 }
 
+async function settleScroll(page) {
+  await page.evaluate(() => new Promise(resolve => {
+    let last = scrollY, since = performance.now();
+    const tick = now => {
+      if (scrollY !== last) { last = scrollY; since = now; }
+      if (now - since >= 150) resolve(); else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }));
+}
+
 async function expectNoOverflow(page) {
   const dimensions = await page.evaluate(() => ({
     viewport: document.documentElement.clientWidth,
@@ -104,10 +115,54 @@ test('the hero call to action scrolls to the work grid and the header hides on t
     await expect(page).toHaveURL(/#work$/);
     await expect.poll(() => page.locator('#work').evaluate(el => el.getBoundingClientRect().top < window.innerHeight)).toBe(true);
   }
+  await settleScroll(page);
   await page.mouse.wheel(0, 600);
+  await settleScroll(page);
   await expect(page.locator('.site-header')).toHaveClass(/is-hidden/);
   await page.mouse.wheel(0, -200);
+  await settleScroll(page);
   await expect(page.locator('.site-header')).not.toHaveClass(/is-hidden/);
+  await expectNoOverflow(page);
+});
+
+test('header stays hidden during slow downward scrolling and ignores tiny reversals', async ({ page }) => {
+  await page.goto('/');
+  await ready(page);
+  const move = async y => {
+    await page.evaluate(y => window.scrollTo({ top: y, behavior: 'instant' }), y);
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  };
+  await move(400);
+  const header = page.locator('.site-header');
+  await expect(header).toHaveClass(/is-hidden/);
+  for (const y of [403, 406, 409, 412, 415, 413, 415]) {
+    await move(y);
+    await expect(header).toHaveClass(/is-hidden/);
+  }
+  for (const y of [412, 409, 406, 403]) await move(y);
+  await expect(header).not.toHaveClass(/is-hidden/);
+});
+
+test('phone cards enter once and remain visible after scrolling away and back', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'Phone fan only');
+  await page.goto('/');
+  await ready(page);
+  expect(await page.locator('html').evaluate(el => getComputedStyle(el).scrollSnapType)).toBe('none');
+  const hand = page.locator('.hand');
+  await hand.evaluate(el => el.scrollIntoView({ behavior: 'instant', block: 'start' }));
+  await expect(hand).toHaveClass(/is-dealing/);
+  await page.evaluate(() => window.__dealStarts = 0);
+  await hand.evaluate(el => el.addEventListener('animationstart', () => window.__dealStarts++));
+  // Wait for the initial staggered entrance before counting replays.
+  await page.waitForTimeout(1100);
+  await page.evaluate(() => window.__dealStarts = 0);
+  await page.locator('#contact').evaluate(el => el.scrollIntoView({ behavior: 'instant' }));
+  await page.waitForTimeout(150);
+  await expect(hand).not.toHaveClass(/is-waiting/);
+  await hand.evaluate(el => el.scrollIntoView({ behavior: 'instant', block: 'start' }));
+  await page.waitForTimeout(400);
+  expect(await page.evaluate(() => window.__dealStarts)).toBe(0);
+  await expect(hand.locator('.hand-card').first()).toHaveCSS('opacity', '1');
   await expectNoOverflow(page);
 });
 

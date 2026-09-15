@@ -4,7 +4,7 @@ The SVG masters use the original L and A outlines from the shipped OFL-licensed
 Frank Ruhl Libre Latin font, instantiated at weight 800 (the header's LA weight).
 The glyphs retain their original proportions and contours. A is moved 120 font
 units right and 100 units down; the overlap covers the L terminal cleanly.
-The paths are filled separately, so their overlap does not create a cutout.
+The paths are filled separately. Since 16 September 2026 the L carries an SVG mask that subtracts the A outline stroked 30 units wide (a 15-unit transparent gap, about 1.5% of the mark), so wherever the L passes behind the A there is a clean separation and the A reads as the front letter. The cut is transparent, so the same file works on paper and on the vermilion card. It is only applied to `la-monogram.svg` and `la-monogram-white.svg`; the favicon and its PNGs keep the plain overlap because the gap is invisible at 32 px. The plain masters are kept as `la-monogram-plain.svg` and `la-monogram-white-plain.svg`. The three `la-webs-icon-*.png` files from the generated image were deleted (nothing referenced them).
 
 - `public/la-monogram.svg`: vermilion mark, transparent background.
 - `public/la-monogram-white.svg`: warm white mark for the red back card.

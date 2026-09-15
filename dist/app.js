@@ -54,15 +54,26 @@ if (swap && !reduceMotion.matches) {
   }, 2600);
 }
 
-/* ---------- Header: slides away while scrolling down, returns on the first scroll up ---------- */
+/* ---------- Header: change state only after deliberate movement in one direction ---------- */
 const header = $('.site-header');
 if (header) {
-  let lastY = scrollY, queued = false;
+  let lastY = scrollY, travel = 0, queued = false;
   const update = () => {
     queued = false;
-    const y = scrollY;
+    const y = Math.max(0, Math.min(scrollY, document.documentElement.scrollHeight - innerHeight));
+    const delta = y - lastY;
+    if (delta !== 0) travel = Math.sign(delta) === Math.sign(travel) ? travel + delta : delta;
     const menuOpen = menuButton?.getAttribute('aria-expanded') === 'true';
-    if (!menuOpen) header.classList.toggle('is-hidden', y > lastY + 4 && y > 160);
+    if (menuOpen || y <= 160 || header.contains(document.activeElement)) {
+      header.classList.remove('is-hidden');
+      travel = 0;
+    } else if (travel >= 16) {
+      header.classList.add('is-hidden');
+      travel = 0;
+    } else if (travel <= -12) {
+      header.classList.remove('is-hidden');
+      travel = 0;
+    }
     lastY = y;
   };
   addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
@@ -145,15 +156,13 @@ if (hand) {
   });
   if (!reduceMotion.matches) {
     // Phones: the cards peeking under the hero headline become the fan. When the hand enters the screen the
-    // real cards start from the peek's size and place and spring out into the fan; leaving the screen resets it.
+    // real cards spring out into the fan once, then remain available when scrolling back.
     const peek = $('.hero-peek'), cardsBox = $('.hand-cards', hand);
     if (peek && cardsBox && 'IntersectionObserver' in window && getComputedStyle(peek).display !== 'none') {
       hand.classList.add('is-waiting');
-      let dealt = false;
-      new IntersectionObserver(([entry]) => {
-        if (!entry.isIntersecting) { dealt = false; hand.classList.remove('is-dealing'); hand.classList.add('is-waiting'); peek.classList.remove('is-gone'); return; }
-        if (dealt || entry.intersectionRatio < 0.3) return;
-        dealt = true;
+      const dealObserver = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting || entry.intersectionRatio < 0.3) return;
+        dealObserver.unobserve(hand);
         const peekCard = $('.peek-card', peek), first = cardEls[0];
         const s = peekCard.offsetWidth / first.offsetWidth, h = first.offsetHeight;
         // scale happens about the fan pivot (50% 140%), so the top edge drops by (1 - s) * 1.4 * h
@@ -163,7 +172,8 @@ if (hand) {
         peek.classList.add('is-gone');
         hand.classList.remove('is-waiting');
         hand.classList.add('is-dealing');
-      }, { threshold: [0, 0.3] }).observe(hand);
+      }, { threshold: [0, 0.3] });
+      dealObserver.observe(hand);
     }
     const timer = setInterval(() => { if (!touched && !away && !document.hidden) turn(1); }, 3800);
     if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { away = !entry.isIntersecting; }, { threshold: 0.2 }).observe(hand);
