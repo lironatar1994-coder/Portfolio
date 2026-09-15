@@ -135,6 +135,27 @@ if (hand) {
   };
   layout();
   if (!reduceMotion.matches) {
+    // Phones: the cards peeking under the hero headline become the fan. When the hand enters the screen the
+    // real cards start from the peek's size and place and spring out into the fan; leaving the screen resets it.
+    const peek = $('.hero-peek'), cardsBox = $('.hand-cards', hand);
+    if (peek && cardsBox && 'IntersectionObserver' in window && getComputedStyle(peek).display !== 'none') {
+      hand.classList.add('is-waiting');
+      let dealt = false;
+      new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) { dealt = false; hand.classList.remove('is-dealing'); hand.classList.add('is-waiting'); peek.classList.remove('is-gone'); return; }
+        if (dealt || entry.intersectionRatio < 0.3) return;
+        dealt = true;
+        const peekCard = $('.peek-card', peek), first = cardEls[0];
+        const s = peekCard.offsetWidth / first.offsetWidth, h = first.offsetHeight;
+        // scale happens about the fan pivot (50% 140%), so the top edge drops by (1 - s) * 1.4 * h
+        const dy = peek.getBoundingClientRect().top - cardsBox.getBoundingClientRect().top - (1 - s) * 1.4 * h;
+        hand.style.setProperty('--from-y', `${Math.round(dy)}px`);
+        hand.style.setProperty('--from-s', s.toFixed(3));
+        peek.classList.add('is-gone');
+        hand.classList.remove('is-waiting');
+        hand.classList.add('is-dealing');
+      }, { threshold: [0, 0.3] }).observe(hand);
+    }
     const timer = setInterval(() => { if (!touched && !away && !document.hidden) shuffle(1); }, 3800);
     if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { away = !entry.isIntersecting; }, { threshold: 0.2 }).observe(hand);
     const markTouched = () => { touched = true; hand.classList.add('is-touched'); };

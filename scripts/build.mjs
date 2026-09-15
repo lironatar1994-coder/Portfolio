@@ -117,7 +117,7 @@ function card(p, { className = '', withId = false, summary = false } = {}) {
 }
 
 /** Home: every project in one grid (three columns on desktop, two on phones). Nothing hidden behind a swipe. */
-const rows = `<ul class="work-grid wrap" role="list">${work.map(p => card(p, { withId: true, summary: true })).join('')}</ul>`;
+const rows = `<ul class="work-grid wrap" role="list">${work.map(p => card(p, { withId: true, summary: true, className: 'reveal' })).join('')}</ul>`;
 
 /** Case pages: one-line carousel of the other projects. Native scroll-snap, swipe on touch, drag + arrows on desktop. */
 function catalogStrip(items, { id = 'more' } = {}) {
