@@ -137,10 +137,13 @@ bdi{unicode-bidi:isolate}
 .hero-shot{animation:rise 1.1s var(--ease) .2s both}
 
 /* Hand of cards (phone hero) */
-.hand{display:none}
+.hand,.hero-cue{display:none}
 @media (max-width:760px){
-  .hand{display:grid;align-content:center;gap:14px;position:relative;--card:min(64vw,270px);--fan:7.5deg;min-height:100svh;margin:0 calc(var(--gutter) * -1);padding:12px var(--gutter) calc(20px + env(safe-area-inset-bottom));box-sizing:border-box;overflow-x:clip;overflow-y:visible;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-  .hand-cards{position:relative;height:calc(var(--card) * 1.62)}
+  .hand{display:grid;align-content:center;gap:14px;position:relative;--card:min(72vw,320px,40svh);--fan:7.5deg;min-height:min(100svh,900px);margin:0 calc(var(--gutter) * -1);padding:calc(var(--header) + 10px) var(--gutter) calc(20px + env(safe-area-inset-bottom));box-sizing:border-box;overflow-x:clip;overflow-y:visible;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+  .hand-cards{position:relative;height:calc(var(--card) * 1.62);margin-top:6px}
+  .hand-head{display:grid;gap:10px;justify-items:start}
+  .hand-head .display{font-size:clamp(44px,13vw,64px)}
+  .hand-head p:not(.kicker){font-size:16px;line-height:1.55;color:var(--muted);max-width:30ch;text-wrap:pretty}
   /* Static fan without JavaScript; the script overrides these inline. */
   .hand-card:nth-child(1){--pos:0;--abs:0}
   .hand-card:nth-child(2){--pos:1;--abs:1}
@@ -263,7 +266,7 @@ bdi{unicode-bidi:isolate}
 .share-examples:focus-visible{outline:3px solid var(--accent);outline-offset:6px}
 
 /* Contact: vermilion block, image beside the call to action */
-.contact{background:var(--accent);color:#fff;padding:clamp(80px,10vw,150px) 0;min-height:100svh;display:grid;align-items:center}
+.contact{background:var(--accent);color:#fff;padding:clamp(80px,10vw,150px) 0;min-height:min(100svh,900px);display:grid;align-items:center}
 .contact .wrap{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(32px,5vw,96px);align-items:center}
 .contact-copy{display:grid;gap:30px;justify-items:start}
 .contact-visual{aspect-ratio:5/6;border-radius:28px;overflow:hidden;background:rgb(0 0 0/.12);box-shadow:0 30px 80px -40px rgb(0 0 0/.5)}
@@ -425,7 +428,12 @@ bdi{unicode-bidi:isolate}
   .hero-shot{display:none}
   .hero{padding-top:0}
   .hero-grid{gap:0;padding-bottom:0}
-  .hero-copy{min-height:100svh;box-sizing:border-box;padding:calc(var(--header) + 4px) 0 28px;justify-content:center}
+  .hero-copy{position:relative;min-height:min(100svh,900px);box-sizing:border-box;padding:calc(var(--header) + 4px) 0 72px;justify-content:center;gap:18px}
+  .hero-copy .display{font-size:clamp(44px,min(13.5vw,8.6svh),76px)}
+  .hero-copy .lede{font-size:clamp(17px,4.6vw,20px);max-width:30ch}
+  .hero-cue{position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom));display:flex;justify-content:center;align-items:center;gap:8px;animation:none;font-size:14px;font-weight:600;color:var(--muted)}
+  .hero-cue svg{width:18px;height:18px;animation:cue 1.8s var(--ease) infinite}
+  @keyframes cue{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
   .hero-shot .hero-caption{width:100%;margin-top:16px;font-size:13px;flex-direction:column;align-items:flex-start;gap:6px}
   .work{padding-top:36px}
   .work-head{gap:8px;padding-top:32px;padding-bottom:22px}
@@ -514,6 +522,7 @@ bdi{unicode-bidi:isolate}
   .swap-word{transition:none}
   .shot img,.card-link:hover .card-phone .shot img{transform:none}
   .hand-card{animation:none;transition:none}
+  .hero-cue svg{animation:none}
   .js .reveal{opacity:1;transform:none}
   .js .cursor{display:none}
   .site-header{transition:none}

@@ -80,6 +80,7 @@ const heroMobile = { src: '/images/blank.webp', width: 2, height: 2 }; // phones
 const catalogOnly = ['sos', 'seder']; // in the work grid, not in the hero hand
 const handOrder = work.filter(p => !catalogOnly.includes(p.slug));
 const hand = `<div class="hand" aria-label="העבודות שלנו, כמו יד של קלפים">
+  <header class="hand-head"><p class="kicker">כמו יד של קלפים</p><h2 class="display">בחרו קלף<span class="period">.</span></h2><p>כל קלף הוא אתר שבנינו, וכולם חיים באוויר. החליקו כדי לדפדף, לחצו על הקלף הקדמי כדי להיכנס.</p></header>
   <ul class="hand-cards" role="list">${handOrder.map((p, i) => `<li class="hand-card ${tone(p)}" style="${vars(p)};--i:${i}"><a class="hand-link" href="/work/${p.slug}/" draggable="false" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="hand-face"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async"></span><span class="hand-name"><span>${escape(p.hebrew)}</span><i aria-hidden="true"></i></span></a></li>`).join('')}<li class="hand-card hand-back" style="--i:${handOrder.length}"><a class="hand-link" href="#work" draggable="false" aria-label="לכל העבודות"><span class="hand-face"><span class="hand-mark">LA webs<i class="dot"></i></span></span><span class="hand-name"><span>כל העבודות</span><i aria-hidden="true"></i></span></a></li>
   </ul>
   <p class="hand-hint" aria-hidden="true">החליקו בין הקלפים</p>
@@ -92,6 +93,7 @@ const hero = `<section class="hero" aria-labelledby="hero-title">
       <h1 id="hero-title" class="display" aria-label="נבנה לעסק שלך אתר תדמית ${swapWords[0]}.">נבנה לעסק שלך<br>אתר תדמית <span class="swap-group"><span class="swap" aria-hidden="true">${swapWords.map((w, i) => `<span class="swap-word${i === 0 ? ' is-active' : ''}">${w}</span>`).join('')}<i class="swap-line"></i></span><span class="period">.</span></span></h1>
       <p class="lede">אנחנו <bdi>LA webs</bdi>. כל אתר כאן נכתב מאפס סביב העסק שמאחוריו, וכולם חיים באוויר.</p>
       <div class="hero-actions"><a class="pill pill-cta" href="#work">לעבודות ${down}</a><a class="text-link" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer">נדבר בוואטסאפ ${arrowOut}</a></div>
+      <a class="hero-cue" href="#work" aria-hidden="true" tabindex="-1"><span>העבודות שלנו</span>${down}</a>
     </div>
     <a class="hero-shot work-link" href="/work/${flagship.slug}/" aria-label="לפרויקט ${escape(flagship.hebrew)}">
       ${frame(flagship, 'browser', { loading: 'eager', priority: true, className: 'hero-frame', mobileImage: true, mobileSrc: heroMobile })}
