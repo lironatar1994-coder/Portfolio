@@ -79,7 +79,7 @@ test('homepage presents Hebrew RTL content, the hero and the work grid without r
   await expect(page.getByRole('heading', { level: 1 })).toContainText('נבנה לעסק שלך');
   await expect(page.locator('.hero .hero-shot')).toHaveCount(1);
   await expect(page.locator('.hero-index')).toHaveCount(0);
-  await expect(page.locator('#work .work-card')).toHaveCount(9);
+  await expect(page.locator('#work .work-card')).toHaveCount(liveSites.length);
   await expect(page.locator('.stage-track')).toHaveCount(0);
   for (const [slug] of liveSites) await expect(page.locator(`.work-card a.work-link[href="/work/${slug}/"]`).first()).toBeVisible();
   await expectImages(page);
@@ -106,7 +106,7 @@ test('every project has a card in the work grid, in its own color, with a summar
   await page.goto('/');
   await ready(page);
   const cards = page.locator('#work .card');
-  await expect(cards).toHaveCount(9);
+  await expect(cards).toHaveCount(liveSites.length);
   for (const [slug] of liveSites) await expect(page.locator(`#project-${slug} .card-link[href="/work/${slug}/"]`)).toHaveCount(1);
   const columns = await page.locator('.work-grid').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length);
   expect(columns).toBe(testInfo.project.name === 'desktop' ? 3 : 2);
@@ -274,7 +274,7 @@ test('without JavaScript the work, navigation and studio content remain usable',
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.locator(testInfo.project.name === 'mobile' ? '.hand-card' : '.hero .hero-shot').first()).toBeVisible();
     await page.waitForTimeout(1500); // let the hand finish dealing in (CSS animation, runs without JS)
-    await expect(page.locator('#work .work-card')).toHaveCount(9);
+    await expect(page.locator('#work .work-card')).toHaveCount(liveSites.length);
     await expect(page.locator('.value-more h3')).toHaveCount(2);
     await expectNoOverflow(page);
     await page.locator('.work-card a[href="/work/koral/"]').first().click();
