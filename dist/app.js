@@ -107,32 +107,30 @@ const hand = $('.hand');
 if (hand) {
   const cardEls = $$('.hand-card', hand);
   const count = cardEls.length;
-  let active = 0, touched = false, away = false;
+  const half = Math.floor(count / 2);
+  // The fan is a ring of fixed slots: card 0 starts in front, then +1, -1, +2, -2... in reading order.
+  // A swipe turns the whole ring one slot in the finger's direction, so every card keeps its neighbours
+  // and only the card that falls off one edge re-enters, unseen, at the other edge behind the fan.
+  const base = cardEls.map((card, i) => i === 0 ? 0 : Math.ceil(i / 2) * (i % 2 ? 1 : -1));
+  const wrap = p => ((p + half) % count + count) % count - half;
+  let offset = 0, touched = false, away = false;
+  const posOf = i => wrap(base[i] + offset);
+  const front = () => cardEls[base.findIndex((b, i) => posOf(i) === 0)];
   const layout = () => cardEls.forEach((card, i) => {
-    const depth = ((i - active) % count + count) % count;
-    // Fan out in reading order: 0, +1, -1, +2, -2... .
-    // Circular distance pulled the final all-work card beside the first project.
-    const pos = depth === 0 ? 0 : Math.ceil(depth / 2) * (depth % 2 ? 1 : -1);
+    const pos = posOf(i);
+    const prev = Number(card.style.getPropertyValue('--pos'));
+    if (card.style.getPropertyValue('--pos') !== '' && Math.abs(pos - prev) > half) {
+      // this card went round the back of the ring: jump there without sliding through the front
+      card.classList.add('no-transition');
+      void card.offsetWidth;
+      requestAnimationFrame(() => requestAnimationFrame(() => card.classList.remove('no-transition')));
+    }
     card.style.setProperty('--pos', pos);
     card.style.setProperty('--abs', Math.abs(pos));
-    card.style.setProperty('--depth', depth);
+    card.style.setProperty('--depth', Math.abs(pos));
   });
-  // dir = +1 brings the next card forward (swipe toward the start side in RTL), the leaving card flies the way the finger went
-  const shuffle = dir => {
-    const leaving = cardEls[active];
-    leaving.style.setProperty('--fly', -dir);
-    leaving.classList.remove('is-dragging');
-    leaving.classList.add('is-flying');
-    active = ((active + dir) % count + count) % count;
-    layout(); // the others start sliding forward while the leaving card is still on top
-    setTimeout(() => {
-      leaving.classList.add('no-transition');
-      leaving.classList.remove('is-flying');
-      leaving.style.translate = ''; leaving.style.rotate = '';
-      void leaving.offsetWidth;
-      leaving.classList.remove('no-transition');
-    }, 440);
-  };
+  // dir = +1 turns the ring toward the start side in RTL (the front card slides left, the card on its right comes forward)
+  const turn = steps => { offset -= steps; layout(); };
   layout();
   if (!reduceMotion.matches) {
     // Phones: the cards peeking under the hero headline become the fan. When the hand enters the screen the
@@ -156,16 +154,16 @@ if (hand) {
         hand.classList.add('is-dealing');
       }, { threshold: [0, 0.3] }).observe(hand);
     }
-    const timer = setInterval(() => { if (!touched && !away && !document.hidden) shuffle(1); }, 3800);
+    const timer = setInterval(() => { if (!touched && !away && !document.hidden) turn(1); }, 3800);
     if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { away = !entry.isIntersecting; }, { threshold: 0.2 }).observe(hand);
     const markTouched = () => { touched = true; hand.classList.add('is-touched'); };
-    // Drag: the front card follows the pointer; a decisive drag flicks it away, a short one springs back.
-    let startX = 0, startY = 0, dragging = false, moved = false, front = null, pointerId = null;
-    const settle = () => { if (front) { front.classList.remove('is-dragging'); front.style.translate = ''; front.style.rotate = ''; } dragging = false; front = null; };
+    // Drag: the front card follows the pointer; a decisive drag turns the ring that way, a short one springs back.
+    let startX = 0, startY = 0, dragging = false, moved = false, held = null, pointerId = null;
+    const settle = () => { if (held) { held.classList.remove('is-dragging'); held.style.translate = ''; held.style.rotate = ''; } dragging = false; held = null; };
     hand.addEventListener('pointerdown', event => {
       if (event.button !== 0) return;
       dragging = true; moved = false; startX = event.clientX; startY = event.clientY; pointerId = event.pointerId;
-      front = cardEls[active];
+      held = front();
     });
     hand.addEventListener('pointermove', event => {
       if (!dragging || event.pointerId !== pointerId) return;
@@ -173,24 +171,26 @@ if (hand) {
       if (!moved) {
         if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
         moved = true; markTouched();
-        front.classList.add('is-dragging');
+        held.classList.add('is-dragging');
         try { hand.setPointerCapture(pointerId); } catch {}
       }
-      front.style.translate = `${dx}px ${Math.abs(dx) * -0.12}px`;
-      front.style.rotate = `${dx * 0.06}deg`;
+      held.style.translate = `${dx}px ${Math.abs(dx) * -0.12}px`;
+      held.style.rotate = `${dx * 0.06}deg`;
     });
     const release = event => {
       if (!dragging) return;
       const dx = event.clientX - startX;
-      if (moved && Math.abs(dx) > 56) { const leaving = front; front = null; dragging = false; leaving.classList.remove('is-dragging'); shuffle(dx < 0 ? 1 : -1); }
-      else settle();
+      const decisive = moved && Math.abs(dx) > 56;
+      settle();
+      if (decisive) turn(dx < 0 ? 1 : -1);
     };
     hand.addEventListener('pointerup', release);
     hand.addEventListener('pointercancel', settle);
     hand.addEventListener('click', event => {
       if (moved) { event.preventDefault(); moved = false; return; }
       const card = event.target.closest('.hand-card');
-      if (card && cardEls.indexOf(card) !== active) { event.preventDefault(); markTouched(); active = cardEls.indexOf(card); layout(); }
+      const i = cardEls.indexOf(card);
+      if (card && posOf(i) !== 0) { event.preventDefault(); markTouched(); turn(posOf(i)); }
     });
     addEventListener('pagehide', () => clearInterval(timer));
   }

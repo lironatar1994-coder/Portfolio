@@ -159,7 +159,6 @@ bdi{unicode-bidi:isolate}
   .hero-peek{transition:opacity .2s}
   .hero-peek.is-gone{opacity:0}
   .hand-card.is-dragging{transition:transform .7s var(--ease);z-index:20}
-  .hand-card.is-flying{transition:transform .44s cubic-bezier(.3,0,.55,1);transform:rotate(calc(var(--fly,-1) * 24deg)) translate(calc(var(--fly,-1) * 48vw),-12vh);z-index:20}
   .hand-card.no-transition{transition:none}
   @keyframes deal{from{translate:0 var(--from-y,36vh);scale:var(--from-s,1);opacity:var(--from-o,0)}}
   .js .hand.is-dealing{--from-o:1}
