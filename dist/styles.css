@@ -276,8 +276,8 @@ bdi{unicode-bidi:isolate}
 .contact-actions{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
 .contact .pill{min-height:60px;padding:0 30px;font-size:17px}
 .contact .pill svg{width:22px;height:22px}
-.phone-link{display:grid;gap:2px;font-size:15px;font-weight:500;opacity:.92;transition:opacity .3s}
-.phone-link:hover{opacity:1}
+.phone-link{display:grid;gap:2px;font-size:15px;font-weight:500}
+.phone-link:hover bdi{text-decoration-color:#fff}
 .phone-link bdi{font-size:clamp(28px,2.6vw,40px);line-height:1;letter-spacing:-.01em;direction:ltr;justify-self:start;text-decoration:underline;text-decoration-color:rgb(255 255 255/.5);text-decoration-thickness:2px;text-underline-offset:6px}
 .contact-note{opacity:.88;max-width:44ch}
 
@@ -433,8 +433,8 @@ bdi{unicode-bidi:isolate}
   .hero-copy .display{font-size:clamp(46px,min(14.5vw,9svh),80px)}
   .hero-copy .lede{font-size:clamp(17px,4.6vw,20px);max-width:30ch}
   .hero-work-link{display:none}
-  html{scroll-snap-type:y proximity}
-  .hero-copy,.hand,.work,.contact{scroll-snap-align:start}
+  html{scroll-snap-type:y mandatory}
+  .hero-copy,.hand,.work,.studio,.contact,.site-footer{scroll-snap-align:start}
   .hand{scroll-snap-stop:always}
   .hero-actions .pill{min-height:52px;padding:0 24px;font-size:16px;gap:10px}
   .hero-actions .pill svg{width:20px;height:20px}
