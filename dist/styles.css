@@ -167,8 +167,7 @@ bdi{unicode-bidi:isolate}
   .hand-name i{width:10px;height:10px;border-radius:3px;background:var(--accent,var(--accent-deep))}
   .hand-back .hand-link{background:var(--accent)}
   .hand-back .hand-face{background:var(--accent);box-shadow:inset 0 0 0 2px rgb(255 255 255/.6),inset 0 0 0 8px var(--accent),inset 0 0 0 9px rgb(255 255 255/.35);display:grid;place-items:center}
-  .hand-mark{font-family:var(--display);font-weight:800;font-size:26px;color:#fff;letter-spacing:-.03em;direction:ltr}
-  .hand-mark .dot{background:#fff}
+  .hand-face .hand-mark{position:static;width:68%;height:auto;object-fit:contain}
   .hand-back .hand-name{color:#fff}
   .hand-back .hand-name i{background:#fff}
 }
@@ -247,15 +246,16 @@ bdi{unicode-bidi:isolate}
 /* Website value: real sharing examples carry the visual proof. */
 .studio{padding:clamp(72px,8vw,120px) 0}
 .value-title{font-size:clamp(46px,5.6vw,88px);line-height:1.08;margin-bottom:clamp(32px,4vw,64px)}
-.website-value-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:clamp(36px,5vw,80px);row-gap:32px;align-items:start}
-.value-lead{grid-column:1;grid-row:1}
-.value-lead h3,.value-more h3{font-family:var(--display);font-weight:700;line-height:1.2;text-wrap:pretty}
-.value-lead h3{font-size:clamp(32px,3.3vw,48px)}
-.value-lead p,.value-more p{font-size:18px;line-height:1.7;color:var(--muted);margin-top:12px;max-width:40ch}
-.value-more{grid-column:1;grid-row:2;display:grid;gap:28px}
-.value-more h3{font-size:28px}
-.value-more p{font-size:17px;margin-top:8px}
-.share-examples{grid-column:2;grid-row:1/3;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:center;min-width:0}
+.reasons{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(28px,3.5vw,56px) clamp(28px,4vw,64px)}
+.reason{display:grid;gap:14px;align-content:start;padding-top:22px;border-top:1px solid var(--line)}
+.reason-n{font-family:var(--display);font-weight:800;font-size:clamp(40px,4vw,64px);line-height:1;color:var(--accent);letter-spacing:-.02em}
+.reason h3{font-size:clamp(30px,2.6vw,44px);line-height:1.04;text-wrap:balance;max-width:12ch}
+.reason p{font-size:17px;line-height:1.65;color:var(--muted);max-width:34ch}
+.search-mock{display:flex;align-items:center;gap:12px;margin-top:10px;padding:13px 18px;max-width:340px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:16px;color:var(--ink);box-shadow:0 14px 34px -24px rgb(0 0 0/.35)}
+.search-mock svg{width:20px;height:20px;stroke:var(--muted);stroke-width:2;stroke-linecap:round;flex-shrink:0}
+.reason-share{grid-column:1/-1;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:clamp(36px,5vw,80px);align-items:center}
+.reason-copy{display:grid;gap:14px;align-content:start}
+.share-examples{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:center;min-width:0}
 .share-examples figure{min-width:0}
 .share-examples a{display:block;border-radius:16px;overflow:hidden;background:#103e31}
 .share-examples img{width:100%;height:auto}
@@ -542,14 +542,15 @@ bdi{unicode-bidi:isolate}
 @media(max-width:760px){
   .studio{padding:64px 0}
   .value-title{font-size:clamp(40px,10vw,64px);margin-bottom:30px}
-  .website-value-grid{display:flex;flex-direction:column;gap:28px}
-  .value-lead h3{font-size:32px}
-  .value-lead p{font-size:17px}
+  .reasons{grid-template-columns:1fr;gap:30px}
+  .reason{gap:10px;padding-top:18px}
+  .reason-n{font-size:40px}
+  .reason h3{font-size:clamp(32px,9.4vw,42px);max-width:none}
+  .reason p{font-size:16px}
+  .reason-share{grid-template-columns:1fr;row-gap:18px}
+  .search-mock{max-width:none}
   .share-examples{display:flex;gap:16px;width:100%;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:14px;scrollbar-color:var(--accent) var(--line);scrollbar-width:thin;align-items:start}
   .share-examples figure{flex:0 0 88%;scroll-snap-align:start}
   .share-examples img{max-height:360px;object-fit:contain}
   .share-examples a{background:transparent;border-radius:12px}
-  .value-more{gap:24px}
-  .value-more h3{font-size:27px}
-  .value-more p{font-size:16px}
 }

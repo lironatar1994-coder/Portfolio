@@ -45,15 +45,16 @@ function frame(project, kind, { loading = 'lazy', priority = false, vt = '', cla
   return `<div class="frame ${kind}${className ? ' ' + className : ''}"${vt ? ` style="view-transition-name:${vt}"` : ''}>${chrome}<div class="shot">${image}</div></div>`;
 }
 
-function head(title, description, { pathname = '/', image = '/images/koral-desktop.webp', themeColor = '#fbfaf7' } = {}) {
+function head(title, description, { pathname = '/', image = '/images/la-webs-share-v3.jpg', themeColor = '#fbfaf7' } = {}) {
   const origin = process.env.SITE_ORIGIN;
   const url = origin ? new URL(pathname, origin).href : null;
   return `<meta name="theme-color" content="${themeColor}">
-  <meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:type" content="website"><meta property="og:locale" content="he_IL">
-  ${url ? `<link rel="canonical" href="${escape(url)}"><meta property="og:url" content="${escape(url)}"><meta property="og:image" content="${escape(new URL(image, origin).href)}">` : '<meta name="robots" content="noindex,nofollow">'}
-  <link rel="icon" href="/la-webs-icon-32.png" type="image/png" sizes="32x32">
-  <link rel="icon" href="/la-webs-icon-192.png" type="image/png" sizes="192x192">
-  <link rel="apple-touch-icon" href="/la-webs-icon-180.png" sizes="180x180">
+  <meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:type" content="website"><meta property="og:locale" content="he_IL"><meta property="og:site_name" content="LA webs"><meta name="twitter:card" content="summary_large_image">
+  ${url ? `<link rel="canonical" href="${escape(url)}"><meta property="og:url" content="${escape(url)}"><meta property="og:image" content="${escape(new URL(image, origin).href)}">${image.endsWith('.jpg') ? '<meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">' : ''}` : '<meta name="robots" content="noindex,nofollow">'}
+  <link rel="icon" href="/la-monogram-32-v2.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="/la-monogram-192-v2.png" type="image/png" sizes="192x192">
+  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/la-monogram-180-v2.png" sizes="180x180">
   <link rel="preload" href="/fonts/frank-ruhl-libre-hebrew.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/plex-hebrew-400-hebrew.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.css">
@@ -83,7 +84,7 @@ const catalogOnly = ['sos', 'seder']; // in the work grid, not in the hero hand
 const handOrder = work.filter(p => !catalogOnly.includes(p.slug));
 const hand = `<div class="hand" aria-label="העבודות שלנו, כמו יד של קלפים">
   <h2 class="hand-head display">העבודות שלנו<span class="period">.</span></h2>
-  <ul class="hand-cards" role="list">${handOrder.map((p, i) => `<li class="hand-card ${tone(p)}" style="${vars(p)};--i:${i}"><a class="hand-link" href="/work/${p.slug}/" draggable="false" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="hand-face"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async"></span><span class="hand-name"><span>${escape(p.hebrew)}</span><i aria-hidden="true"></i></span></a></li>`).join('')}<li class="hand-card hand-back" style="--i:${handOrder.length}"><a class="hand-link" href="#work" draggable="false" aria-label="לכל העבודות"><span class="hand-face"><span class="hand-mark">LA webs<i class="dot"></i></span></span><span class="hand-name"><span>כל העבודות</span><i aria-hidden="true"></i></span></a></li>
+  <ul class="hand-cards" role="list">${handOrder.map((p, i) => `<li class="hand-card ${tone(p)}" style="${vars(p)};--i:${i}"><a class="hand-link" href="/work/${p.slug}/" draggable="false" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="hand-face"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async"></span><span class="hand-name"><span>${escape(p.hebrew)}</span><i aria-hidden="true"></i></span></a></li>`).join('')}<li class="hand-card hand-back" style="--i:${handOrder.length}"><a class="hand-link" href="#work" draggable="false" aria-label="לכל העבודות"><span class="hand-face"><img class="hand-mark" src="/la-monogram-white.svg" width="960" height="960" alt="" decoding="async"></span><span class="hand-name"><span>כל העבודות</span><i aria-hidden="true"></i></span></a></li>
   </ul>
 </div>`;
 
