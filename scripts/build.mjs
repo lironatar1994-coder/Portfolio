@@ -91,7 +91,6 @@ const hand = `<div class="hand" aria-label="העבודות שלנו, כמו יד
 const hero = `<section class="hero" aria-labelledby="hero-title">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="kicker">סטודיו לעיצוב ופיתוח אתרים</p>
       <h1 id="hero-title" class="display" aria-label="נבנה לעסק שלך אתר תדמית ${swapWords[0]}.">נבנה לעסק שלך<br>אתר תדמית <span class="swap-group"><span class="swap" aria-hidden="true">${swapWords.map((w, i) => `<span class="swap-word${i === 0 ? ' is-active' : ''}">${w}</span>`).join('')}<i class="swap-line"></i></span><span class="period">.</span></span></h1>
       <p class="lede">אנחנו <bdi>LA webs</bdi>. כל אתר כאן נכתב מאפס סביב העסק שמאחוריו, וכולם חיים באוויר.</p>
       <div class="hero-actions"><a class="pill pill-cta" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a><a class="text-link hero-work-link" href="#work">לעבודות ${down}</a></div>
@@ -136,7 +135,6 @@ function catalogStrip(items, { id = 'more' } = {}) {
 
 const contact = `<section class="contact" id="contact" aria-labelledby="contact-title"><div class="wrap">
   <div class="contact-copy">
-  <p class="kicker reveal">בואו נדבר</p>
   <h2 id="contact-title" class="display reveal">יש לכם עסק?<br>מגיע לו אתר<br><span class="keep-together">עם אופי.</span></h2>
   </div>
   <div class="contact-actions reveal">
@@ -163,7 +161,7 @@ function casePage(project, index) {
   const window = (kind, extra = {}) => frame(project, kind, { className: 'window', ...extra }).replace('<div class="shot">', `<div class="shot" tabindex="0" role="region" aria-label="${kind === 'phone' ? 'גלילה בתוך גרסת הטלפון' : 'גלילה בתוך גרסת המחשב'}">`);
   const beforeAfter = project.beforeAfter ? `
     <section class="case-ba wrap" aria-labelledby="ba-title">
-      <div class="case-ba-copy"><p class="kicker reveal">מתוך האתר</p><h2 id="ba-title" class="display reveal">לפני. אחרי.</h2></div>
+      <div class="case-ba-copy"><h2 id="ba-title" class="display reveal">לפני. אחרי.</h2></div>
       ${comparison()}
     </section>` : '';
   const body = `
