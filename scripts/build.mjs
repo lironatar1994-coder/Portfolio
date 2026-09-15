@@ -51,7 +51,9 @@ function head(title, description, { pathname = '/', image = '/images/koral-deskt
   return `<meta name="theme-color" content="${themeColor}">
   <meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:type" content="website"><meta property="og:locale" content="he_IL">
   ${url ? `<link rel="canonical" href="${escape(url)}"><meta property="og:url" content="${escape(url)}"><meta property="og:image" content="${escape(new URL(image, origin).href)}">` : '<meta name="robots" content="noindex,nofollow">'}
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/la-webs-icon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="/la-webs-icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/la-webs-icon-180.png" sizes="180x180">
   <link rel="preload" href="/fonts/frank-ruhl-libre-hebrew.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/plex-hebrew-400-hebrew.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.css">
