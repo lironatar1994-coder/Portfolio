@@ -265,16 +265,16 @@ bdi{unicode-bidi:isolate}
 
 /* Contact: vermilion block, image beside the call to action */
 .contact{background:var(--accent);color:#fff;padding:clamp(80px,10vw,150px) 0;min-height:min(100svh,900px);display:grid;align-items:center}
-.contact .wrap{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(32px,5vw,96px);align-items:end}
+.contact .wrap{display:grid;grid-template-columns:minmax(0,7fr) minmax(max-content,5fr);gap:clamp(32px,5vw,96px);align-items:end}
 .contact-copy{display:grid;gap:26px;justify-items:start}
 .contact .kicker{color:#fff}.contact .kicker::before{background:#fff}
-.contact .display{font-size:clamp(46px,7.2vw,132px);max-width:10ch}
+.contact .display{font-size:clamp(46px,6.6vw,124px);max-width:10ch}
 .contact-actions{display:grid;gap:30px;justify-items:start;padding-bottom:.35em}
 .contact .pill{min-height:60px;padding:0 30px;font-size:17px}
 .contact .pill svg{width:22px;height:22px}
 .phone-link{display:grid;gap:2px;font-size:15px;font-weight:500}
 .phone-link:hover bdi{text-decoration-color:#fff}
-.phone-link bdi{white-space:nowrap;font-size:clamp(32px,3.6vw,64px);line-height:1;letter-spacing:-.01em;direction:ltr;justify-self:start;text-decoration:underline;text-decoration-color:rgb(255 255 255/.5);text-decoration-thickness:2px;text-underline-offset:6px}
+.phone-link bdi{white-space:nowrap;font-size:clamp(32px,3.3vw,60px);line-height:1;letter-spacing:-.01em;direction:ltr;justify-self:start;text-decoration:underline;text-decoration-color:rgb(255 255 255/.5);text-decoration-thickness:2px;text-underline-offset:6px}
 
 /* Footer */
 .site-footer{padding:clamp(40px,5vw,72px) 0 calc(22px + env(safe-area-inset-bottom))}
