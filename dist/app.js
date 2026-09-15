@@ -132,6 +132,17 @@ if (hand) {
   // dir = +1 turns the ring toward the start side in RTL (the front card slides left, the card on its right comes forward)
   const turn = steps => { offset -= steps; layout(); };
   layout();
+  // The cards peeking under the hero headline are the same cards: tapping one scrolls to the fan with that card in front.
+  const peekLink = $('.hero-peek');
+  if (peekLink) peekLink.addEventListener('click', event => {
+    const pc = event.target.closest('.peek-card');
+    if (!pc) return;
+    event.preventDefault();
+    const i = Number(pc.dataset.card);
+    if (posOf(i) !== 0) turn(posOf(i));
+    touched = true; hand.classList.add('is-touched');
+    hand.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
   if (!reduceMotion.matches) {
     // Phones: the cards peeking under the hero headline become the fan. When the hand enters the screen the
     // real cards start from the peek's size and place and spring out into the fan; leaving the screen resets it.
@@ -166,6 +177,7 @@ if (hand) {
     hand.addEventListener('pointerdown', event => {
       if (event.button !== 0) return;
       dragging = true; moved = false; startX = event.clientX; startY = event.clientY; pointerId = event.pointerId;
+      markTouched(); // the first touch stops the idle shuffle, so the card under the finger stays put
       held = front();
       pressed = cardAt(event.clientX, event.clientY) || event.target.closest('.hand-card');
     });

@@ -90,12 +90,20 @@ test('homepage presents Hebrew RTL content, the hero and the work grid without r
 test('the hero call to action scrolls to the work grid and the header hides on the way down', async ({ page }, testInfo) => {
   await page.goto('/');
   await ready(page);
-  // phones hide the text link; there the peeking cards under the headline are the link to the work
-  const link = page.locator(testInfo.project.name === 'mobile' ? '.hero-peek' : '.hero-actions .hero-work-link');
-  await expect(link).toHaveAttribute('href', '#work');
-  await link.click();
-  await expect(page).toHaveURL(/#work$/);
-  await expect.poll(() => page.locator('#work').evaluate(el => el.getBoundingClientRect().top < window.innerHeight)).toBe(true);
+  if (testInfo.project.name === 'mobile') {
+    // phones hide the text link; there a tap on one of the peeking cards scrolls to the fan with that card in front
+    const peek = page.locator('.hero-peek');
+    await expect(peek).toHaveAttribute('href', '#work'); // the no-JavaScript fallback
+    await peek.locator('.peek-card').nth(2).dispatchEvent('click', { detail: 1 });
+    await expect.poll(() => page.locator('.hand').evaluate(el => Math.abs(el.getBoundingClientRect().top) < 2)).toBe(true);
+    await expect.poll(() => page.locator('.hand-card').nth(2).evaluate(el => el.style.getPropertyValue('--pos'))).toBe('0');
+  } else {
+    const link = page.locator('.hero-actions .hero-work-link');
+    await expect(link).toHaveAttribute('href', '#work');
+    await link.click();
+    await expect(page).toHaveURL(/#work$/);
+    await expect.poll(() => page.locator('#work').evaluate(el => el.getBoundingClientRect().top < window.innerHeight)).toBe(true);
+  }
   await page.mouse.wheel(0, 600);
   await expect(page.locator('.site-header')).toHaveClass(/is-hidden/);
   await page.mouse.wheel(0, -200);

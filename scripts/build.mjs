@@ -94,7 +94,7 @@ const hero = `<section class="hero" aria-labelledby="hero-title">
       <h1 id="hero-title" class="display" aria-label="נבנה לעסק שלך אתר תדמית ${swapWords[0]}.">נבנה לעסק שלך<br>אתר תדמית <span class="swap-group"><span class="swap" aria-hidden="true">${swapWords.map((w, i) => `<span class="swap-word${i === 0 ? ' is-active' : ''}">${w}</span>`).join('')}<i class="swap-line"></i></span><span class="period">.</span></span></h1>
       <p class="lede">אנחנו <bdi>LA webs</bdi>. כל אתר כאן נכתב מאפס סביב העסק שמאחוריו, וכולם חיים באוויר.</p>
       <div class="hero-actions"><a class="pill pill-cta" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a><a class="text-link hero-work-link" href="#work">לעבודות ${down}</a></div>
-      <a class="hero-peek" href="#work" aria-label="לעבודות">${handOrder.slice(0, 5).map((p, i) => `<span class="peek-card" style="${vars(p)};--pos:${[0, 1, -1, 2, -2][i]};--abs:${[0, 1, 1, 2, 2][i]}"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="eager" decoding="async"></span>`).join("")}</a>
+      <a class="hero-peek" href="#work" aria-label="לעבודות">${handOrder.slice(0, 5).map((p, i) => `<span class="peek-card" data-card="${i}" style="${vars(p)};--pos:${[0, 1, -1, 2, -2][i]};--abs:${[0, 1, 1, 2, 2][i]}"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="eager" decoding="async"></span>`).join("")}</a>
     </div>
     <a class="hero-shot work-link" href="/work/${flagship.slug}/" aria-label="לפרויקט ${escape(flagship.hebrew)}">
       ${frame(flagship, 'browser', { loading: 'eager', priority: true, className: 'hero-frame', mobileImage: true, mobileSrc: heroMobile })}
