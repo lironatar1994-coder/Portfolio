@@ -22,13 +22,6 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-/* Phone chapters settle only near a boundary; long sections remain freely scrollable.
-   Keep this on the document scroller so native touch momentum and anchors still work. */
-@media (max-width:760px) and (prefers-reduced-motion:no-preference){
-  html:has(body.home){scroll-snap-type:y proximity}
-  .home :is(.hero-copy,.hand,#work,#studio,#contact){scroll-snap-align:start;scroll-snap-stop:normal}
-  .home :is(.hero-copy,.hand){scroll-margin-top:0}
-}
 #work,#studio,#contact,.case-hero{scroll-margin-top:calc(var(--header) + 12px)}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}
 ::selection{background:var(--accent);color:#fff}
