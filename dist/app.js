@@ -51,7 +51,7 @@ if (swap && !reduceMotion.matches) {
     fit(next);
     line?.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 700, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' });
     title?.setAttribute('aria-label', `נבנה לעסק שלך אתר תדמית ${next.textContent}.`);
-  }, 2600);
+  }, 5200);
 }
 
 /* ---------- Header: change state only after deliberate movement in one direction ---------- */
@@ -113,7 +113,7 @@ for (const catalog of $$('.catalog')) {
   strip.addEventListener('click', event => { if (moved) { event.preventDefault(); moved = false; } }, true);
 }
 
-/* ---------- Hand of cards (phone hero): fan, drag the front card and flick it away, gentle auto-shuffle until touched ---------- */
+/* ---------- Hand of cards (phone hero): fan, drag the front card and flick it away ---------- */
 const hand = $('.hand');
 if (hand) {
   const cardEls = $$('.hand-card', hand);
@@ -124,7 +124,7 @@ if (hand) {
   // and only the card that falls off one edge re-enters, unseen, at the other edge behind the fan.
   const base = cardEls.map((card, i) => i === 0 ? 0 : Math.ceil(i / 2) * (i % 2 ? 1 : -1));
   const wrap = p => ((p + half) % count + count) % count - half;
-  let offset = 0, touched = false, away = false;
+  let offset = 0;
   const posOf = i => wrap(base[i] + offset);
   const front = () => cardEls[base.findIndex((b, i) => posOf(i) === 0)];
   const layout = () => cardEls.forEach((card, i) => {
@@ -151,33 +151,28 @@ if (hand) {
     event.preventDefault();
     const i = Number(pc.dataset.card);
     if (posOf(i) !== 0) turn(posOf(i));
-    touched = true; hand.classList.add('is-touched');
+    hand.classList.add('is-touched');
     hand.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
   if (!reduceMotion.matches) {
     // Phones: the cards peeking under the hero headline become the fan. When the hand enters the screen the
     // real cards spring out into the fan once, then remain available when scrolling back.
     const peek = $('.hero-peek'), cardsBox = $('.hand-cards', hand);
-    if (peek && cardsBox && 'IntersectionObserver' in window && getComputedStyle(peek).display !== 'none') {
+    if (cardsBox && 'IntersectionObserver' in window && mobile.matches) {
       hand.classList.add('is-waiting');
       const dealObserver = new IntersectionObserver(([entry]) => {
         if (!entry.isIntersecting || entry.intersectionRatio < 0.3) return;
         dealObserver.unobserve(hand);
-        const peekCard = $('.peek-card', peek), first = cardEls[0];
-        const s = peekCard.offsetWidth / first.offsetWidth, h = first.offsetHeight;
-        // scale happens about the fan pivot (50% 140%), so the top edge drops by (1 - s) * 1.4 * h
-        const dy = peek.getBoundingClientRect().top - cardsBox.getBoundingClientRect().top - (1 - s) * 1.4 * h;
-        hand.style.setProperty('--from-y', `${Math.round(dy)}px`);
-        hand.style.setProperty('--from-s', s.toFixed(3));
+        // A short local entrance avoids pulling cards across the screen on scroll.
+        hand.style.setProperty('--from-y', '18px');
+        hand.style.setProperty('--from-s', '1');
         peek.classList.add('is-gone');
         hand.classList.remove('is-waiting');
         hand.classList.add('is-dealing');
       }, { threshold: [0, 0.3] });
       dealObserver.observe(hand);
     }
-    const timer = setInterval(() => { if (!touched && !away && !document.hidden) turn(1); }, 3800);
-    if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { away = !entry.isIntersecting; }, { threshold: 0.2 }).observe(hand);
-    const markTouched = () => { touched = true; hand.classList.add('is-touched'); };
+    const markTouched = () => { hand.classList.add('is-touched'); };
     // Drag: the front card follows the pointer; a decisive drag turns the ring that way, a short one springs back.
     let startX = 0, startY = 0, dragging = false, moved = false, held = null, pointerId = null, pressed = null;
     // Phones nudge a tap toward the nearest large link, so a touch on the thin edge of a card behind lands on its
@@ -187,7 +182,7 @@ if (hand) {
     hand.addEventListener('pointerdown', event => {
       if (event.button !== 0) return;
       dragging = true; moved = false; startX = event.clientX; startY = event.clientY; pointerId = event.pointerId;
-      markTouched(); // the first touch stops the idle shuffle, so the card under the finger stays put
+      markTouched();
       held = front();
       pressed = cardAt(event.clientX, event.clientY) || event.target.closest('.hand-card');
     });
@@ -223,7 +218,6 @@ if (hand) {
       if (posOf(i) !== 0) { markTouched(); turn(posOf(i)); }
       else location.assign(card.querySelector('a').href);
     });
-    addEventListener('pagehide', () => clearInterval(timer));
   }
 }
 

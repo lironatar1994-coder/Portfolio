@@ -101,20 +101,11 @@ test('homepage presents Hebrew RTL content, the hero and the work grid without r
 test('the hero call to action scrolls to the work grid and the header hides on the way down', async ({ page }, testInfo) => {
   await page.goto('/');
   await ready(page);
-  if (testInfo.project.name === 'mobile') {
-    // phones hide the text link; there a tap on one of the peeking cards scrolls to the fan with that card in front
-    const peek = page.locator('.hero-peek');
-    await expect(peek).toHaveAttribute('href', '#work'); // the no-JavaScript fallback
-    await peek.locator('.peek-card').nth(2).dispatchEvent('click', { detail: 1 });
-    await expect.poll(() => page.locator('.hand').evaluate(el => Math.abs(el.getBoundingClientRect().top) < 2)).toBe(true);
-    await expect.poll(() => page.locator('.hand-card').nth(2).evaluate(el => el.style.getPropertyValue('--pos'))).toBe('0');
-  } else {
-    const link = page.locator('.hero-actions .hero-work-link');
-    await expect(link).toHaveAttribute('href', '#work');
-    await link.click();
-    await expect(page).toHaveURL(/#work$/);
-    await expect.poll(() => page.locator('#work').evaluate(el => el.getBoundingClientRect().top < window.innerHeight)).toBe(true);
-  }
+  const link = page.locator('.hero-actions .hero-work-link');
+  await expect(link).toHaveAttribute('href', '#work');
+  await link.click();
+  await expect(page).toHaveURL(/#work$/);
+  await expect.poll(() => page.locator('#work').evaluate(el => el.getBoundingClientRect().top < window.innerHeight)).toBe(true);
   await settleScroll(page);
   await page.mouse.wheel(0, 600);
   await settleScroll(page);
@@ -175,7 +166,7 @@ test('every project has a card in the work grid, in its own color, with a summar
   const columns = await page.locator('.work-grid').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length);
   expect(columns).toBe(testInfo.project.name === 'desktop' ? 3 : 2);
   const desc = page.locator('#project-koral .card-desc');
-  if (testInfo.project.name === 'desktop') await expect(desc).toBeVisible(); else await expect(desc).toBeHidden();
+  await expect(desc).toBeVisible();
   await expectNoOverflow(page);
 });
 
@@ -232,16 +223,16 @@ test('on phones the hero is a hand of cards and case pages show a still phone ca
   await expect(page.locator('#more .strip-item')).toHaveCount(7);
 });
 
-test('website value presents real WhatsApp previews with accessible full-size links', async ({ page }) => {
+test('studio capabilities link to the real projects they describe', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.share-examples img')).toHaveCount(2);
-  for (const link of await page.locator('.share-examples a').all()) {
+  await expect(page.locator('.solution')).toHaveCount(3);
+  for (const slug of ['miryam', 'koral', 'reuven']) {
+    const link = page.locator(`#studio a[href="/work/${slug}/"]`);
+    await expect(link).toBeVisible();
     const response = await page.request.get(await link.getAttribute('href'));
     expect(response.ok()).toBe(true);
-    expect(response.headers()['content-type']).toMatch(/^image\//);
   }
-  await expect(page.locator('a[href="/work/vee/"]')).toHaveCount(0);
-  await expect(page.locator('.contact-visual')).toHaveCount(0); // the contact block is typographic since 16 September 2026
+  await expect(page.locator('#studio img')).toHaveCount(0);
 });
 
 test('mobile navigation supports keyboard, Escape and closing after a link', async ({ page }, testInfo) => {
@@ -339,7 +330,7 @@ test('without JavaScript the work, navigation and studio content remain usable',
     await expect(page.locator(testInfo.project.name === 'mobile' ? '.hand-card' : '.hero .hero-shot').first()).toBeVisible();
     await page.waitForTimeout(1500); // let the hand finish dealing in (CSS animation, runs without JS)
     await expect(page.locator('#work .work-card')).toHaveCount(liveSites.length);
-    await expect(page.locator('.proof h3')).toHaveCount(4);
+    await expect(page.locator('.solution h3')).toHaveCount(3);
     await expectNoOverflow(page);
     await page.locator('.work-card a[href="/work/koral/"]').first().click();
     await expect(page.getByRole('heading', { level: 1 })).toContainText('קורל אירועים');

@@ -1,3 +1,13 @@
+# LA webs — current visual direction (16 September 2026)
+
+Warm paper (#fcfbf8), charcoal (#20201e) and a deeper red (#bc3528). Client project colors and supplied assets remain intact. Plex Hebrew at 700 now carries headings; Frank Ruhl Libre remains on the LA webs wordmark so the existing logo and monogram stay consistent.
+
+The phone introduction is shorter, with a direct work link and one compact interactive fan; the duplicate peek is hidden. Cards have a short one-time entrance and no automatic shuffle. Vertical page scrolling stays native and free, with no snapping. The first three projects (Koral, Miryam, Pinhas) span the phone grid and show a larger image and a concise summary. Remaining projects stay in a compact two-column grid. Desktop retains three columns.
+
+The studio chapter has three text-led capabilities, each linked to an actual project: business presence, event registration and product catalogs. Repeated device screenshots and the sharing examples have been removed from this chapter; original image assets are retained. The red contact chapter is sized to its content on phones. Reveal movement is brief, with project cards visible immediately.
+
+## Historical design notes (superseded where they conflict with the above)
+
 # LA webs — design (v3, September 2026)
 
 This records the redesign implemented in `src/styles.css`, `src/index.html`, `src/app.js`, `src/projects.mjs` and `scripts/build.mjs`. Product truth is in [PRODUCT.md](PRODUCT.md); the reference research is in [docs/studio-research.md](docs/studio-research.md). CSS is the source of truth for values.

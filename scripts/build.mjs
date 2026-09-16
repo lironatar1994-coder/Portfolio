@@ -88,35 +88,15 @@ const hand = `<div class="hand" aria-label="העבודות שלנו, כמו יד
   </ul>
 </div>`;
 
-// Proof panels show the top of each site, so they use the light crops (the same faces as the cards) instead of the full-page captures.
-const proofFrame = (p, kind) => frame(p, kind, { className: 'proof-frame' })
-  .replace(`/images/${p.slug}-mobile-full.webp`, `/images/${p.slug}-card.webp`)
-  .replace(`/images/${p.slug}-desktop-full.webp`, `/images/${p.slug}-desktop.webp`)
-  .replace(/width="\d+" height="\d+"/, kind === 'phone' ? 'width="585" height="820"' : 'width="1440" height="1000"')
-  .replace('לאורך כל העמוד', 'בראש העמוד');
-const proofs = [
-  { slug: 'pinhas', kind: 'browser', title: 'מוצאים אתכם בגוגל.', line: 'כתובת משלכם, שמופיעה כשמחפשים את השירות באזור.' },
-  { slug: 'miryam', kind: 'phone', title: 'רושם ראשון, עוד לפני השיחה.', line: 'הלקוח רואה את העבודות והאופי שלכם, ומתקשר משוכנע.' },
-  { slug: 'reuven', kind: 'phone', title: 'התשובות כבר באתר.', line: 'שירותים, מחירים ודרכי הגעה, גם כשאתם עסוקים.' },
+// A concise studio chapter, grounded in the actual work rather than repeated screenshots.
+const solutions = [
+  { slug: 'miryam', title: 'תדמית עם אופי.', line: 'עיצוב שמציג את העסק ואת העבודות שלו, ומוביל לפנייה אישית.' },
+  { slug: 'koral', title: 'מהתעניינות להרשמה.', line: 'כל פרטי האירוע במקום אחד, עם הרשמה פשוטה מהטלפון.' },
+  { slug: 'reuven', title: 'קטלוג שעושה סדר.', line: 'מוצרים ומידע ברור, בדרך קצרה לבקשת הצעת מחיר.' },
 ];
-// Website value: four statements, each proven by a real client site in the site's own device frames, on an ink chapter.
-const value = `<section class="studio website-value" id="studio" aria-labelledby="studio-title"><div class="wrap">
-  <h2 id="studio-title" class="display value-title reveal">למה העסק שלכם<br>צריך אתר<span class="period">?</span></h2>
-  <ol class="proofs" role="list">
-${proofs.map(x => { const p = bySlug[x.slug]; return `    <li class="proof reveal"><div class="proof-copy"><h3 class="display">${x.title}</h3><p>${x.line}</p></div><a class="proof-visual ${tone(p)}" style="${vars(p)}" href="/work/${p.slug}/" aria-label="לפרויקט ${escape(p.hebrew)}">${proofFrame(p, x.kind)}<span class="proof-caption"><strong>${escape(p.hebrew)}</strong><bdi>${escape(p.domain)}</bdi></span></a></li>`; }).join('\n')}
-    <li class="proof proof-share reveal"><div class="proof-copy"><h3 class="display">כרטיס ביקור בקישור אחד.</h3><p>שולחים בוואטסאפ, וכבר בהודעה רואים תמונה, כותרת ותיאור.</p></div>
-      <div class="share-examples" role="region" aria-label="דוגמאות לשיתוף אתרים בוואטסאפ" tabindex="0">
-        <figure>
-          <a href="/images/whatsapp-koral-example.png" target="_blank" rel="noopener" aria-label="הגדלת דוגמת השיתוף של קורל אירועים — נפתח בחלון חדש"><img src="/images/whatsapp-koral-example.png" width="528" height="405" alt="תצוגת קישור לאתר קורל אירועים בתוך וואטסאפ, עם תמונת האירוע, כותרת ותיאור" loading="lazy" decoding="async"></a>
-          <figcaption>קורל אירועים <span>שיתוף בוואטסאפ · לחצו להגדלה</span></figcaption>
-        </figure>
-        <figure>
-          <a href="/images/whatsapp-pinhas-example.jpg" target="_blank" rel="noopener" aria-label="הגדלת דוגמת השיתוף של עורך דין פנחס רצון — נפתח בחלון חדש"><img src="/images/whatsapp-pinhas-example.jpg" width="780" height="786" alt="תצוגת קישור לאתר עורך דין פנחס רצון בוואטסאפ, עם תמונת עורך הדין ותחומי העיסוק" loading="lazy" decoding="async"></a>
-          <figcaption>עו״ד פנחס רצון <span>שיתוף בוואטסאפ · לחצו להגדלה</span></figcaption>
-        </figure>
-      </div>
-    </li>
-  </ol>
+const value = `<section class="studio website-value" id="studio" aria-labelledby="studio-title"><div class="wrap studio-grid">
+  <h2 id="studio-title" class="display value-title">לכל עסק<br>האתר שלו<span class="period">.</span></h2>
+  <ul class="solutions" role="list">${solutions.map(x => `<li class="solution"><h3 class="display">${x.title}</h3><p>${x.line}</p><a class="text-link" href="/work/${x.slug}/">${escape(bySlug[x.slug].hebrew)} ${arrow}</a></li>`).join('')}</ul>
 </div></section>`;
 
 const hero = `<section class="hero" aria-labelledby="hero-title">
@@ -150,7 +130,7 @@ function card(p, { className = '', withId = false, summary = false } = {}) {
 }
 
 /** Home: every project in one grid (three columns on desktop, two on phones). Nothing hidden behind a swipe. */
-const rows = `<ul class="work-grid wrap" role="list">${work.map(p => card(p, { withId: true, summary: true, className: 'reveal' })).join('')}</ul>`;
+const rows = `<ul class="work-grid wrap" role="list">${work.map((p, i) => card(p, { withId: true, summary: true, className: i < 3 ? 'featured' : '' })).join('')}</ul>`;
 
 /** Case pages: one-line carousel of the other projects. Native scroll-snap, swipe on touch, drag + arrows on desktop. */
 function catalogStrip(items, { id = 'more' } = {}) {
