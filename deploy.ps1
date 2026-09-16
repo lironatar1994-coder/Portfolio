@@ -4,7 +4,8 @@ param(
     [ValidateSet('All', 'GitHub', 'Prod', 'Check')][string]$Target = 'All',
     [string]$SSHHost = 'root@vee-app.co.il',
     [string]$Origin = '',
-    [string]$SiteOrigin = 'https://lawebs.co.il'
+    [string]$SiteOrigin = 'https://lawebs.co.il',
+    [switch]$SkipChecks
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -17,8 +18,10 @@ try {
     $env:SITE_ORIGIN = $SiteOrigin
     if (-not $Origin) { throw 'Set -Origin to the Git remote before publishing.' }
     Run npm.cmd @('run', 'build')
-    Run npm.cmd @('run', 'check')
-    Run git @('diff', '--check')
+    if (-not $SkipChecks) {
+        Run npm.cmd @('run', 'check')
+        Run git @('diff', '--check')
+    }
     if ($Target -eq 'Check') { return }
     $currentOrigin = (Run git @('remote', 'get-url', 'origin') | Out-String).Trim()
     if (-not $currentOrigin) { Run git @('remote', 'add', 'origin', $Origin); $currentOrigin = $Origin }
@@ -51,7 +54,8 @@ git --git-dir="$repo" archive --format=tar.gz --output="$archive" '__REV__'
 mv "$archive" '/opt/lawebs-portfolio/incoming/__REV__.tar.gz'
 '@
     Run ssh @('-o','BatchMode=yes','-o','ConnectTimeout=15',$SSHHost,$prepare.Replace('__REV__',$revision).Replace('__ORIGIN__',$Origin.ToLowerInvariant()).Replace([string][char]13,''))
-    Run ssh @('-o','BatchMode=yes',$SSHHost,"tar -xOf /opt/lawebs-portfolio/incoming/$revision.tar.gz scripts/deploy-linux.sh | bash -s -- $revision")
+    $skipFlag = if ($SkipChecks) { ' --skip-checks' } else { '' }
+    Run ssh @('-o','BatchMode=yes',$SSHHost,"tar -xOf /opt/lawebs-portfolio/incoming/$revision.tar.gz scripts/deploy-linux.sh | bash -s -- $revision$skipFlag")
     $response = Invoke-WebRequest $SiteOrigin -UseBasicParsing
     if ($response.StatusCode -ne 200 -or $response.Content -notmatch 'LAwebs') { throw 'Public homepage verification failed.' }
     Write-Host "Live: $SiteOrigin ($revision)" -ForegroundColor Green

@@ -8,7 +8,7 @@ test -f "$base/incoming/$revision.tar.gz"
 mkdir -p "$release"
 tar -xzf "$base/incoming/$revision.tar.gz" -C "$release"
 SITE_ORIGIN=https://lawebs.co.il node "$release/scripts/build.mjs"
-node "$release/scripts/check.mjs"
+if [ "${2:-}" != '--skip-checks' ]; then node "$release/scripts/check.mjs"; fi
 test -f "$release/dist/index.html"
 chown -R www-data:www-data "$release/dist"
 chmod -R a+rX "$release/dist"

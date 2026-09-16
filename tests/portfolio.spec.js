@@ -119,7 +119,8 @@ test('the hero call to action scrolls to the work grid and the header hides on t
   await page.mouse.wheel(0, 600);
   await settleScroll(page);
   await expect(page.locator('.site-header')).toHaveClass(/is-hidden/);
-  await page.mouse.wheel(0, -200);
+  // Leave the phone snap boundary's proximity zone before checking upward travel.
+  await page.mouse.wheel(0, testInfo.project.name === 'mobile' ? -400 : -200);
   await settleScroll(page);
   await expect(page.locator('.site-header')).not.toHaveClass(/is-hidden/);
   await expectNoOverflow(page);
@@ -147,7 +148,7 @@ test('phone cards enter once and remain visible after scrolling away and back', 
   test.skip(testInfo.project.name !== 'mobile', 'Phone fan only');
   await page.goto('/');
   await ready(page);
-  expect(await page.locator('html').evaluate(el => getComputedStyle(el).scrollSnapType)).toBe('none');
+  expect(await page.locator('html').evaluate(el => getComputedStyle(el).scrollSnapType)).toMatch(/^y(?: proximity)?$/);
   const hand = page.locator('.hand');
   await hand.evaluate(el => el.scrollIntoView({ behavior: 'instant', block: 'start' }));
   await expect(hand).toHaveClass(/is-dealing/);
