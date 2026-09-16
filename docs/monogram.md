@@ -28,6 +28,13 @@ With Node `sharp` installed, run `node scripts/render-monogram.mjs`; an optional
 module path argument supports a shared tooling installation. Font licensing is
 in `public/fonts/`. Normal builds consume the committed assets without these tools.
 
+`build-monogram.py` preserves the transparent separation in both large masters
+and regenerates the plain comparison masters separately. It leaves the favicon
+design plain. Run `node scripts/render-share.mjs` after changing the large masters
+to refresh the current sharing card; `render-monogram.mjs` only exports the icon
+fallbacks and the older plain sharing image. Site builds also remove the three
+retired `la-webs-icon-*.png` files from an existing dist directory.
+
 Validated at 32 px, in the mobile card fan, and in the sharing image. Browser QA
 also checked live-text wordmarks, favicon links, homepage/project OG separation,
 mobile overflow, and runtime errors. Screenshots: `output/branding/monogram-mobile.png`

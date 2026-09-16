@@ -228,6 +228,9 @@ export async function build() {
   await mkdir(destination, { recursive: true });
   // Retire the removed Vee case page even when building over an older output.
   await rm(resolve(destination, 'work/vee'), { recursive: true, force: true });
+  // These generated-image icons were replaced by the font-based monogram.
+  // Remove stale copies too when rebuilding over an existing dist directory.
+  for (const size of [32, 180, 192]) await rm(resolve(destination, `la-webs-icon-${size}.png`), { force: true });
   await cp(resolve(root, 'public'), destination, { recursive: true });
   for (const file of ['styles.css', 'app.js']) await cp(resolve(root, 'src', file), resolve(destination, file));
   let home = await readFile(resolve(root, 'src/index.html'), 'utf8');
