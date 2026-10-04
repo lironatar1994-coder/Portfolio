@@ -536,17 +536,13 @@ bdi{unicode-bidi:isolate}
   .fan-label{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:48px;flex:none;font-size:16px;font-weight:600}
   .fan-label svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.5}
   /* Before opening the stack is a tight fan, so the edges of the cards behind already show. */
-  .js .desktop-fan:not(.is-open) .fan-card{transform:rotate(calc(var(--angle) * .16));transition:none;animation:fan-rise .8s var(--ease) both;animation-delay:calc(var(--delay) * .6)}
+  .js .desktop-fan:not(.is-open) .fan-card{transform:rotate(calc(var(--angle) * .16));transition:none;animation:fan-deal .8s cubic-bezier(.2,.75,.25,1) both;animation-delay:calc(.3s + var(--deal,0) * .12s)}
   .js .desktop-fan.is-open:not(.is-settled) .fan-card{animation:fan-open 1.15s cubic-bezier(.3,.7,.2,1) both;animation-delay:var(--delay)}
   .desktop-fan.is-settled .fan-card:hover,.desktop-fan .fan-card:focus-within{transform:rotate(var(--angle)) translateY(-24px);z-index:10;transition-duration:240ms;transition-delay:0ms}
   .fan-link:focus-visible{outline:3px solid var(--accent);outline-offset:5px}
   .hero-centered .hero-copy>*{animation:none}
 }
-/* Rise in as a tight stack, gather for a beat, then spring open past the final angle and settle. */
-@keyframes fan-rise{
-  from{transform:translateY(56px) rotate(0deg);opacity:0}
-  to{transform:rotate(calc(var(--angle) * .16));opacity:1}
-}
+/* Gather for a beat, then spring open past the final angle and settle. */
 @keyframes fan-open{
   0%{transform:rotate(calc(var(--angle) * .16))}
   16%{transform:translateY(8px) rotate(calc(var(--angle) * .04)) scale(.98)}
@@ -730,3 +726,31 @@ bdi{unicode-bidi:isolate}
   .contact-note{font-size:17px}
 }
 @media (prefers-reduced-motion:reduce){.stack-next .stack-panel:hover .next-card{transform:rotate(-5deg)}}
+
+/* ---------- Opening choreography (4 October 2026) ---------- */
+/* One sequence: the headline lines rise out of a mask and their periods pop, the cards are dealt onto the
+   table one by one (outer cards first, the front card last), then the fan springs open and comes alive. */
+@keyframes line-in{
+  from{transform:translateY(.6em);clip-path:inset(-.3em -.2em 100% -.2em)}
+  to{transform:none;clip-path:inset(-.3em -.2em -.35em -.2em)}
+}
+@keyframes dot-pop{0%{transform:scale(0)}60%{transform:scale(1.4)}100%{transform:scale(1)}}
+@keyframes fade-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fan-deal{
+  from{transform:translateY(75vh) rotate(var(--spin,0deg))}
+  to{transform:rotate(calc(var(--angle) * .16))}
+}
+@keyframes hand-deal{from{translate:0 var(--from-y,70vh);rotate:var(--spin,0deg)}}
+.js .hero-copy>.brand-headline{animation:none}
+.js .brand-headline>span{animation:line-in .9s cubic-bezier(.2,.8,.2,1) .05s both}
+.js .brand-headline>span+span{animation-delay:.18s}
+.js .brand-headline .period{display:inline-block;transform-origin:50% 85%;animation:dot-pop .55s cubic-bezier(.3,1.6,.5,1) .75s both}
+.js .brand-headline>span+span .period{animation-delay:.9s}
+.js .hero-copy>.lede{animation:fade-up .8s var(--ease) .4s both}
+.js .hero-copy>.hero-actions{animation:fade-up .8s var(--ease) .55s both}
+@media (max-width:760px){
+  .js .hand.is-dealing .hand-card{animation:hand-deal .75s cubic-bezier(.2,.75,.25,1) both;animation-delay:calc(.15s + var(--deal,0) * 105ms)}
+}
+@media (prefers-reduced-motion:reduce){
+  .js .brand-headline>span,.js .brand-headline .period,.js .hero-copy>.lede,.js .hero-copy>.hero-actions{animation:none}
+}

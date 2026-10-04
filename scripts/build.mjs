@@ -158,7 +158,7 @@ const faq = `<section class="faq" id="faq" aria-labelledby="faq-title"><div clas
 const desktopOrder = ['miryam', 'koral', 'pizza', 'pinhas', 'libi'];
 const desktopFan = `<ul class="desktop-fan" aria-label="חמש עבודות נבחרות">${desktopOrder.map((slug, i) => {
   const p = bySlug[slug];
-  return `<li class="fan-card${i === 2 ? ' is-centre' : ''}" style="--angle:${(i-2)*14}deg;--layer:${5-Math.abs(i-2)};--delay:${Math.abs(i-2)*55}ms"><a class="fan-link" href="/work/${slug}/" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="fan-face"><img src="/images/${slug}-card-20261004.webp" width="585" height="820" alt="" loading="eager" decoding="async"${i===2 ? ' fetchpriority="high"' : ''}>${live(p)}</span><span class="fan-label"><span>${escape(p.hebrew)}</span>${arrow}</span></a></li>`;
+  return `<li class="fan-card${i === 2 ? ' is-centre' : ''}" style="--angle:${(i-2)*14}deg;--layer:${5-Math.abs(i-2)};--delay:${Math.abs(i-2)*55}ms;--deal:${[0, 2, 4, 3, 1][i]};--spin:${(i - 2) * 7 + (i === 2 ? 3 : 0)}deg"><a class="fan-link" href="/work/${slug}/" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="fan-face"><img src="/images/${slug}-card-20261004.webp" width="585" height="820" alt="" loading="eager" decoding="async"${i===2 ? ' fetchpriority="high"' : ''}>${live(p)}</span><span class="fan-label"><span>${escape(p.hebrew)}</span>${arrow}</span></a></li>`;
 }).join('')}</ul>`;
 const hero = `<section class="hero hero-centered" aria-labelledby="hero-title">
   <div class="wrap hero-grid">

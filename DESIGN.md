@@ -116,3 +116,7 @@ Liron asked for a homepage that impresses prospective clients; credibility copy 
 - **What every site ships with.** Six items at the end of the ink chapter (custom design, phone first, fast and ready for Google, WhatsApp and call buttons, domain/hosting/security, support after launch).
 - **Contact** adds one line: a short introductory call, free and without commitment.
 - **Case pages** lead with "רוצים אתר כזה?", a WhatsApp link whose message names the project, with "לאתר החי" beside it.
+
+## Opening choreography (4 October 2026)
+The first screen plays as one sequence on every width (supersedes the earlier "rise as a tight stack" entrances):
+the two headline lines rise out of a clip mask 130ms apart and each terracotta period pops in after its line (≈0.75–0.9s); the lede and actions fade up at 0.4s and 0.55s so reading is never held back. Meanwhile the cards are dealt from below the screen, tilted as if thrown (`--spin`), one at a time from the outer cards to the front card (desktop `--deal` order 0,4,1,3,2; phones rank by depth from the back of the hand), landing on the tight 16% / 1.4° stack by about 1.6s. After a short beat the fan springs open (desktop `fan-open`, phones a spring transition on `--fan`) and the front card starts touring its site. Hovering the desktop fan cannot cut the deal short. Reduced motion shows the finished state.

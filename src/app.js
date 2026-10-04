@@ -138,17 +138,20 @@ if (hand) {
       const dealObserver = new IntersectionObserver(([entry]) => {
         if (!entry.isIntersecting || entry.intersectionRatio < 0.3) return;
         dealObserver.unobserve(hand);
-        // Same opening as the desktop fan: the cards rise as a tight stack with their edges peeking out,
-        // hold for a beat, then spring open into the hand. The front card comes alive once they land.
-        hand.style.setProperty('--from-y', '64px');
-        hand.style.setProperty('--from-s', '.94');
+        // Same opening as the desktop fan: the cards are dealt onto a tight stack one by one, from the back of
+        // the hand to the front card, hold for a beat, then spring open. The front card comes alive once they land.
+        const rank = [...cardEls].sort((a, b) => Number(b.style.getPropertyValue('--abs')) - Number(a.style.getPropertyValue('--abs'))
+          || Number(b.style.getPropertyValue('--pos')) - Number(a.style.getPropertyValue('--pos')));
+        rank.forEach((card, i) => { card.style.setProperty('--deal', i); card.style.setProperty('--spin', `${(i % 2 ? 1 : -1) * (14 - i)}deg`); });
+        hand.style.setProperty('--from-y', '70vh');
         hand.classList.remove('is-waiting');
         hand.classList.add('is-dealing');
+        const landed = 150 + (rank.length - 1) * 105 + 750; // the front card's landing, matching the CSS stagger
         setTimeout(() => {
           hand.classList.add('is-opening');
           hand.classList.remove('is-closed');
           setTimeout(() => { hand.classList.remove('is-opening'); comeAlive(); }, 1500);
-        }, 1000);
+        }, landed + 250);
       }, { threshold: [0, 0.3] });
       dealObserver.observe(hand);
     } else if (mobile.matches) comeAlive(); // the hand is hidden on larger screens, so its capture is never fetched there
@@ -312,13 +315,14 @@ if (desktopFan) {
     const fanObserver = new IntersectionObserver(entries => {
       if (entries.some(entry => entry.isIntersecting)) {
         fanObserver.disconnect();
-        setTimeout(openFan, 1100); // let the peeking stack land and be seen first
+        // The cards are dealt from page load (CSS); open once the front card has landed and been seen.
+        setTimeout(openFan, Math.max(300, 1850 - performance.now()));
       }
     }, { threshold: .2 });
     fanObserver.observe(desktopFan);
   }
   desktopFan.addEventListener('focusin', openFan);
-  desktopFan.addEventListener('pointerenter', openFan);
+  desktopFan.addEventListener('pointerenter', () => { if (performance.now() > 1650) openFan(); }); // never cut the deal short
   reduceMotion.addEventListener('change', event => { if (event.matches) openFan(); });
 }
 
