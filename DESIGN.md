@@ -143,3 +143,8 @@ Supersedes "no automatic shuffle" and the living centre card in the hero.
 
 ## Landing page wow pass (5 October 2026)
 The `/lp/` hero is an ink stage (header included): ivory headline, terracotta call to action and check marks. The form is the top card of a hand: the four featured projects fan out behind it (±6°/±15° around a low pivot), peeking above, dealt in from below when the deck enters the view (`.lead-deck.is-dealt`), and spreading wider on hover. The form overlaps the ink/ivory boundary for depth. `.lp-hero` clips horizontally so the fanned cards never widen the page (phones would zoom out). The local dev server now builds with `SITE_ORIGIN`, so `dist` never holds a noindex build.
+
+## Motion pass (5 October 2026)
+- **Works stack depth (desktop):** as the next project slides up, the panel beneath scales to 94% from its top edge and darkens under a 42% shade, driven by `--cover` (0 while the next panel is below the fold, 1 when it rests). One passive scroll listener with rAF; measured 16.6ms per frame, no long frames.
+- **Micro-interactions:** pills, chips, strip and bar buttons press to 96%; a chosen need springs; a missing form answer nudges sideways twice; sending turns the button green with a drawn check ("נפתח בוואטסאפ") for 3.5s.
+- **Landing deck performance:** the cards behind the form use the 300w card images at high priority, and on phones the deal travels 22vh instead of 55vh so the cards are on screen from the first frame; the largest paint stays the copy, not a decorative card.

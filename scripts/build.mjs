@@ -339,7 +339,7 @@ function landingPage() {
         <div class="hero-actions"><a class="pill pill-cta" href="${wa}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a><a class="text-link" href="tel:${studio.tel}">או חייגו <bdi>${studio.phone}</bdi></a></div>
       </div>
       <div class="lead-deck">
-      ${proof.map((p, i) => `<span class="deck-card" aria-hidden="true" style="${vars(p)};--d:${i};--r:${[-15, -6, 6, 15][i]}deg"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="" decoding="async" fetchpriority="${i === 1 || i === 2 ? 'high' : 'low'}"></span>`).join('')}
+      ${proof.map((p, i) => `<span class="deck-card" aria-hidden="true" style="${vars(p)};--d:${i};--r:${[-15, -6, 6, 15][i]}deg"><img src="/images/${p.slug}-card-20261004-300w.webp" width="300" height="421" alt="" decoding="async" fetchpriority="high"></span>`).join('')}
       <form class="lead" id="lead" action="https://wa.me/${studio.tel.replace('+', '')}" method="get" target="_blank" aria-labelledby="lead-title">
         <h2 id="lead-title" class="lead-title display">ספרו לנו על העסק<span class="period">.</span></h2>
         <label class="field"><span>שם</span><input name="n" autocomplete="name" required maxlength="60"></label>

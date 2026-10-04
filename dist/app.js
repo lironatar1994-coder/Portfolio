@@ -414,8 +414,22 @@ document.addEventListener('click', event => {
 
 /* ---------- Landing page form: write the WhatsApp message from the visitor's answers ---------- */
 const lead = $('#lead');
+// A missing answer gets a gentle nudge instead of the browser's bubble alone.
+lead?.addEventListener('invalid', event => {
+  const field = event.target;
+  field.classList.remove('is-missing'); void field.offsetWidth; field.classList.add('is-missing');
+  field.addEventListener('input', () => field.classList.remove('is-missing'), { once: true });
+}, true);
 lead?.addEventListener('submit', event => {
   event.preventDefault();
+  // the button confirms with a drawn check for a moment, then returns to its label
+  const button = $('.lead-submit', lead);
+  if (button && !button.classList.contains('is-sent')) {
+    const label = button.innerHTML;
+    button.classList.add('is-sent');
+    button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg> נפתח בוואטסאפ';
+    setTimeout(() => { button.classList.remove('is-sent'); button.innerHTML = label; }, 3500);
+  }
   const data = new FormData(lead);
   const need = String(data.get('w') || '');
   const ask = need && !need.startsWith('עוד לא') ? `אשמח לשמוע על ${need} לעסק שלי.` : 'אשמח לשמוע מה יתאים לעסק שלי.';
@@ -436,4 +450,26 @@ if (deck) {
     observer.disconnect();
     deck.classList.add('is-dealt');
   }, { threshold: 0.15 }).observe(deck);
+}
+
+/* ---------- Works stack depth: each panel recedes as the next one slides over it (desktop, where they stack) ---------- */
+const stackItems = $$('.stack-item');
+if (stackItems.length > 1 && !reduceMotion.matches) {
+  let queued = false;
+  const update = () => {
+    queued = false;
+    const stuck = getComputedStyle(stackItems[0]).position === 'sticky';
+    stackItems.forEach((item, i) => {
+      const next = stackItems[i + 1];
+      if (!stuck || !next) { item.style.removeProperty('--cover'); return; }
+      // 0 while the next panel is below the fold, 1 once it has reached its own resting place
+      const top = next.getBoundingClientRect().top, rest = parseFloat(getComputedStyle(next).top) || 0;
+      const p = Math.min(1, Math.max(0, (innerHeight - top) / (innerHeight - rest)));
+      item.style.setProperty('--cover', p.toFixed(3));
+    });
+  };
+  const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('resize', schedule);
+  update();
 }

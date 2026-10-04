@@ -966,3 +966,33 @@ html:not(.js) .cycle{display:none}
 @media (prefers-reduced-motion:reduce){
   .deck-card{animation:none}
 }
+
+/* ---------- Motion pass (5 October 2026) ---------- */
+/* Works stack depth: as the next project slides up, the one beneath recedes (scale + shade), driven by --cover 0..1. */
+.stack-panel{transform-origin:50% 0;transform:scale(calc(1 - var(--cover,0) * .06));will-change:transform}
+.stack-panel::after{content:'';position:absolute;inset:0;border-radius:inherit;background:#14110e;opacity:calc(var(--cover,0) * .42);pointer-events:none;z-index:6}
+.stack-panel{position:relative}
+
+/* Micro-interactions: controls press, choices spring, sending confirms. */
+.pill,.chip span,.cycle-toggle,.strip-btn,.lp-bar a,.lp-call{transition:transform .25s var(--ease),background .25s,color .25s,box-shadow .25s}
+.pill:active,.cycle-toggle:active,.strip-btn:active,.lp-bar a:active,.lp-call:active{transform:scale(.96);transition-duration:.08s}
+.chip:active span{transform:scale(.94);transition-duration:.08s}
+@keyframes chip-pop{0%{transform:scale(.9)}55%{transform:scale(1.07)}100%{transform:scale(1)}}
+.chip input:checked+span{animation:chip-pop .38s cubic-bezier(.3,1.5,.5,1)}
+.field input{transition:border-color .2s,box-shadow .2s,transform .25s var(--ease)}
+.field input:focus{transform:translateY(-1px)}
+@keyframes check-draw{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
+.lead-submit.is-sent{background:#2f7a4f;pointer-events:none}
+.lead-submit.is-sent svg{stroke-dasharray:24;animation:check-draw .5s var(--ease) .1s both}
+@keyframes field-nudge{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.field input.is-missing{border-color:var(--accent);animation:field-nudge .35s ease 2}
+.card-link:active{transform:scale(.985);transition-duration:.1s}
+@media (prefers-reduced-motion:reduce){
+  .stack-panel{transform:none}
+  .stack-panel::after{opacity:0}
+  .chip input:checked+span,.field input.is-missing,.lead-submit.is-sent svg{animation:none}
+}
+/* phones: the deck sits at the fold, so a shorter deal keeps the cards on screen from the first frame (faster largest paint) */
+@keyframes deck-deal-short{from{transform:translateY(22vh) rotate(calc(var(--r) * 2))}}
+@media (max-width:760px){.deck-card{animation-name:deck-deal-short;animation-delay:calc(.1s + var(--d) * 90ms)}}
+@media (max-width:760px) and (prefers-reduced-motion:reduce){.deck-card{animation:none}}
