@@ -81,3 +81,7 @@ Reveal-on-scroll, a one-time hero entrance, hover-scrolled captures on the cards
 ## Mobile card ordering (14 September 2026)
 
 The all-work red card is the last item in the hand and now also starts at its deepest visual layer. Fan slots follow forward deck order (center, right, left, outward), while stacking follows each card's unique forward depth. This avoids circular-distance placement bringing the last card beside the first. Autoplay/swiping reaches all project cards before the all-work card, then cycles back to the first. Without JavaScript, the existing alternating CSS slots use each card's source index for stacking. A source-level cycle check verified initial depth, each front card in order, wraparound, and the static CSS fallback; build/check passed.
+
+
+## October 2026 brand alignment
+Approved WhatsApp brand direction: warm ivory #f7f1e8, charcoal #292521, terracotta #a65345 (deep #884237). Hero uses the approved static Hebrew slogan העסק שלך. האתר שמתאים לו. and personal website/app development copy. Retains the production studio structure, client colors, mobile fan and working project/contact links. Wordmark and favicon use charcoal. Homepage sharing image uses the approved 16:9 portfolio cover.

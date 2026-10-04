@@ -182,13 +182,12 @@ test('floating WhatsApp waits for the work section and hides over the contact bl
   await expect(floating).toHaveClass(/is-hidden/);
 });
 
-test('hero word rotates and keeps the heading label in sync', async ({ page }) => {
+test('hero shows the approved brand slogan without rotating copy', async ({ page }) => {
   await page.goto('/');
   await ready(page);
-  const first = await page.locator('.swap-word.is-active').textContent();
-  await expect.poll(() => page.locator('.swap-word.is-active').textContent(), { timeout: 5000 }).not.toBe(first);
-  const active = await page.locator('.swap-word.is-active').textContent();
-  await expect(page.locator('#hero-title')).toHaveAttribute('aria-label', `נבנה לעסק שלך אתר תדמית ${active}.`);
+  await expect(page.locator('#hero-title')).toHaveText('העסק שלך.האתר שמתאים לו.');
+  await expect(page.locator('.swap')).toHaveCount(0);
+  await expectNoOverflow(page);
 });
 
 test('case page desktop and phone windows scroll inside themselves', async ({ page }, testInfo) => {

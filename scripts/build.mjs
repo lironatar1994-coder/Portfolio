@@ -45,7 +45,7 @@ function frame(project, kind, { loading = 'lazy', priority = false, vt = '', cla
   return `<div class="frame ${kind}${className ? ' ' + className : ''}"${vt ? ` style="view-transition-name:${vt}"` : ''}>${chrome}<div class="shot">${image}</div></div>`;
 }
 
-function head(title, description, { pathname = '/', image = '/images/la-webs-share-v3.jpg', themeColor = '#fbfaf7' } = {}) {
+function head(title, description, { pathname = '/', image = '/images/la-webs-brand-cover.png', themeColor = '#f7f1e8' } = {}) {
   const origin = process.env.SITE_ORIGIN;
   const url = origin ? new URL(pathname, origin).href : null;
   return `<meta name="theme-color" content="${themeColor}">
@@ -76,7 +76,6 @@ const flagship = projects[0];
 const order = ['koral', 'miryam', 'pinhas', 'libi', 'reuven', 'sos', 'seder', 'pdf'];
 const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
 const work = order.map(slug => bySlug[slug]);
-const swapWords = ['מושקע', 'מעוצב', 'מדויק', 'מהיר', 'מצליח'];
 const heroMobile = { src: '/images/blank.webp', width: 2, height: 2 }; // phones show the hand of cards instead of the frame
 
 // Phone hero: the work as a hand of cards. Front card upright, the rest fanned behind; swipe to shuffle, tap to open.
@@ -102,8 +101,8 @@ const value = `<section class="studio website-value" id="studio" aria-labelledby
 const hero = `<section class="hero" aria-labelledby="hero-title">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <h1 id="hero-title" class="display" aria-label="נבנה לעסק שלך אתר תדמית ${swapWords[0]}.">נבנה לעסק שלך<br>אתר תדמית <span class="swap-group"><span class="swap" aria-hidden="true">${swapWords.map((w, i) => `<span class="swap-word${i === 0 ? ' is-active' : ''}">${w}</span>`).join('')}<i class="swap-line"></i></span><span class="period">.</span></span></h1>
-      <p class="lede">אנחנו <bdi>LA webs</bdi>. כל אתר כאן נכתב מאפס סביב העסק שמאחוריו, וכולם חיים באוויר.</p>
+      <h1 id="hero-title" class="display brand-headline"><span>העסק שלך<span class="period">.</span></span><span>האתר שמתאים לו<span class="period">.</span></span></h1>
+      <p class="lede">עיצוב ופיתוח אתרים ואפליקציות בהתאמה אישית. מהנראות ועד לחוויית השימוש — כל פרט נבנה סביב העסק שלך.</p>
       <div class="hero-actions"><a class="pill pill-cta" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a><a class="text-link hero-work-link" href="#work">לעבודות ${down}</a></div>
       <a class="hero-peek" href="#work" aria-label="לעבודות">${handOrder.slice(0, 5).map((p, i) => `<span class="peek-card" data-card="${i}" style="${vars(p)};--pos:${[0, 1, -1, 2, -2][i]};--abs:${[0, 1, 1, 2, 2][i]}"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="eager" decoding="async"></span>`).join("")}</a>
     </div>
@@ -146,7 +145,7 @@ function catalogStrip(items, { id = 'more' } = {}) {
 
 const contact = `<section class="contact" id="contact" aria-labelledby="contact-title"><div class="wrap">
   <div class="contact-copy">
-  <h2 id="contact-title" class="display reveal">יש לכם עסק?<br>מגיע לו אתר<br><span class="keep-together">עם אופי.</span></h2>
+  <h2 id="contact-title" class="display reveal">בואו נבנה<br>את האתר שלכם<span class="period">.</span></h2>
   </div>
   <div class="contact-actions reveal">
     <a class="pill pill-light" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a>

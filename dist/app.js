@@ -29,31 +29,6 @@ document.addEventListener('focusin', event => {
 });
 mobile.addEventListener('change', event => { if (!event.matches) closeMenu(); });
 
-/* ---------- Hero: rotating word with a redrawn underline ---------- */
-const swap = $('.swap');
-if (swap && !reduceMotion.matches) {
-  const words = $$('.swap-word', swap);
-  const line = $('.swap-line', swap);
-  const title = $('#hero-title');
-  let current = Math.max(0, words.findIndex(word => word.classList.contains('is-active')));
-  // The slot follows the active word's width so the period never drifts away from shorter words.
-  const fit = word => { swap.style.width = Math.ceil(word.getBoundingClientRect().width) + 'px'; };
-  document.fonts.ready.then(() => fit(words[current]));
-  addEventListener('resize', () => fit(words[current]));
-  setInterval(() => {
-    if (document.hidden) return;
-    const previous = words[current];
-    current = (current + 1) % words.length;
-    const next = words[current];
-    previous.classList.remove('is-active'); previous.classList.add('is-leaving');
-    setTimeout(() => previous.classList.remove('is-leaving'), 520);
-    next.classList.add('is-active');
-    fit(next);
-    line?.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 700, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' });
-    title?.setAttribute('aria-label', `נבנה לעסק שלך אתר תדמית ${next.textContent}.`);
-  }, 5200);
-}
-
 /* ---------- Header: change state only after deliberate movement in one direction ---------- */
 const header = $('.site-header');
 if (header) {
