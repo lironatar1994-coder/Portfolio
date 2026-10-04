@@ -899,3 +899,22 @@ html:not(.js) .cycle{display:none}
   .lp-bar a:last-child{box-shadow:inset 0 0 0 1.5px var(--ink);color:var(--ink)}
   .lp-bar svg{width:20px;height:20px}
 }
+
+/* Landing page: the "why not build it yourself" comparison. */
+.lp-compare{padding:clamp(56px,7vw,110px) 0}
+.lp-compare h2{font-size:clamp(36px,4.4vw,72px);line-height:1.08;margin-bottom:clamp(28px,4vw,52px)}
+.compare{display:grid;border-top:1px solid var(--line)}
+.compare-row{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,4fr) minmax(0,4fr);gap:16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line);font-size:17px}
+.compare-row strong{font-weight:600}
+.compare-row span:nth-child(2){color:var(--muted)}
+.compare-row span:nth-child(3){display:flex;align-items:center;gap:10px;font-weight:600}
+.compare-row svg{width:20px;height:20px;flex-shrink:0;color:var(--accent);stroke-width:2.2}
+.compare-head{font-size:14px;font-weight:600;color:var(--muted);padding-block:12px}
+.compare-head span:nth-child(3){color:var(--accent-deep)}
+.compare-note{margin-top:22px;font-size:17px;max-width:62ch;color:var(--muted)}
+@media (max-width:760px){
+  .compare-row{grid-template-columns:1fr 1fr;gap:6px 14px;font-size:15.5px;padding:16px 0}
+  .compare-row strong{grid-column:1/-1;font-size:16px}
+  .compare-head{display:none}
+  .compare-row span:nth-child(2)::before{content:'בונה אתרים: ';font-weight:600}
+}

@@ -283,6 +283,14 @@ const lpVariants = {
   catalog: { lines: ['קטלוג דיגיטלי', 'שעושה סדר במוצרים'], need: 'קטלוג או חנות' },
 };
 const lpDefault = { lines: ['אתר שנבנה לעסק שלך,', 'ומביא אליו פניות'], need: lpNeeds[0] };
+// The objection every competitor answers: why not build it yourself. Fair to the builders, specific about the difference.
+const lpCompare = [
+  ['עיצוב', 'תבנית שעסקים רבים משתמשים בה', 'עיצוב שנבנה סביב העסק שלכם'],
+  ['הזמן שלכם', 'אתם בונים, כותבים ומתקנים', 'אנחנו בונים, אתם מאשרים'],
+  ['טלפון ומהירות', 'תלוי בתבנית ובתוספים', 'מתוכנן קודם לטלפון ונטען מהר'],
+  ['כשצריך שינוי', 'פותחים עורך ומנסים לבד', 'שולחים הודעה ואנחנו מטפלים'],
+  ['הזמנות והרשמה', 'תוספים ומנויים חודשיים', 'נבנים לפי מה שהעסק צריך'],
+];
 const phoneIcon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>';
 const check = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
 // Google Ads: set GOOGLE_ADS_ID (AW-…) and GOOGLE_ADS_LEAD (AW-…/label) when building to load the tag and report leads.
@@ -309,7 +317,7 @@ function landingPage() {
       <div class="lp-copy hero-copy">
         <h1 id="lp-title" class="display brand-headline"><span data-l1>${lpDefault.lines[0]}</span><span><span data-l2>${lpDefault.lines[1]}</span><span class="period">.</span></span></h1>
         <p class="lede">עיצוב ופיתוח מאפס, בלי תבניות. אתרים ומערכות שנראים מושלם בטלפון ומובילים לקוחות לשיחה איתכם.</p>
-        <ul class="lp-points" role="list"><li>${check}עיצוב אישי, סביב העסק שלכם</li><li>${check}מהיר, מושלם בטלפון ומוכן לגוגל</li><li>${check}וואטסאפ וחיוג בלחיצה אחת</li></ul>
+        <ul class="lp-points" role="list"><li>${check}עיצוב אישי, סביב העסק שלכם</li><li>${check}מהיר, מושלם בטלפון ומוכן לגוגל</li><li>${check}וואטסאפ וחיוג בלחיצה אחת</li>${studio.priceFrom ? `<li>${check}אתר תדמית החל מ-${escape(studio.priceFrom)} ₪</li>` : ''}</ul>
         <div class="hero-actions"><a class="pill pill-cta" href="${wa}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a><a class="text-link" href="tel:${studio.tel}">או חייגו <bdi>${studio.phone}</bdi></a></div>
       </div>
       <form class="lead" id="lead" action="https://wa.me/${studio.tel.replace('+', '')}" method="get" target="_blank" aria-labelledby="lead-title">
@@ -328,6 +336,14 @@ function landingPage() {
     <section class="lp-work" aria-labelledby="lp-work-title"><div class="wrap">
       <h2 id="lp-work-title" class="display reveal">עבודות אמיתיות<span class="period">.</span><br>באוויר עכשיו<span class="period">.</span></h2>
       <ul class="lp-cards" role="list">${proof.map(p => `<li class="lp-card reveal" style="${vars(p)}"><span class="lp-shot"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="מסך הפתיחה של ${escape(p.hebrew)} בטלפון" loading="lazy" decoding="async"></span><span class="lp-card-copy"><strong>${escape(p.hebrew)}</strong><span>${escape(p.kicker)}</span></span></li>`).join('')}</ul>
+    </div></section>
+    <section class="lp-compare" aria-labelledby="lp-compare-title"><div class="wrap">
+      <h2 id="lp-compare-title" class="display reveal">למה לא לבנות לבד<br>בבונה אתרים או ב-AI<span class="period">?</span></h2>
+      <div class="compare reveal" role="table" aria-label="בונה אתרים מול אתר שנבנה לעסק">
+        <div class="compare-row compare-head" role="row"><span role="columnheader"></span><span role="columnheader">בונה אתרים או AI</span><span role="columnheader">אתר מ-LA webs</span></div>
+        ${lpCompare.map(([topic, diy, ours]) => `<div class="compare-row" role="row"><strong role="rowheader">${topic}</strong><span role="cell">${diy}</span><span role="cell">${check}${ours}</span></div>`).join('')}
+      </div>
+      <p class="compare-note reveal">בונה אתרים מתאים כשמתחילים עם תקציב אפסי. כשהאתר צריך להביא לקוחות, זה הזמן לאתר שנבנה בשבילכם.</p>
     </div></section>
     ${processSection}
     ${faq}
