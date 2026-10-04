@@ -134,16 +134,21 @@ if (hand) {
     const cardsBox = $('.hand-cards', hand);
     const comeAlive = () => { liveOn = true; wake(); };
     if (cardsBox && 'IntersectionObserver' in window && mobile.matches) {
-      hand.classList.add('is-waiting');
+      hand.classList.add('is-waiting', 'is-closed');
       const dealObserver = new IntersectionObserver(([entry]) => {
         if (!entry.isIntersecting || entry.intersectionRatio < 0.3) return;
         dealObserver.unobserve(hand);
-        // A short local entrance avoids pulling cards across the screen on scroll.
-        hand.style.setProperty('--from-y', '18px');
-        hand.style.setProperty('--from-s', '1');
+        // Same opening as the desktop fan: the cards rise as a tight stack with their edges peeking out,
+        // hold for a beat, then spring open into the hand. The front card comes alive once they land.
+        hand.style.setProperty('--from-y', '64px');
+        hand.style.setProperty('--from-s', '.94');
         hand.classList.remove('is-waiting');
         hand.classList.add('is-dealing');
-        setTimeout(comeAlive, 1100);
+        setTimeout(() => {
+          hand.classList.add('is-opening');
+          hand.classList.remove('is-closed');
+          setTimeout(() => { hand.classList.remove('is-opening'); comeAlive(); }, 1500);
+        }, 1000);
       }, { threshold: [0, 0.3] });
       dealObserver.observe(hand);
     } else if (mobile.matches) comeAlive(); // the hand is hidden on larger screens, so its capture is never fetched there

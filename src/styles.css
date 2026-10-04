@@ -13,7 +13,7 @@
 @property --p{syntax:'<number>';inherits:true;initial-value:0}
 
 :root{
-  --paper:#f7f1e8;--paper-deep:#eee3d6;--ink:#292521;--muted:#686057;--line:#dcd0c3;--accent:#a65345;--accent-deep:#884237;
+  --paper:#f7f1e8;--paper-deep:#eee3d6;--ink:#292521;--muted:#686057;--line:#dcd0c3;--accent:#b84a2c;--accent-deep:#8c3620;
   --bg:var(--paper);--fg:var(--ink);
   --wordmark:'Frank Ruhl Libre',David,'Times New Roman',serif;--display:'Plex Hebrew','Segoe UI',Arial,sans-serif;--body:'Plex Hebrew','Segoe UI',Arial,sans-serif;
   --gutter:clamp(20px,4.5vw,84px);--ease:cubic-bezier(.16,1,.3,1);--ease-io:cubic-bezier(.65,0,.35,1);
@@ -506,7 +506,11 @@ bdi{unicode-bidi:isolate}
   .hero-work-link{display:inline-flex}
   .hand{min-height:0;padding:28px var(--gutter) 54px;--card:min(68vw,300px,40svh);gap:8px}
   .hand-cards{height:calc(var(--card) * 1.5)}
-  .js .hand.is-dealing .hand-card{animation-duration:.4s;animation-timing-function:var(--ease);animation-delay:calc(var(--abs,0) * 25ms)}
+  /* Opening: rise as a tight stack (edges peeking), then spring open. --fan drives every card's rotation. */
+  .js .hand.is-closed{--fan:1.4deg}
+  .js .hand.is-dealing .hand-card{animation:deal .8s var(--ease) both;animation-delay:calc(var(--abs,0) * 60ms)}
+  .js .hand.is-dealing{--from-o:0}
+  .js .hand.is-opening .hand-card{transition:transform 1.2s cubic-bezier(.28,1.55,.45,1) calc(var(--abs,0) * 60ms)}
   .card-copy h3{font-size:18px;line-height:1.25}
   .contact{min-height:0;padding:64px 0}
   .contact h2.display{font-size:clamp(38px,10.5vw,60px);line-height:1.13}
@@ -691,3 +695,38 @@ bdi{unicode-bidi:isolate}
   .js .step:not(.in)::after{transform:none}
   .stack-visual:hover .stack-browser,.stack-visual:hover .stack-phone{transform:none}
 }
+
+/* ---------- Sales pass (4 October 2026) ---------- */
+/* The last card in the stack is the visitor's: terracotta, the LA card, and the conversation. */
+.stack-next{--bg:var(--accent);--fg:#fff;--muted:rgb(255 255 255/.82)}
+.stack-next .period{color:var(--ink)}
+.stack-next .stack-name{font-size:clamp(44px,5vw,92px);line-height:1.04}
+.stack-next .text-link bdi{font-variant-numeric:tabular-nums}
+.stack-next .stack-visual{padding:0;display:grid;place-items:center}
+.next-card{display:grid;place-items:center;width:min(48%,330px);aspect-ratio:3/4;border-radius:22px;background:var(--accent-deep);box-shadow:inset 0 0 0 2px rgb(255 255 255/.55),inset 0 0 0 10px var(--accent-deep),inset 0 0 0 11px rgb(255 255 255/.3),0 40px 70px -36px rgb(0 0 0/.55);transform:rotate(-5deg);transition:transform .8s var(--ease)}
+.next-card img{width:62%;height:auto}
+@media (hover:hover){.stack-next .stack-panel:hover .next-card{transform:rotate(-1deg) translateY(-10px)}}
+
+/* What every site ships with: a quiet list at the end of the ink chapter. */
+.included{margin-top:clamp(64px,8vw,120px);padding-top:clamp(40px,5vw,64px);border-top:1px solid rgb(247 241 232/.22)}
+.included-title{font-size:clamp(28px,3vw,48px);line-height:1.15;margin-bottom:clamp(28px,3.4vw,52px)}
+.included-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(26px,3vw,44px) clamp(28px,4vw,64px)}
+.included-list li{position:relative;display:grid;gap:6px;align-content:start;padding-inline-start:26px}
+.included-list li::before{content:'';position:absolute;inset-inline-start:0;top:.62em;width:10px;height:10px;border-radius:2px;background:var(--accent)}
+.included-list strong{font-size:clamp(19px,1.6vw,24px);font-weight:600;line-height:1.35}
+.included-list span{font-size:16px;line-height:1.6;color:rgb(247 241 232/.72);max-width:34ch}
+
+.contact-note{font-size:clamp(17px,1.4vw,21px);line-height:1.5;color:rgb(255 255 255/.9);max-width:32ch}
+
+@media (min-width:761px) and (max-width:1100px){.included-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){
+  .stack-next .stack-name{font-size:clamp(38px,11vw,52px)}
+  .stack-next .stack-visual{width:100%}
+  .next-card{width:min(50%,190px);margin-block:6px 32px}
+  .included{margin-top:56px;padding-top:36px}
+  .included-title{font-size:26px;margin-bottom:24px}
+  .included-list{grid-template-columns:1fr;gap:22px}
+  .included-list strong{font-size:19px}
+  .contact-note{font-size:17px}
+}
+@media (prefers-reduced-motion:reduce){.stack-next .stack-panel:hover .next-card{transform:rotate(-5deg)}}

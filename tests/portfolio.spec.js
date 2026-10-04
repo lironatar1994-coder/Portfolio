@@ -92,7 +92,7 @@ test('homepage presents Hebrew RTL content, the hero and every project without r
   await expect(page.getByRole('heading', { level: 1 })).toContainText('האתר שמתאים לו');
   await expect(page.locator('.hero .fan-card')).toHaveCount(5);
   await expect(page.locator('.hero-index')).toHaveCount(0);
-  await expect(page.locator('#work .stack-item')).toHaveCount(featuredSlugs.length);
+  await expect(page.locator('#work .stack-item:not(.stack-next)')).toHaveCount(featuredSlugs.length);
   await expect(page.locator('#more .strip-item')).toHaveCount(liveSites.length - featuredSlugs.length);
   for (const [slug] of liveSites) await expect(page.locator(`main :is(.stack-actions, .strip-item) a[href="/work/${slug}/"]`)).toHaveCount(1);
   await expectImages(page);
@@ -337,7 +337,7 @@ test('without JavaScript the work, navigation, process and FAQ remain usable', a
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.locator(testInfo.project.name === 'mobile' ? '.hand-card' : '.desktop-fan .fan-card').first()).toBeVisible();
     await page.waitForTimeout(1500); // let the hand finish dealing in (CSS animation, runs without JS)
-    await expect(page.locator('#work .stack-item')).toHaveCount(featuredSlugs.length);
+    await expect(page.locator('#work .stack-item:not(.stack-next)')).toHaveCount(featuredSlugs.length);
     await expect(page.locator('#process .step h3')).toHaveCount(3);
     await expect(page.locator('#process .step').first()).toHaveCSS('opacity', '1');
     await expect(page.locator('#faq details.qa')).toHaveCount(5);

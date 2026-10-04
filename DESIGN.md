@@ -108,3 +108,11 @@ Liron asked for a homepage that impresses prospective clients; credibility copy 
 - **Case pages on phones** now tour the phone capture by itself (`.frame.auto`) instead of showing a still top; nothing scrolls inside the page, so the earlier nested-scroll problem does not return.
 - **Sharing image.** `public/images/la-webs-share-20261004.jpg` (1200×630) is rendered from the new hero by `scripts/render-cover.mjs` and is the default `og:image`.
 - The "עוד עבודות." title is sized to stay on one line on phones on every page.
+
+## Colour and sales pass (4 October 2026)
+- **Accent.** Terracotta moved from the dusty #a65345 to a warmer, livelier #b84a2c (deep #8c3620). Ivory and charcoal are unchanged. White on the accent is 5.2:1 and the accent as text on ivory is 4.6:1, so both still pass AA; on ink the accent is used only for rules and squares.
+- **Phone opening.** The hand now opens like the desktop fan: the cards rise and fade in as a tight stack (1.4° per card, edges peeking), hold for a second, then spring open to 7.5° with an overshoot, staggered outward; the front card comes alive once they land. The earlier 0.4s, 18px deal was too small to notice once the hand moved onto the first screen.
+- **"הבא בתור: העסק שלך."** A fifth, terracotta panel closes the featured stack: the LA card, one line and the WhatsApp and phone actions. It is the visitor's slot in the same sequence as the client work.
+- **What every site ships with.** Six items at the end of the ink chapter (custom design, phone first, fast and ready for Google, WhatsApp and call buttons, domain/hosting/security, support after launch).
+- **Contact** adds one line: a short introductory call, free and without commitment.
+- **Case pages** lead with "רוצים אתר כזה?", a WhatsApp link whose message names the project, with "לאתר החי" beside it.

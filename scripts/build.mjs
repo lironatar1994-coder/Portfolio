@@ -108,7 +108,14 @@ const featuredSection = `<section class="featured" id="work" aria-labelledby="wo
       </div>
       <a class="stack-visual work-link" href="/work/${slug}/" tabindex="-1" aria-hidden="true">${frame(p, 'browser', { className: 'auto stack-browser' })}${frame(p, 'phone', { className: 'auto stack-phone' })}</a>
     </article></li>`;
-  }).join('')}</ol>
+  }).join('')}<li class="stack-item stack-next" style="--n:${featured.length}"><article class="stack-panel" aria-labelledby="stack-next">
+      <div class="stack-copy">
+        <h3 id="stack-next" class="display stack-name">הבא בתור:<br>העסק שלך<span class="period">.</span></h3>
+        <p class="stack-line">ספרו לנו על העסק בהודעה אחת, ונחזור אליכם עם כיוון ראשון לאתר שלכם.</p>
+        <div class="stack-actions"><a class="pill" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a><a class="text-link" href="tel:${studio.tel}">או חייגו <bdi>${studio.phone}</bdi></a></div>
+      </div>
+      <div class="stack-visual next-visual" aria-hidden="true"><span class="next-card"><img src="/la-monogram-white.svg" width="960" height="960" alt="" loading="lazy" decoding="async"></span></div>
+    </article></li></ol>
 </section>`;
 
 // How a project runs, in three steps. The sequence is the information, so the numerals stay.
@@ -117,9 +124,21 @@ const steps = [
   { title: 'עיצוב ובנייה.', text: 'עיצוב שנבנה סביב העסק שלכם ופיתוח מאפס, בלי תבניות. רואים את האתר מתקדם לאורך כל הדרך.' },
   { title: 'עולים לאוויר.', text: 'האתר עולה מהיר, מוכן לטלפון ולגוגל. ואנחנו נשארים זמינים גם אחרי ההשקה.' },
 ];
+const included = [
+  ['עיצוב אישי מאפס', 'בלי תבניות. כל פרט נבנה סביב העסק שלכם.'],
+  ['מושלם בטלפון', 'מתוכנן קודם למסך הקטן, שם רוב הלקוחות יפגשו אותו.'],
+  ['מהיר ומוכן לגוגל', 'נטען מהר, עם מבנה נקי שגוגל מבין.'],
+  ['וואטסאפ וחיוג בלחיצה', 'הדרך הקצרה מלקוח מתעניין לשיחה איתכם.'],
+  ['דומיין, אחסון ואבטחה', 'אנחנו מעלים לאוויר ודואגים לכל השאר.'],
+  ['ליווי אחרי ההשקה', 'שינויים ועדכונים כשהעסק צריך.'],
+];
 const processSection = `<section class="process" id="process" aria-labelledby="process-title"><div class="wrap">
   <h2 id="process-title" class="display reveal">מרעיון<br>לאתר באוויר<span class="period">.</span></h2>
   <ol class="steps" role="list">${steps.map((x, i) => `<li class="step reveal" style="--s:${i}"><span class="step-n" aria-hidden="true">${i + 1}<i></i></span><h3 class="display">${x.title}</h3><p>${x.text}</p></li>`).join('')}</ol>
+  <div class="included">
+    <h3 class="display included-title reveal">ובכל אתר שיוצא מאיתנו<span class="period">:</span></h3>
+    <ul class="included-list" role="list">${included.map(([title, text]) => `<li class="reveal"><strong>${title}</strong><span>${text}</span></li>`).join('')}</ul>
+  </div>
 </div></section>`;
 
 const questions = [
@@ -184,6 +203,7 @@ function catalogStrip(items, { id = 'more' } = {}) {
 const contact = `<section class="contact" id="contact" aria-labelledby="contact-title"><div class="wrap">
   <div class="contact-copy">
   <h2 id="contact-title" class="display reveal">בואו נבנה<br>את האתר שלכם<span class="period">.</span></h2>
+  <p class="contact-note reveal">שיחת היכרות קצרה, בלי עלות ובלי התחייבות.</p>
   </div>
   <div class="contact-actions reveal">
     <a class="pill pill-light" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a>
@@ -205,7 +225,9 @@ function page({ title, description, body, bodyClass = '', pathname = '/', image,
 
 function casePage(project, index) {
   const others = order.filter(slug => slug !== project.slug).map(slug => bySlug[slug]);
-  const live = `<a class="pill" href="${project.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר הפעיל של ${escape(project.hebrew)} — נפתח בחלון חדש">לאתר החי ${arrowOut}</a>`;
+  // The case page asks for the next project directly; the WhatsApp message names the project the visitor liked.
+  const ask = `<a class="pill pill-cta" href="${escape(`https://wa.me/${studio.tel.replace('+', '')}?text=${encodeURIComponent(`היי LA webs, ראיתי את ${project.hebrew} באתר שלכם ואשמח לאתר כזה לעסק שלי.`)}`)}" target="_blank" rel="noopener noreferrer" aria-label="רוצים אתר כזה? לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} רוצים אתר כזה?</a>`;
+  const live = `<a class="text-link" href="${project.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר הפעיל של ${escape(project.hebrew)} — נפתח בחלון חדש">לאתר החי ${arrowOut}</a>`;
   const window = (kind, extra = {}) => frame(project, kind, { className: 'window', ...extra }).replace('<div class="shot">', `<div class="shot" tabindex="0" role="region" aria-label="${kind === 'phone' ? 'גלילה בתוך גרסת הטלפון' : 'גלילה בתוך גרסת המחשב'}">`);
   const beforeAfter = project.beforeAfter ? `
     <section class="case-ba wrap" aria-labelledby="ba-title">
@@ -218,7 +240,7 @@ function casePage(project, index) {
       <h1 class="case-title display" style="view-transition-name:title-${project.slug}">${escape(project.hebrew)}</h1>
       <div class="case-hero-grid">
         <p class="lede">${escape(project.description)}</p>
-        <div class="case-meta"><div class="case-actions">${live}<a class="text-link" href="${project.url}" target="_blank" rel="noopener noreferrer"><bdi>${escape(project.domain)}</bdi></a></div></div>
+        <div class="case-meta"><div class="case-actions">${ask}${live}</div></div>
       </div>
     </section>
     <section class="case-views row ${tone(project)}${project.mobileFirst ? ' mobile-first' : ''}" style="${vars(project)}" aria-label="האתר בתצוגת מחשב ובתצוגת טלפון">
