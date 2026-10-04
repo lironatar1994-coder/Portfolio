@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { projects, studio } from '../src/projects.mjs';
 import { presentation } from '../src/presentation.mjs';
+import { enhanceSite } from './seo.mjs';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const destination = resolve(root, 'dist');
@@ -293,6 +294,7 @@ export async function build() {
   await writeFile(resolve(destination, '404.html'), page({ title: 'העמוד לא נמצא | LA webs', description: 'העמוד שחיפשתם לא נמצא. אפשר לחזור לעבודות של LA webs.', body: `<section class="not-found wrap"><p class="kicker">404</p><h1 class="display">העמוד הזה<br>קצת הלך לאיבוד.</h1><p class="lede">אבל העבודות שלנו עדיין כאן.</p><a class="pill" href="/#work">לעבודות ${arrow}</a></section>${contact}`, bodyClass: 'case', pathname: '/404.html' }));
   await writeFile(resolve(destination, 'robots.txt'), process.env.SITE_ORIGIN ? `User-agent: *\nAllow: /\nSitemap: ${new URL('/sitemap.xml', process.env.SITE_ORIGIN)}\n` : 'User-agent: *\nDisallow: /\n');
   if (process.env.SITE_ORIGIN) await writeFile(resolve(destination, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/', ...projects.map(p => `/work/${p.slug}/`)].map(path => `<url><loc>${escape(new URL(path, process.env.SITE_ORIGIN).href)}</loc></url>`).join('')}</urlset>`);
+  await enhanceSite(destination);
   console.log(`Built homepage, ${projects.length} project pages, and 404 page.`);
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await build();
