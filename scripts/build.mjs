@@ -1,11 +1,13 @@
 import { readFile, writeFile, mkdir, cp, rm } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 import { projects, studio } from '../src/projects.mjs';
 import { presentation } from '../src/presentation.mjs';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const destination = resolve(root, 'dist');
+const assetVersion = createHash('sha256').update(await readFile(resolve(root, 'src/styles.css'))).update(await readFile(resolve(root, 'src/app.js'))).digest('hex').slice(0, 12);
 const captures = JSON.parse(await readFile(resolve(root, 'docs/project-longcaptures.json'), 'utf8')).projects
   .reduce((map, entry) => ({ ...map, [entry.name]: entry }), {});
 
@@ -53,13 +55,13 @@ function head(title, description, { pathname = '/', image = '/images/la-webs-bra
   ${url ? `<link rel="canonical" href="${escape(url)}"><meta property="og:url" content="${escape(url)}"><meta property="og:image" content="${escape(new URL(image, origin).href)}">${image.endsWith('.jpg') ? '<meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">' : ''}` : '<meta name="robots" content="noindex,nofollow">'}
   <link rel="icon" href="/la-monogram-32-v2.png" type="image/png" sizes="32x32">
   <link rel="icon" href="/la-monogram-192-v2.png" type="image/png" sizes="192x192">
-  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=${assetVersion}" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/la-monogram-180-v2.png" sizes="180x180">
   <link rel="preload" href="/fonts/frank-ruhl-libre-hebrew.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/plex-hebrew-400-hebrew.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css?v=${assetVersion}">
   <script>document.documentElement.classList.add('js')</script>
-  <script type="module" src="/app.js"></script>`;
+  <script type="module" src="/app.js?v=${assetVersion}"></script>`;
 }
 
 const header = `<header class="site-header" id="top">
