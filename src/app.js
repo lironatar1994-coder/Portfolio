@@ -282,3 +282,27 @@ for (const compare of $$('.ba')) {
     input.value = Math.max(0, Math.min(100, value)); apply(input.value);
   });
 }
+
+/* Desktop fan: reveal once, keeping the visible stack and reduced-motion default usable. */
+const desktopFan = $('.desktop-fan');
+if (desktopFan) {
+  let opened = false;
+  const openFan = () => {
+    if (opened) return;
+    opened = true;
+    desktopFan.classList.add('is-open');
+    setTimeout(() => desktopFan.classList.add('is-settled'), reduceMotion.matches ? 0 : 950);
+  };
+  if (reduceMotion.matches || !('IntersectionObserver' in window)) openFan();
+  else {
+    const fanObserver = new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        fanObserver.disconnect();
+        setTimeout(openFan, 450);
+      }
+    }, { threshold: .2 });
+    fanObserver.observe(desktopFan);
+  }
+  desktopFan.addEventListener('focusin', openFan);
+  reduceMotion.addEventListener('change', event => { if (event.matches) openFan(); });
+}

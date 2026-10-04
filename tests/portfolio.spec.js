@@ -87,8 +87,8 @@ test('homepage presents Hebrew RTL content, the hero and the work grid without r
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await expect(page.locator('main')).toHaveCount(1);
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('נבנה לעסק שלך');
-  await expect(page.locator('.hero .hero-shot')).toHaveCount(1);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('האתר שמתאים לו');
+  await expect(page.locator('.hero .fan-card')).toHaveCount(5);
   await expect(page.locator('.hero-index')).toHaveCount(0);
   await expect(page.locator('#work .work-card')).toHaveCount(liveSites.length);
   await expect(page.locator('.stage-track')).toHaveCount(0);
@@ -207,7 +207,7 @@ test('on phones the hero is a hand of cards and case pages show a still phone ca
   await page.goto('/');
   await ready(page);
   await expect(page.locator('.hand-card')).toHaveCount(7);
-  await expect(page.locator('.hero-shot')).toBeHidden();
+  await expect(page.locator('.desktop-fan')).toBeHidden();
   const front = await page.locator('.hand-card').first().evaluate(el => el.style.getPropertyValue('--pos'));
   expect(front).toBe('0');
   await page.locator('.hand-card').nth(2).dispatchEvent('click', { detail: 1 }); // the front card covers the centres of the fanned ones; detail 1 marks it as a pointer click, not keyboard
@@ -310,11 +310,11 @@ test('case study has no serious or critical WCAG violations', async ({ page }) =
   await expectAccessible(page);
 });
 
-test('reduced motion keeps the hero capture still while scrolling', async ({ page }) => {
+test('reduced motion keeps the fan screenshots still while scrolling', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await ready(page);
-  const image = page.locator('.hero .hero-frame .shot img');
+  const image = page.locator('.hero .fan-link img').first();
   await page.mouse.wheel(0, 400);
   await page.waitForTimeout(300);
   expect(await image.evaluate(img => getComputedStyle(img).transform)).toBe('none');
@@ -326,7 +326,7 @@ test('without JavaScript the work, navigation and studio content remain usable',
   try {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.locator(testInfo.project.name === 'mobile' ? '.hand-card' : '.hero .hero-shot').first()).toBeVisible();
+    await expect(page.locator(testInfo.project.name === 'mobile' ? '.hand-card' : '.desktop-fan .fan-card').first()).toBeVisible();
     await page.waitForTimeout(1500); // let the hand finish dealing in (CSS animation, runs without JS)
     await expect(page.locator('#work .work-card')).toHaveCount(liveSites.length);
     await expect(page.locator('.solution h3')).toHaveCount(3);

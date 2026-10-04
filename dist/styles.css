@@ -565,3 +565,35 @@ bdi{unicode-bidi:isolate}
   .phone-link bdi{font-size:clamp(30px,9vw,44px)}
 }
 @media(prefers-reduced-motion:reduce){.js .reveal{transform:none}}
+
+/* Desktop opening: one stack becomes five cards around a shared lower pivot. */
+.desktop-fan{display:none}
+@media(min-width:761px){
+  .hero-centered{padding-top:0}
+  .hero-centered .hero-grid{grid-template-columns:1fr;padding-top:calc(var(--header) + 48px);padding-bottom:64px}
+  .hero-centered .hero-copy{padding:0;align-items:center;text-align:center;gap:22px;min-height:0}
+  .hero-centered .hero-copy .display{font-size:clamp(46px,4.6vw,68px);line-height:1.1;max-width:900px}
+  .hero-centered .brand-headline>span+span{margin-top:.08em}
+  .hero-centered .hero-copy .lede{max-width:60ch;font-size:19px;line-height:1.6}
+  .hero-centered .hero-actions{justify-content:center;gap:24px;margin:0}
+  .desktop-fan{display:block;position:relative;width:100%;max-width:1000px;height:440px;list-style:none;margin:18px 0 0;padding:0;isolation:isolate}
+  .fan-card{position:absolute;left:calc(50% - 130px);top:0;width:260px;height:350px;transform-origin:50% 180%;transform:rotate(var(--angle));z-index:var(--layer);transition:transform 780ms cubic-bezier(.16,1,.3,1);transition-delay:var(--delay)}
+  .fan-link{display:flex;flex-direction:column;width:100%;height:100%;overflow:hidden;border-radius:14px;background:#fffaf4;color:var(--ink);box-shadow:0 16px 36px #29252126;text-decoration:none}
+  .fan-link img{width:100%;height:calc(100% - 48px);object-fit:cover;object-position:top;display:block;flex:none}
+  .fan-label{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:48px;flex:none;font-size:16px;font-weight:600}
+  .fan-label svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.5}
+  .js .desktop-fan:not(.is-open) .fan-card{transform:rotate(0deg);transition:none}
+  .desktop-fan.is-settled .fan-card:hover,.desktop-fan .fan-card:focus-within{transform:rotate(var(--angle)) translateY(-24px);z-index:10;transition-duration:240ms;transition-delay:0ms}
+  .fan-link:focus-visible{outline:3px solid var(--accent);outline-offset:5px}
+  .hero-centered .hero-copy>*{animation:none}
+}
+@media(min-width:761px) and (max-width:1000px){
+  .desktop-fan{height:380px}
+  .fan-card{width:210px;height:300px;left:calc(50% - 105px)}
+  .fan-label{font-size:14px;padding-inline:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .fan-card{transition:none!important}
+  .js .desktop-fan:not(.is-open) .fan-card{transform:rotate(var(--angle))}
+  .desktop-fan .fan-card:hover,.desktop-fan .fan-card:focus-within{transform:rotate(var(--angle))}
+}

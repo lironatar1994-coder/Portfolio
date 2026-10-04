@@ -85,3 +85,9 @@ The all-work red card is the last item in the hand and now also starts at its de
 
 ## October 2026 brand alignment
 Approved WhatsApp brand direction: warm ivory #f7f1e8, charcoal #292521, terracotta #a65345 (deep #884237). Hero uses the approved static Hebrew slogan העסק שלך. האתר שמתאים לו. and personal website/app development copy. Retains the production studio structure, client colors, mobile fan and working project/contact links. Wordmark and favicon use charcoal. Homepage sharing image uses the approved 16:9 portfolio cover.
+
+
+## Desktop fan (4 October 2026)
+The approved centered hero uses five linked project cards (Pinhas, Koral, Miryam, Seder, Reuven) around one lower pivot, at -28, -14, 0, 14 and 28 degrees. The central Miryam card is visible immediately; the stack opens once after first entering view, with a 780ms exponential ease and a short stagger. Keyboard focus raises the selected card above the others. Reduced motion and no-JavaScript render the open fan directly. Mobile retains its seven-card hand.
+All eight homepage card screenshots and project share images were recaptured from current public sites on 4 October; dated filenames avoid stale browser caches. Seder was captured through a local read-only proxy without account cookies. Long case-page captures remain the separate September set; the new asset manifest explicitly records this boundary. The homepage sharing cover is a screenshot of the implemented fan, rather than a generated site image.
+Browser review: desktop 1440x1000, intermediate 820x900, mobile 390x844, narrow 320x800; no horizontal overflow, all five images loaded, keyboard stacking and reduced-motion behavior confirmed. Existing detector findings concern prior mobile bounce and comparison/strip size transitions; the new fan uses transform-only motion.

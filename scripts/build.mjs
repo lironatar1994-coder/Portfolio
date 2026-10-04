@@ -47,7 +47,7 @@ function frame(project, kind, { loading = 'lazy', priority = false, vt = '', cla
   return `<div class="frame ${kind}${className ? ' ' + className : ''}"${vt ? ` style="view-transition-name:${vt}"` : ''}>${chrome}<div class="shot">${image}</div></div>`;
 }
 
-function head(title, description, { pathname = '/', image = '/images/la-webs-brand-cover.png', themeColor = '#f7f1e8' } = {}) {
+function head(title, description, { pathname = '/', image = '/images/la-webs-fan-cover.png', themeColor = '#f7f1e8' } = {}) {
   const origin = process.env.SITE_ORIGIN;
   const url = origin ? new URL(pathname, origin).href : null;
   return `<meta name="theme-color" content="${themeColor}">
@@ -85,7 +85,7 @@ const catalogOnly = ['sos', 'seder']; // in the work grid, not in the hero hand
 const handOrder = work.filter(p => !catalogOnly.includes(p.slug));
 const hand = `<div class="hand" aria-label="העבודות שלנו, כמו יד של קלפים">
   <h2 class="hand-head display">העבודות שלנו<span class="period">.</span></h2>
-  <ul class="hand-cards" role="list">${handOrder.map((p, i) => `<li class="hand-card ${tone(p)}" style="${vars(p)};--i:${i}"><a class="hand-link" href="/work/${p.slug}/" draggable="false" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="hand-face"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async"></span><span class="hand-name"><span>${escape(p.hebrew)}</span><i aria-hidden="true"></i></span></a></li>`).join('')}<li class="hand-card hand-back" style="--i:${handOrder.length}"><a class="hand-link" href="#work" draggable="false" aria-label="לכל העבודות"><span class="hand-face"><img class="hand-mark" src="/la-monogram-white.svg" width="960" height="960" alt="" decoding="async"></span><span class="hand-name"><span>כל העבודות</span><i aria-hidden="true"></i></span></a></li>
+  <ul class="hand-cards" role="list">${handOrder.map((p, i) => `<li class="hand-card ${tone(p)}" style="${vars(p)};--i:${i}"><a class="hand-link" href="/work/${p.slug}/" draggable="false" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="hand-face"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async"></span><span class="hand-name"><span>${escape(p.hebrew)}</span><i aria-hidden="true"></i></span></a></li>`).join('')}<li class="hand-card hand-back" style="--i:${handOrder.length}"><a class="hand-link" href="#work" draggable="false" aria-label="לכל העבודות"><span class="hand-face"><img class="hand-mark" src="/la-monogram-white.svg" width="960" height="960" alt="" decoding="async"></span><span class="hand-name"><span>כל העבודות</span><i aria-hidden="true"></i></span></a></li>
   </ul>
 </div>`;
 
@@ -100,19 +100,20 @@ const value = `<section class="studio website-value" id="studio" aria-labelledby
   <ul class="solutions" role="list">${solutions.map(x => `<li class="solution"><h3 class="display">${x.title}</h3><p>${x.line}</p><a class="text-link" href="/work/${x.slug}/">${escape(bySlug[x.slug].hebrew)} ${arrow}</a></li>`).join('')}</ul>
 </div></section>`;
 
-const hero = `<section class="hero" aria-labelledby="hero-title">
+// Five real projects sharing one pivot. The centered card is the visible stack before opening.
+const desktopOrder = ['pinhas', 'koral', 'miryam', 'seder', 'reuven'];
+const desktopFan = `<ul class="desktop-fan" aria-label="חמש עבודות נבחרות">${desktopOrder.map((slug, i) => {
+  const p = bySlug[slug];
+  return `<li class="fan-card" style="--angle:${(i-2)*14}deg;--layer:${5-Math.abs(i-2)};--delay:${Math.abs(i-2)*55}ms"><a class="fan-link" href="/work/${slug}/" aria-label="לפרויקט ${escape(p.hebrew)}"><img src="/images/${slug}-card-20261004.webp" width="585" height="820" alt="" loading="eager" decoding="async"${i===2 ? ' fetchpriority="high"' : ''}><span class="fan-label"><span>${escape(p.hebrew)}</span>${arrow}</span></a></li>`;
+}).join('')}</ul>`;
+const hero = `<section class="hero hero-centered" aria-labelledby="hero-title">
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <h1 id="hero-title" class="display brand-headline"><span>העסק שלך<span class="period">.</span></span><span>האתר שמתאים לו<span class="period">.</span></span></h1>
-      <p class="lede">עיצוב ופיתוח אתרים ואפליקציות בהתאמה אישית. מהנראות ועד לחוויית השימוש — כל פרט נבנה סביב העסק שלך.</p>
+      <p class="lede">עיצוב ופיתוח אתרים ואפליקציות בהתאמה אישית. כל פרט נבנה סביב העסק שלך.</p>
+      ${desktopFan}
       <div class="hero-actions"><a class="pill pill-cta" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a><a class="text-link hero-work-link" href="#work">לעבודות ${down}</a></div>
-      <a class="hero-peek" href="#work" aria-label="לעבודות">${handOrder.slice(0, 5).map((p, i) => `<span class="peek-card" data-card="${i}" style="${vars(p)};--pos:${[0, 1, -1, 2, -2][i]};--abs:${[0, 1, 1, 2, 2][i]}"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="eager" decoding="async"></span>`).join("")}</a>
     </div>
-    <a class="hero-shot work-link" href="/work/${flagship.slug}/" aria-label="לפרויקט ${escape(flagship.hebrew)}">
-      ${frame(flagship, 'browser', { loading: 'eager', priority: true, className: 'hero-frame', mobileImage: true, mobileSrc: heroMobile })}
-      ${frame(flagship, 'phone', { className: 'float hero-float' })}
-      <span class="hero-caption"><span><strong>${escape(flagship.hebrew)}</strong> · ${escape(flagship.kicker)}</span><span class="hero-caption-link">לפרויקט ${arrow}</span></span>
-    </a>
     ${hand}
   </div>
 </section>`;
@@ -124,7 +125,7 @@ const arrowRight = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><pat
 function card(p, { className = '', withId = false, summary = false } = {}) {
   return `<li class="work-card card ${tone(p)}${className ? ' ' + className : ''}"${withId ? ` id="project-${p.slug}"` : ''} style="${vars(p)}">
     <a class="card-link work-link" href="/work/${p.slug}/" aria-label="לפרויקט ${escape(p.hebrew)}" draggable="false">
-      <div class="card-shot"><span class="frame phone card-phone"><span class="shot"><img src="/images/${p.slug}-card.webp" width="585" height="820" alt="" loading="lazy" decoding="async"></span></span></div>
+      <div class="card-shot"><span class="frame phone card-phone"><span class="shot"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="" loading="lazy" decoding="async"></span></span></div>
       <div class="card-copy"><div><h3 class="display" style="view-transition-name:title-${p.slug}">${escape(p.hebrew)}</h3>${summary ? `<p class="card-desc">${escape(presentation[p.slug].summary)}</p>` : ''}<p class="card-domain"><bdi>${escape(p.domain)}</bdi></p></div><span class="card-arrow">${arrow}</span></div>
     </a>
   </li>`;
@@ -202,7 +203,7 @@ function casePage(project, index) {
     ${beforeAfter}
     ${catalogStrip(others)}
     ${contact}`;
-  return page({ title: `${project.hebrew} — ${project.headline} | LA webs`, description: project.description, body, bodyClass: 'case', pathname: `/work/${project.slug}/`, image: `/images/${project.slug}-desktop.webp`, themeColor: project.colors.bg });
+  return page({ title: `${project.hebrew} — ${project.headline} | LA webs`, description: project.description, body, bodyClass: 'case', pathname: `/work/${project.slug}/`, image: `/images/${project.slug}-desktop-20261004.webp`, themeColor: project.colors.bg });
 }
 
 export async function build() {

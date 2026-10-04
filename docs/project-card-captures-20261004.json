@@ -1,0 +1,109 @@
+{
+  "scope": "Homepage cards and project share images. Existing long case captures are preserved.",
+  "projects": [
+    {
+      "slug": "koral",
+      "capturedAt": "2026-10-04",
+      "mobileViewport": [
+        390,
+        844
+      ],
+      "desktopImage": [
+        1440,
+        1000
+      ],
+      "publicOnly": true
+    },
+    {
+      "slug": "miryam",
+      "capturedAt": "2026-10-04",
+      "mobileViewport": [
+        390,
+        844
+      ],
+      "desktopImage": [
+        1425,
+        990
+      ],
+      "publicOnly": true
+    },
+    {
+      "slug": "pinhas",
+      "capturedAt": "2026-10-04",
+      "mobileViewport": [
+        390,
+        844
+      ],
+      "desktopImage": [
+        1425,
+        990
+      ],
+      "publicOnly": true
+    },
+    {
+      "slug": "libi",
+      "capturedAt": "2026-10-04",
+      "mobileViewport": [
+        390,
+        844
+      ],
+      "desktopImage": [
+        1440,
+        1000
+      ],
+      "publicOnly": true
+    },
+    {
+      "slug": "reuven",
+      "capturedAt": "2026-10-04",
+      "mobileViewport": [
+        390,
+        844
+      ],
+      "desktopImage": [
+        1440,
+        1000
+      ],
+      "publicOnly": true
+    },
+    {
+      "slug": "sos",
+      "capturedAt": "2026-10-04",
+      "mobileViewport": [
+        390,
+        844
+      ],
+      "desktopImage": [
+        1440,
+        1000
+      ],
+      "publicOnly": true
+    },
+    {
+      "slug": "seder",
+      "capturedAt": "2026-10-04",
+      "mobileViewport": [
+        390,
+        844
+      ],
+      "desktopImage": [
+        1440,
+        1000
+      ],
+      "publicOnly": true
+    },
+    {
+      "slug": "pdf",
+      "capturedAt": "2026-10-04",
+      "mobileViewport": [
+        390,
+        844
+      ],
+      "desktopImage": [
+        1440,
+        1000
+      ],
+      "publicOnly": true
+    }
+  ]
+}
