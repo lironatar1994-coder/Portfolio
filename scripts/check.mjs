@@ -9,6 +9,7 @@ const pages=(await walk(dist)).filter(file=>file.endsWith('.html'));
 const failures=[];
 for(const page of pages){
  const html=await readFile(page,'utf8');
+ if(/^google-site-verification: google[a-z0-9]+\.html\s*$/.test(html))continue;
  if(!html.includes('lang="he" dir="rtl"'))failures.push(`${page}: missing Hebrew/RTL`);
  if((html.match(/<h1\b/g)||[]).length!==1)failures.push(`${page}: must have one h1`);
  if(/<!--(?:HEADER|FOOTER|PROJECTS|CONTACT|MARK|ARROW)-->/u.test(html))failures.push(`${page}: unresolved template`);
