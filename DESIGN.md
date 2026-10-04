@@ -133,3 +133,10 @@ Supersedes "no automatic shuffle" and the living centre card in the hero.
 - **When it rests.** Hovering the desktop fan or focusing inside it, while the hand is off screen, while the tab is hidden; stops for good on the pause button or (phones) on the first touch on the hand. Reduced motion starts paused. Hovering a desktop card still makes it tour its site.
 - **Hero → works.** Hero cards for the four featured projects link to their panel on the homepage (`#project-…`) instead of the project page, keeping the visitor in the page's flow toward the call to action; other cards still open their project page. The works stay directly after the hero: the work is the strongest argument, and the caption now bridges the two.
 - Phones: the hand's card box is 1.76 cards tall so the fanned corners never cover the caption's button.
+
+## Ads landing page and launch (4 October 2026)
+- `/lp/` (noindex): one goal, no navigation. Headline and preselected need follow the ad group (`?t=tadmit|hazmanot|events|catalog`); the form writes the WhatsApp message; a fixed WhatsApp/call bar on phones; proof, a fair "why not build it yourself" comparison, process, what's included, FAQ. Starting price `studio.priceFrom` (2,500 ₪) appears on the page, in the price FAQ and in the ads.
+- Leads: every WhatsApp, call and form contact pushes `{event:'lead'}` to `dataLayer`; the Google Ads tag loads only when built with `GOOGLE_ADS_ID` and `GOOGLE_ADS_LEAD`.
+- `/privacy/` and `/accessibility/` (IS 5568, accessibility coordinator) are linked from both footers.
+- Campaign source of truth: `scripts/ads-campaign.mjs` → `docs/ads/` (Google Ads Editor CSV, summary, prompts, launch checklist). No generated reviews: real client reviews only (request template in `docs/ads/prompts.md`).
+- Measured on a throttled phone (1.6 Mbps, 4× CPU), live: landing page LCP 1.5s, 386KB, CLS 0; homepage LCP 3.1s, 1.0MB.
