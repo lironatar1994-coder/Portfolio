@@ -929,3 +929,41 @@ html:not(.js) .cycle{display:none}
 .legal-links{display:inline-flex;gap:18px}
 .legal-links a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 .legal-links a:hover{color:var(--ink)}
+
+/* ---------- Landing page, wow pass: an ink stage, and the form is the top card of the hand ---------- */
+.lp-header{position:relative;z-index:2;max-width:none;background:var(--ink);color:var(--paper);padding-inline:max(var(--gutter),calc((100vw - 1640px) / 2 + var(--gutter)))}
+.lp-header .brand{color:var(--paper)}
+.lp-call{color:var(--paper);box-shadow:inset 0 0 0 1px rgb(247 241 232/.28)}
+.lp-call:hover{background:rgb(247 241 232/.08)}
+.lp-hero{background:var(--ink);color:var(--paper);padding-bottom:0;position:relative;overflow-x:clip} /* the fanned cards must never widen the page (phones would zoom out) */
+.lp .hero-copy .display{color:var(--paper)}
+.lp .hero-copy .lede{color:rgb(247 241 232/.78)}
+.lp-points{color:rgb(247 241 232/.92)}
+.lp-points svg{color:#e2795a}
+.lp-hero .pill-cta{background:var(--accent);color:#fff}
+.lp-hero .pill-cta:hover{background:#cf5a3a}
+.lp-hero .hero-actions .text-link{color:var(--paper)}
+.lp-hero-grid{align-items:end}
+.lp-copy{padding-bottom:clamp(40px,6vw,110px)}
+/* the deck: real projects fanned behind the form, peeking above it; the form overlaps the next section */
+.lead-deck{position:relative;z-index:3;padding-top:clamp(96px,10vw,140px);margin-bottom:calc(clamp(70px,8vw,120px) * -1)}
+.deck-card{position:absolute;top:0;left:50%;width:54%;margin-left:-27%;aspect-ratio:585/820;padding:7px;border-radius:18px;background:#fff;box-shadow:0 34px 60px -28px rgb(0 0 0/.75);transform-origin:50% 165%;transform:rotate(var(--r));z-index:calc(2 - (var(--d) - 1.5) * (var(--d) - 1.5));transition:transform .7s var(--ease)}
+.deck-card img{width:100%;height:100%;object-fit:cover;object-position:top;border-radius:12px;background:var(--bg)}
+.lead{position:relative;z-index:5;color:var(--ink);box-shadow:0 40px 90px -40px rgb(0 0 0/.65),0 0 0 1px rgb(41 37 33/.06)}
+@media (hover:hover){.lead-deck:hover .deck-card{transform:rotate(calc(var(--r) * 1.35)) translateY(-12px)}}
+@keyframes deck-deal{from{transform:translateY(55vh) rotate(calc(var(--r) * 2.4))}}
+.js .lead-deck:not(.is-dealt) .deck-card{visibility:hidden}
+.js .lead-deck.is-dealt .deck-card{animation:deck-deal .85s cubic-bezier(.2,.75,.25,1) both;animation-delay:calc(var(--d) * 110ms)}
+.lp-work{padding-top:calc(clamp(70px,8vw,120px) + clamp(48px,6vw,90px))}
+@media (max-width:1000px){.lp-copy{padding-bottom:8px}}
+@media (max-width:760px){
+  .lp-hero{padding-top:4px}
+  .lead-deck{padding-top:88px;margin-bottom:-64px}
+  .deck-card{width:52%;margin-left:-26%;border-radius:14px;padding:5px}
+  .deck-card img{border-radius:10px}
+  .lp-work{padding-top:112px}
+}
+@media (prefers-reduced-motion:reduce){
+  .js .lead-deck:not(.is-dealt) .deck-card{visibility:visible}
+  .js .lead-deck.is-dealt .deck-card{animation:none}
+}

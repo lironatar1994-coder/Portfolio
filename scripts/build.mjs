@@ -338,6 +338,8 @@ function landingPage() {
         <ul class="lp-points" role="list"><li>${check}עיצוב אישי, סביב העסק שלכם</li><li>${check}מהיר, מושלם בטלפון ומוכן לגוגל</li><li>${check}וואטסאפ וחיוג בלחיצה אחת</li>${studio.priceFrom ? `<li>${check}אתר תדמית החל מ-${escape(studio.priceFrom)} ₪</li>` : ''}</ul>
         <div class="hero-actions"><a class="pill pill-cta" href="${wa}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a><a class="text-link" href="tel:${studio.tel}">או חייגו <bdi>${studio.phone}</bdi></a></div>
       </div>
+      <div class="lead-deck">
+      ${proof.map((p, i) => `<span class="deck-card" aria-hidden="true" style="${vars(p)};--d:${i};--r:${[-15, -6, 6, 15][i]}deg"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="" decoding="async"${i > 1 ? ' loading="lazy"' : ''}></span>`).join('')}
       <form class="lead" id="lead" action="https://wa.me/${studio.tel.replace('+', '')}" method="get" target="_blank" aria-labelledby="lead-title">
         <h2 id="lead-title" class="lead-title display">ספרו לנו על העסק<span class="period">.</span></h2>
         <label class="field"><span>שם</span><input name="n" autocomplete="name" required maxlength="60"></label>
@@ -347,13 +349,14 @@ function landingPage() {
         <button class="pill pill-cta lead-submit" type="submit">${chat} שליחה בוואטסאפ</button>
         <p class="lead-note">ההודעה נפתחת אצלכם בוואטסאפ, ואתם שולחים. שיחת היכרות קצרה, בלי עלות ובלי התחייבות.</p>
       </form>
+      </div>
       <script>(() => { const v = ${JSON.stringify(lpVariants)}[new URLSearchParams(location.search).get('t')]; if (!v) return;
         document.querySelector('[data-l1]').textContent = v.lines[0]; document.querySelector('[data-l2]').textContent = v.lines[1];
         const need = [...document.querySelectorAll('#lead input[name="w"]')].find(i => i.value === v.need); if (need) need.checked = true; })();</script>
     </div></section>
     <section class="lp-work" aria-labelledby="lp-work-title"><div class="wrap">
       <h2 id="lp-work-title" class="display reveal">עבודות אמיתיות<span class="period">.</span><br>באוויר עכשיו<span class="period">.</span></h2>
-      <ul class="lp-cards" role="list">${proof.map(p => `<li class="lp-card reveal" style="${vars(p)}"><span class="lp-shot"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="מסך הפתיחה של ${escape(p.hebrew)} בטלפון" loading="lazy" decoding="async"></span><span class="lp-card-copy"><strong>${escape(p.hebrew)}</strong><span>${escape(p.kicker)}</span></span></li>`).join('')}</ul>
+      <ul class="lp-cards" role="list" tabindex="0" aria-label="עבודות נבחרות (אפשר לגלול הצידה)">${proof.map(p => `<li class="lp-card reveal" style="${vars(p)}"><span class="lp-shot"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="מסך הפתיחה של ${escape(p.hebrew)} בטלפון" loading="lazy" decoding="async"></span><span class="lp-card-copy"><strong>${escape(p.hebrew)}</strong><span>${escape(p.kicker)}</span></span></li>`).join('')}</ul>
     </div></section>
     <section class="lp-compare" aria-labelledby="lp-compare-title"><div class="wrap">
       <h2 id="lp-compare-title" class="display reveal">למה לא לבנות לבד<br>בבונה אתרים או ב-AI<span class="period">?</span></h2>

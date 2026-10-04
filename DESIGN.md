@@ -140,3 +140,6 @@ Supersedes "no automatic shuffle" and the living centre card in the hero.
 - `/privacy/` and `/accessibility/` (IS 5568, accessibility coordinator) are linked from both footers.
 - Campaign source of truth: `scripts/ads-campaign.mjs` → `docs/ads/` (Google Ads Editor CSV, summary, prompts, launch checklist). No generated reviews: real client reviews only (request template in `docs/ads/prompts.md`).
 - Measured on a throttled phone (1.6 Mbps, 4× CPU), live: landing page LCP 1.5s, 386KB, CLS 0; homepage LCP 3.1s, 1.0MB.
+
+## Landing page wow pass (5 October 2026)
+The `/lp/` hero is an ink stage (header included): ivory headline, terracotta call to action and check marks. The form is the top card of a hand: the four featured projects fan out behind it (±6°/±15° around a low pivot), peeking above, dealt in from below when the deck enters the view (`.lead-deck.is-dealt`), and spreading wider on hover. The form overlaps the ink/ivory boundary for depth. `.lp-hero` clips horizontally so the fanned cards never widen the page (phones would zoom out). The local dev server now builds with `SITE_ORIGIN`, so `dist` never holds a noindex build.

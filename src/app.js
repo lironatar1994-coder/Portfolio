@@ -426,3 +426,14 @@ lead?.addEventListener('submit', event => {
   if (opened) opened.opener = null;
   else location.href = url; // a blocked pop-up still reaches WhatsApp
 });
+
+/* ---------- Landing page deck: deal the project cards behind the form when it comes into view ---------- */
+const deck = $('.lead-deck');
+if (deck) {
+  if (reduceMotion.matches || !('IntersectionObserver' in window)) deck.classList.add('is-dealt');
+  else new IntersectionObserver(([entry], observer) => {
+    if (!entry.isIntersecting) return;
+    observer.disconnect();
+    deck.classList.add('is-dealt');
+  }, { threshold: 0.15 }).observe(deck);
+}

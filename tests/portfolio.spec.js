@@ -396,3 +396,11 @@ test('ads landing page matches the ad group and writes the WhatsApp message from
   await expectNoOverflow(page);
   expect(errors).toEqual([]);
 });
+
+test('landing page has no serious or critical WCAG violations', async ({ page }) => {
+  await page.goto('/lp/');
+  await page.locator('.lead-deck').scrollIntoViewIfNeeded();
+  await expect(page.locator('.lead-deck')).toHaveClass(/is-dealt/);
+  await page.waitForTimeout(1200); // let the deal land
+  await expectAccessible(page);
+});
