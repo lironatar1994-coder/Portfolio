@@ -67,50 +67,85 @@ function head(title, description, { pathname = '/', image = '/images/la-webs-fan
 const header = `<header class="site-header" id="top">
   ${brand}
   <nav class="site-nav" id="site-nav" aria-label="ניווט ראשי">
-    <a href="/#work">העבודות</a><a href="/#studio">הסטודיו</a><a href="/#contact">יצירת קשר</a>
+    <a href="/#work">העבודות</a><a href="/#process">התהליך</a><a href="/#faq">שאלות</a><a href="/#contact">יצירת קשר</a>
     <a class="pill pill-cta" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer">נדבר בוואטסאפ ${arrowOut}</a>
     <a class="nav-phone" href="tel:${studio.tel}"><bdi>${studio.phone}</bdi></a>
   </nav>
   <button type="button" class="menu-toggle" aria-label="תפריט" aria-expanded="false" aria-controls="site-nav"><span></span><span></span></button>
 </header>`;
 
-const flagship = projects[0];
-const order = ['koral', 'miryam', 'pinhas', 'libi', 'reuven', 'sos', 'seder', 'pdf'];
+const order = ['pizza', 'koral', 'pinhas', 'miryam', 'libi', 'reuven', 'sos', 'seder', 'pdf'];
 const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
 const work = order.map(slug => bySlug[slug]);
-const heroMobile = { src: '/images/blank.webp', width: 2, height: 2 }; // phones show the hand of cards instead of the frame
 
 // Phone hero: the work as a hand of cards. Front card upright, the rest fanned behind; swipe to shuffle, tap to open.
 const catalogOnly = ['sos', 'seder']; // in the work grid, not in the hero hand
 const handOrder = work.filter(p => !catalogOnly.includes(p.slug));
-const hand = `<div class="hand" aria-label="העבודות שלנו, כמו יד של קלפים">
-  <h2 class="hand-head display">העבודות שלנו<span class="period">.</span></h2>
-  <ul class="hand-cards" role="list">${handOrder.map((p, i) => `<li class="hand-card ${tone(p)}" style="${vars(p)};--i:${i}"><a class="hand-link" href="/work/${p.slug}/" draggable="false" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="hand-face"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async"></span><span class="hand-name"><span>${escape(p.hebrew)}</span><i aria-hidden="true"></i></span></a></li>`).join('')}<li class="hand-card hand-back" style="--i:${handOrder.length}"><a class="hand-link" href="#work" draggable="false" aria-label="לכל העבודות"><span class="hand-face"><img class="hand-mark" src="/la-monogram-white.svg" width="960" height="960" alt="" decoding="async"></span><span class="hand-name"><span>כל העבודות</span><i aria-hidden="true"></i></span></a></li>
+// The front card comes alive: its long phone capture is fetched only when that card is in front, then tours the site.
+const live = p => `<img class="live" data-src="/images/${p.slug}-mobile-full.webp" width="${captures[p.slug].mobileCapture.width}" height="${captures[p.slug].mobileCapture.height}" alt="" decoding="async">`;
+const hand = `<div class="hand" role="group" aria-label="העבודות שלנו, כמו יד של קלפים">
+  <ul class="hand-cards" role="list">${handOrder.map((p, i) => `<li class="hand-card ${tone(p)}" style="${vars(p)};--i:${i}"><a class="hand-link" href="/work/${p.slug}/" draggable="false" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="hand-face"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async">${live(p)}</span><span class="hand-name"><span>${escape(p.hebrew)}</span><i aria-hidden="true"></i></span></a></li>`).join('')}<li class="hand-card hand-back" style="--i:${handOrder.length}"><a class="hand-link" href="#work" draggable="false" aria-label="לכל העבודות"><span class="hand-face"><img class="hand-mark" src="/la-monogram-white.svg" width="960" height="960" alt="" decoding="async"></span><span class="hand-name"><span>כל העבודות</span><i aria-hidden="true"></i></span></a></li>
   </ul>
 </div>`;
 
-// A concise studio chapter, grounded in the actual work rather than repeated screenshots.
-const solutions = [
-  { slug: 'miryam', title: 'תדמית עם אופי.', line: 'עיצוב שמציג את העסק ואת העבודות שלו, ומוביל לפנייה אישית.' },
-  { slug: 'koral', title: 'מהתעניינות להרשמה.', line: 'כל פרטי האירוע במקום אחד, עם הרשמה פשוטה מהטלפון.' },
-  { slug: 'reuven', title: 'קטלוג שעושה סדר.', line: 'מוצרים ומידע ברור, בדרך קצרה לבקשת הצעת מחיר.' },
+// Four featured projects as full-colour panels that stack on desktop; each frame tours the live site by itself.
+const featured = [
+  { slug: 'pizza', line: 'מסך פתיחה שמריחים ממנו את התנור, ופיצה שמשתנה מול העיניים עם כל תוספת. מזמינים משלוח או איסוף בכמה הקשות.' },
+  { slug: 'koral', line: 'ערבי נשים עם אווירה של קהילה. האירועים הקרובים, התמונות וההרשמה נמצאים במקום אחד, ונוחים מהטלפון.' },
+  { slug: 'pinhas', line: 'נוכחות רצינית למשרד עורכי דין: תחומי עיסוק ברורים ודרך קצרה לפנייה. מי שמחפש עורך דין מבין מיד שהגיע למקום הנכון.' },
+  { slug: 'miryam', line: 'העבודות במרכז: גלריה נקייה, השוואת לפני ואחרי ופנייה אישית לבדיקת תאריך פנוי.' },
 ];
-const value = `<section class="studio website-value" id="studio" aria-labelledby="studio-title"><div class="wrap studio-grid">
-  <h2 id="studio-title" class="display value-title">לכל עסק<br>האתר שלו<span class="period">.</span></h2>
-  <ul class="solutions" role="list">${solutions.map(x => `<li class="solution"><h3 class="display">${x.title}</h3><p>${x.line}</p><a class="text-link" href="/work/${x.slug}/">${escape(bySlug[x.slug].hebrew)} ${arrow}</a></li>`).join('')}</ul>
+const featuredSection = `<section class="featured" id="work" aria-labelledby="work-title">
+  <header class="wrap featured-head"><h2 id="work-title" class="display reveal">העבודות<span class="period">.</span></h2></header>
+  <ol class="stack wrap" role="list">${featured.map(({ slug, line }, i) => {
+    const p = bySlug[slug];
+    return `<li class="stack-item ${tone(p)}" id="project-${slug}" style="${vars(p)};--n:${i}"><article class="stack-panel" aria-labelledby="stack-${slug}">
+      <div class="stack-copy">
+        <h3 id="stack-${slug}" class="display stack-name" style="view-transition-name:title-${slug}">${escape(p.hebrew)}</h3>
+        <p class="stack-kind">${escape(p.kicker)}</p>
+        <p class="stack-line">${escape(line)}</p>
+        <div class="stack-actions"><a class="pill" href="/work/${slug}/">לפרויקט ${arrow}</a><a class="text-link" href="${p.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר החי של ${escape(p.hebrew)} — נפתח בחלון חדש">לאתר החי ${arrowOut}</a></div>
+      </div>
+      <a class="stack-visual work-link" href="/work/${slug}/" tabindex="-1" aria-hidden="true">${frame(p, 'browser', { className: 'auto stack-browser' })}${frame(p, 'phone', { className: 'auto stack-phone' })}</a>
+    </article></li>`;
+  }).join('')}</ol>
+</section>`;
+
+// How a project runs, in three steps. The sequence is the information, so the numerals stay.
+const steps = [
+  { title: 'שיחה אחת.', text: 'מספרים לנו על העסק, על הלקוחות ועל מה שחשוב לכם. משם כבר ברור מה האתר צריך לעשות.' },
+  { title: 'עיצוב ובנייה.', text: 'עיצוב שנבנה סביב העסק שלכם ופיתוח מאפס, בלי תבניות. רואים את האתר מתקדם לאורך כל הדרך.' },
+  { title: 'עולים לאוויר.', text: 'האתר עולה מהיר, מוכן לטלפון ולגוגל. ואנחנו נשארים זמינים גם אחרי ההשקה.' },
+];
+const processSection = `<section class="process" id="process" aria-labelledby="process-title"><div class="wrap">
+  <h2 id="process-title" class="display reveal">מרעיון<br>לאתר באוויר<span class="period">.</span></h2>
+  <ol class="steps" role="list">${steps.map((x, i) => `<li class="step reveal" style="--s:${i}"><span class="step-n" aria-hidden="true">${i + 1}<i></i></span><h3 class="display">${x.title}</h3><p>${x.text}</p></li>`).join('')}</ol>
 </div></section>`;
 
-// Five real projects sharing one pivot. The centered card is the visible stack before opening.
-const desktopOrder = ['pinhas', 'koral', 'miryam', 'seder', 'reuven'];
+const questions = [
+  ['כמה זמן לוקח לבנות אתר?', 'אתר תדמית עולה בדרך כלל תוך שבועות ספורים. מערכות כמו הזמנות או הרשמה לוקחות קצת יותר, ולוח הזמנים נקבע כבר בשיחה הראשונה.'],
+  ['כמה זה עולה?', 'כל אתר נבנה לפי מה שהעסק צריך, אז המחיר נקבע אחרי שיחה קצרה. מקבלים הצעה מסודרת לפני שמתחילים, בלי הפתעות בדרך.'],
+  ['האתר ייראה טוב בטלפון?', 'כל אתר מתוכנן קודם לטלפון, כי שם רוב הלקוחות שלכם יפגשו אותו. ואז גם למחשב, כמובן.'],
+  ['אפשר לשנות דברים אחרי שהאתר עולה?', 'כן. אנחנו זמינים לעדכונים, לתוספות ולשינויים גם אחרי ההשקה, כדי שהאתר יגדל יחד עם העסק.'],
+  ['מה עם דומיין, אחסון וגוגל?', 'אנחנו דואגים להכול: דומיין, אחסון, תעודת אבטחה והעלאה לאוויר. האתר נבנה מהיר ונקי, כדי שגוגל יבין אותו ולקוחות ימצאו אתכם.'],
+];
+const plus = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+const faq = `<section class="faq" id="faq" aria-labelledby="faq-title"><div class="wrap faq-grid">
+  <h2 id="faq-title" class="display reveal">שאלות<br>שחוזרות<span class="period">.</span></h2>
+  <div class="faq-list">${questions.map(([q, a]) => `<details class="qa reveal"><summary><span>${q}</span>${plus}</summary><p>${a}</p></details>`).join('')}</div>
+</div></section>`;
+
+// Five real projects sharing one pivot. The centred card is the visible stack before opening, and comes alive once open.
+const desktopOrder = ['miryam', 'koral', 'pizza', 'pinhas', 'libi'];
 const desktopFan = `<ul class="desktop-fan" aria-label="חמש עבודות נבחרות">${desktopOrder.map((slug, i) => {
   const p = bySlug[slug];
-  return `<li class="fan-card" style="--angle:${(i-2)*14}deg;--layer:${5-Math.abs(i-2)};--delay:${Math.abs(i-2)*55}ms"><a class="fan-link" href="/work/${slug}/" aria-label="לפרויקט ${escape(p.hebrew)}"><img src="/images/${slug}-card-20261004.webp" width="585" height="820" alt="" loading="eager" decoding="async"${i===2 ? ' fetchpriority="high"' : ''}><span class="fan-label"><span>${escape(p.hebrew)}</span>${arrow}</span></a></li>`;
+  return `<li class="fan-card" style="--angle:${(i-2)*14}deg;--layer:${5-Math.abs(i-2)};--delay:${Math.abs(i-2)*55}ms"><a class="fan-link" href="/work/${slug}/" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="fan-face"><img src="/images/${slug}-card-20261004.webp" width="585" height="820" alt="" loading="eager" decoding="async"${i===2 ? ' fetchpriority="high"' : ''}>${i === 2 ? live(p) : ''}</span><span class="fan-label"><span>${escape(p.hebrew)}</span>${arrow}</span></a></li>`;
 }).join('')}</ul>`;
 const hero = `<section class="hero hero-centered" aria-labelledby="hero-title">
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <h1 id="hero-title" class="display brand-headline"><span>העסק שלך<span class="period">.</span></span><span>האתר שמתאים לו<span class="period">.</span></span></h1>
-      <p class="lede">עיצוב ופיתוח אתרים ואפליקציות בהתאמה אישית. כל פרט נבנה סביב העסק שלך.</p>
+      <p class="lede">אתרים ומערכות בעיצוב אישי, שנבנים מאפס ונראים מושלם בטלפון.</p>
       ${desktopFan}
       <div class="hero-actions"><a class="pill pill-cta" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a><a class="text-link hero-work-link" href="#work">לעבודות ${down}</a></div>
     </div>
@@ -131,8 +166,8 @@ function card(p, { className = '', withId = false, summary = false } = {}) {
   </li>`;
 }
 
-/** Home: every project in one grid (three columns on desktop, two on phones). Nothing hidden behind a swipe. */
-const rows = `<ul class="work-grid wrap" role="list">${work.map((p, i) => card(p, { withId: true, summary: true, className: i < 3 ? 'featured' : '' })).join('')}</ul>`;
+/** Home: the projects that are not featured, in the same swipeable strip the case pages use. */
+const more = work.filter(p => !featured.some(f => f.slug === p.slug));
 
 /** Case pages: one-line carousel of the other projects. Native scroll-snap, swipe on touch, drag + arrows on desktop. */
 function catalogStrip(items, { id = 'more' } = {}) {
@@ -158,7 +193,7 @@ const contact = `<section class="contact" id="contact" aria-labelledby="contact-
 
 const footer = `<footer class="site-footer"><div class="wrap">
   <p class="footer-mark" aria-hidden="true">LA webs<i class="dot"></i></p>
-  <nav class="footer-links" aria-label="ניווט בתחתית העמוד"><a href="/#work">העבודות</a><a href="/#studio">הסטודיו</a><a href="tel:${studio.tel}">טלפון</a><a href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer">וואטסאפ</a></nav>
+  <nav class="footer-links" aria-label="ניווט בתחתית העמוד"><a href="/#work">העבודות</a><a href="/#process">התהליך</a><a href="tel:${studio.tel}">טלפון</a><a href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer">וואטסאפ</a></nav>
   <div class="footer-bottom"><span>© ${new Date().getFullYear()} LA webs. מעוצב ומפותח אצלנו.</span><a class="back-top" href="#top">למעלה <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></a></div>
 </div></footer>
 <a class="wa-float" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat}<span>וואטסאפ</span></a>
@@ -218,7 +253,7 @@ export async function build() {
   let home = await readFile(resolve(root, 'src/index.html'), 'utf8');
   const homeTitle = home.match(/<title>(.*?)<\/title>/)[1];
   const homeDescription = home.match(/<meta name="description" content="(.*?)">/)[1];
-  home = home.replace('<!--HEAD-->', head(homeTitle, homeDescription)).replace('<!--HEADER-->', header).replace('<!--HERO-->', hero).replace('<!--ROWS-->', rows).replace('<!--VALUE-->', value).replace('<!--CONTACT-->', contact).replace('<!--FOOTER-->', footer).replace('<!--CURSOR-->', '');
+  home = home.replace('<!--HEAD-->', head(homeTitle, homeDescription)).replace('<!--HEADER-->', header).replace('<!--HERO-->', hero).replace('<!--FEATURED-->', featuredSection).replace('<!--MORE-->', catalogStrip(more)).replace('<!--PROCESS-->', processSection).replace('<!--FAQ-->', faq).replace('<!--CONTACT-->', contact).replace('<!--FOOTER-->', footer).replace('<!--CURSOR-->', '');
   await writeFile(resolve(destination, 'index.html'), home.replace(/[\t ]+$/gm, ''));
   for (const [index, project] of projects.entries()) {
     const dir = resolve(destination, 'work', project.slug);

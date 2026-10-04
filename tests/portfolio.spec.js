@@ -12,7 +12,9 @@ const liveSites = [
   ['sos', 'בדרך אליך', 'https://sosbaderech.co.il/'],
   ['seder', 'סדר', 'https://lawebs.co.il/seder'],
   ['pdf', 'PDF Studio', 'https://vee-app.co.il/pdf-studio/'],
+  ['pizza', 'פיצת התנור', 'https://lawebs.co.il/PizzaManager/'],
 ];
+const featuredSlugs = ['pizza', 'koral', 'pinhas', 'miryam'];
 
 function observeErrors(page) {
   const errors = [];
@@ -77,7 +79,7 @@ async function expectAccessible(page) {
   }))).toEqual([]);
 }
 
-test('homepage presents Hebrew RTL content, the hero and the work grid without resource errors', async ({ page }) => {
+test('homepage presents Hebrew RTL content, the hero and every project without resource errors', async ({ page }) => {
   const errors = observeErrors(page);
   await page.emulateMedia({ reducedMotion: 'reduce' }); // the phone hero demo never holds still otherwise
   const response = await page.goto('/');
@@ -90,9 +92,9 @@ test('homepage presents Hebrew RTL content, the hero and the work grid without r
   await expect(page.getByRole('heading', { level: 1 })).toContainText('האתר שמתאים לו');
   await expect(page.locator('.hero .fan-card')).toHaveCount(5);
   await expect(page.locator('.hero-index')).toHaveCount(0);
-  await expect(page.locator('#work .work-card')).toHaveCount(liveSites.length);
-  await expect(page.locator('.stage-track')).toHaveCount(0);
-  for (const [slug] of liveSites) await expect(page.locator(`.work-card a.work-link[href="/work/${slug}/"]`).first()).toBeVisible();
+  await expect(page.locator('#work .stack-item')).toHaveCount(featuredSlugs.length);
+  await expect(page.locator('#more .strip-item')).toHaveCount(liveSites.length - featuredSlugs.length);
+  for (const [slug] of liveSites) await expect(page.locator(`main :is(.stack-actions, .strip-item) a[href="/work/${slug}/"]`)).toHaveCount(1);
   await expectImages(page);
   await expectNoOverflow(page);
   expect(errors).toEqual([]);
@@ -157,17 +159,33 @@ test('phone cards enter once and remain visible after scrolling away and back', 
   await expectNoOverflow(page);
 });
 
-test('every project has a card in the work grid, in its own color, with a summary on desktop', async ({ page }, testInfo) => {
+test('four featured projects stack in their own colours, with live links, and the rest follow in the strip', async ({ page }, testInfo) => {
   await page.goto('/');
   await ready(page);
-  const cards = page.locator('#work .card');
-  await expect(cards).toHaveCount(liveSites.length);
-  for (const [slug] of liveSites) await expect(page.locator(`#project-${slug} .card-link[href="/work/${slug}/"]`)).toHaveCount(1);
-  const columns = await page.locator('.work-grid').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length);
-  expect(columns).toBe(testInfo.project.name === 'desktop' ? 3 : 2);
-  const desc = page.locator('#project-koral .card-desc');
-  await expect(desc).toBeVisible();
+  for (const slug of featuredSlugs) {
+    const item = page.locator(`#project-${slug}`);
+    await expect(item.locator('.stack-actions a.pill')).toHaveAttribute('href', `/work/${slug}/`);
+    await expect(item.locator('.stack-actions a[target="_blank"]')).toHaveAttribute('href', liveSites.find(([s]) => s === slug)[2]);
+    await expect(item.locator('.frame.phone img')).toHaveAttribute('src', `/images/${slug}-mobile-full.webp`);
+  }
+  const position = await page.locator('#project-koral').evaluate(el => getComputedStyle(el).position);
+  expect(position).toBe(testInfo.project.name === 'desktop' ? 'sticky' : 'static');
+  // a featured frame tours its site while it is on screen
+  await page.locator('#project-pizza .stack-phone').scrollIntoViewIfNeeded();
+  await expect(page.locator('#project-pizza .stack-phone')).toHaveClass(/is-live/);
   await expectNoOverflow(page);
+});
+
+test('process and FAQ answer the questions before contact', async ({ page }) => {
+  await page.goto('/');
+  await ready(page);
+  await expect(page.locator('#process .step')).toHaveCount(3);
+  const qa = page.locator('#faq details.qa');
+  await expect(qa).toHaveCount(5);
+  await qa.first().locator('summary').click();
+  await expect(qa.first()).toHaveAttribute('open', '');
+  await expect(qa.first().locator('p')).toBeVisible();
+  for (const id of ['work', 'process', 'faq', 'contact']) await expect(page.locator(`.site-nav a[href="/#${id}"]`)).toHaveCount(1);
 });
 
 test('floating WhatsApp waits for the work section and hides over the contact block', async ({ page }, testInfo) => {
@@ -176,7 +194,7 @@ test('floating WhatsApp waits for the work section and hides over the contact bl
   await ready(page);
   const floating = page.locator('.wa-float');
   await expect(floating).toHaveClass(/is-hidden/);
-  await page.locator('#work .card').nth(2).scrollIntoViewIfNeeded();
+  await page.locator('#work .stack-item').nth(1).scrollIntoViewIfNeeded();
   await expect(floating).not.toHaveClass(/is-hidden/);
   await page.locator('#contact-title').scrollIntoViewIfNeeded();
   await expect(floating).toHaveClass(/is-hidden/);
@@ -203,10 +221,12 @@ test('case page desktop and phone windows scroll inside themselves', async ({ pa
 
 test('on phones the hero is a hand of cards and case pages show a still phone capture', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'Phone layout only');
-  // the phone hero is a hand of cards: six cards plus the studio card, the front one changes when a card behind it is tapped
+  // the phone hero is a hand of cards: seven projects plus the studio card, the front one changes when a card behind it is tapped
   await page.goto('/');
   await ready(page);
-  await expect(page.locator('.hand-card')).toHaveCount(7);
+  await expect(page.locator('.hand-card')).toHaveCount(8);
+  // the hand shares the first screen with the headline
+  expect((await page.locator('.hand-card').first().boundingBox()).y).toBeLessThan(page.viewportSize().height * 0.7);
   await expect(page.locator('.desktop-fan')).toBeHidden();
   const front = await page.locator('.hand-card').first().evaluate(el => el.style.getPropertyValue('--pos'));
   expect(front).toBe('0');
@@ -219,19 +239,7 @@ test('on phones the hero is a hand of cards and case pages show a still phone ca
   const box = await page.locator('.case-stage .frame.phone .shot').boundingBox();
   expect(box.height).toBeGreaterThan(page.viewportSize().height * 0.45);
   expect(await page.locator('.case-stage .frame.phone .shot img').evaluate(img => getComputedStyle(img).transform)).toBe('none');
-  await expect(page.locator('#more .strip-item')).toHaveCount(7);
-});
-
-test('studio capabilities link to the real projects they describe', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('.solution')).toHaveCount(3);
-  for (const slug of ['miryam', 'koral', 'reuven']) {
-    const link = page.locator(`#studio a[href="/work/${slug}/"]`);
-    await expect(link).toBeVisible();
-    const response = await page.request.get(await link.getAttribute('href'));
-    expect(response.ok()).toBe(true);
-  }
-  await expect(page.locator('#studio img')).toHaveCount(0);
+  await expect(page.locator('#more .strip-item')).toHaveCount(liveSites.length - 1);
 });
 
 test('mobile navigation supports keyboard, Escape and closing after a link', async ({ page }, testInfo) => {
@@ -270,7 +278,7 @@ for (const [slug, name, url] of liveSites) {
     await expect(liveLink).toBeVisible();
     if (await liveLink.getAttribute('target') === '_blank') await expect(liveLink).toHaveAttribute('rel', /noopener/);
     await expect(page.locator('.case-views .frame.window')).toHaveCount(2);
-    await expect(page.locator('#more .strip-item')).toHaveCount(7);
+    await expect(page.locator('#more .strip-item')).toHaveCount(liveSites.length - 1);
     await expectImages(page);
     await expectNoOverflow(page);
     expect(errors).toEqual([]);
@@ -320,7 +328,7 @@ test('reduced motion keeps the fan screenshots still while scrolling', async ({ 
   expect(await image.evaluate(img => getComputedStyle(img).transform)).toBe('none');
 });
 
-test('without JavaScript the work, navigation and studio content remain usable', async ({ browser }, testInfo) => {
+test('without JavaScript the work, navigation, process and FAQ remain usable', async ({ browser }, testInfo) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: testInfo.project.use.viewport, baseURL: 'http://127.0.0.1:4173' });
   const page = await context.newPage();
   try {
@@ -328,10 +336,12 @@ test('without JavaScript the work, navigation and studio content remain usable',
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.locator(testInfo.project.name === 'mobile' ? '.hand-card' : '.desktop-fan .fan-card').first()).toBeVisible();
     await page.waitForTimeout(1500); // let the hand finish dealing in (CSS animation, runs without JS)
-    await expect(page.locator('#work .work-card')).toHaveCount(liveSites.length);
-    await expect(page.locator('.solution h3')).toHaveCount(3);
+    await expect(page.locator('#work .stack-item')).toHaveCount(featuredSlugs.length);
+    await expect(page.locator('#process .step h3')).toHaveCount(3);
+    await expect(page.locator('#process .step').first()).toHaveCSS('opacity', '1');
+    await expect(page.locator('#faq details.qa')).toHaveCount(5);
     await expectNoOverflow(page);
-    await page.locator('.work-card a[href="/work/koral/"]').first().click();
+    await page.locator('#project-koral .stack-actions a.pill').click();
     await expect(page.getByRole('heading', { level: 1 })).toContainText('קורל אירועים');
   } finally {
     await context.close();

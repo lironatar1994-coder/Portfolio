@@ -4,6 +4,13 @@ const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(pointer: fine)');
 const mobile = matchMedia('(max-width: 760px)');
 
+/* A living capture: fetch the long capture of the site only when it is needed, then let CSS tour it. */
+const goLive = img => {
+  if (!img || reduceMotion.matches) return;
+  if (!img.getAttribute('src')) img.src = img.dataset.src;
+  (img.decode ? img.decode() : Promise.resolve()).then(() => img.classList.add('is-ready')).catch(() => {});
+};
+
 /* ---------- Mobile menu ---------- */
 const menuButton = $('.menu-toggle');
 const navigation = $('#site-nav');
@@ -102,7 +109,9 @@ if (hand) {
   let offset = 0;
   const posOf = i => wrap(base[i] + offset);
   const front = () => cardEls[base.findIndex((b, i) => posOf(i) === 0)];
-  const layout = () => cardEls.forEach((card, i) => {
+  let liveOn = false; // the front card starts touring its site once the deal has landed
+  const wake = () => { if (liveOn) goLive($('.live', front())); };
+  const layout = () => { cardEls.forEach((card, i) => {
     const pos = posOf(i);
     const prev = Number(card.style.getPropertyValue('--pos'));
     if (card.style.getPropertyValue('--pos') !== '' && Math.abs(pos - prev) > half) {
@@ -114,25 +123,16 @@ if (hand) {
     card.style.setProperty('--pos', pos);
     card.style.setProperty('--abs', Math.abs(pos));
     card.style.setProperty('--depth', Math.abs(pos));
-  });
+    card.classList.toggle('is-front', pos === 0);
+  }); wake(); };
   // dir = +1 turns the ring toward the start side in RTL (the front card slides left, the card on its right comes forward)
   const turn = steps => { offset -= steps; layout(); };
   layout();
-  // The cards peeking under the hero headline are the same cards: tapping one scrolls to the fan with that card in front.
-  const peekLink = $('.hero-peek');
-  if (peekLink) peekLink.addEventListener('click', event => {
-    const pc = event.target.closest('.peek-card');
-    if (!pc) return;
-    event.preventDefault();
-    const i = Number(pc.dataset.card);
-    if (posOf(i) !== 0) turn(posOf(i));
-    hand.classList.add('is-touched');
-    hand.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
   if (!reduceMotion.matches) {
-    // Phones: the cards peeking under the hero headline become the fan. When the hand enters the screen the
-    // real cards spring out into the fan once, then remain available when scrolling back.
-    const peek = $('.hero-peek'), cardsBox = $('.hand-cards', hand);
+    // Phones: the hand sits under the headline on the first screen. The cards spring out into the fan once
+    // when it is in view, then the front card comes alive.
+    const cardsBox = $('.hand-cards', hand);
+    const comeAlive = () => { liveOn = true; wake(); };
     if (cardsBox && 'IntersectionObserver' in window && mobile.matches) {
       hand.classList.add('is-waiting');
       const dealObserver = new IntersectionObserver(([entry]) => {
@@ -141,12 +141,12 @@ if (hand) {
         // A short local entrance avoids pulling cards across the screen on scroll.
         hand.style.setProperty('--from-y', '18px');
         hand.style.setProperty('--from-s', '1');
-        peek.classList.add('is-gone');
         hand.classList.remove('is-waiting');
         hand.classList.add('is-dealing');
+        setTimeout(comeAlive, 1100);
       }, { threshold: [0, 0.3] });
       dealObserver.observe(hand);
-    }
+    } else if (mobile.matches) comeAlive(); // the hand is hidden on larger screens, so its capture is never fetched there
     const markTouched = () => { hand.classList.add('is-touched'); };
     // Drag: the front card follows the pointer; a decisive drag turns the ring that way, a short one springs back.
     let startX = 0, startY = 0, dragging = false, moved = false, held = null, pointerId = null, pressed = null;
@@ -197,7 +197,7 @@ if (hand) {
 }
 
 /* ---------- Pre-decode heavy captures just before they enter the viewport ---------- */
-const heavy = $('.hand, .card, .case .row, .hero-float, .proof-visual');
+const heavy = $$('.hand, .card, .case .row, .stack-item');
 if (heavy.length && 'IntersectionObserver' in window) {
   const warm = new IntersectionObserver(entries => {
     for (const entry of entries) {
@@ -291,18 +291,31 @@ if (desktopFan) {
     if (opened) return;
     opened = true;
     desktopFan.classList.add('is-open');
-    setTimeout(() => desktopFan.classList.add('is-settled'), reduceMotion.matches ? 0 : 950);
+    setTimeout(() => {
+      desktopFan.classList.add('is-settled');
+      setTimeout(() => goLive($('.live', desktopFan)), 500); // the centre card starts touring its site
+    }, reduceMotion.matches ? 0 : 1350);
   };
   if (reduceMotion.matches || !('IntersectionObserver' in window)) openFan();
   else {
     const fanObserver = new IntersectionObserver(entries => {
       if (entries.some(entry => entry.isIntersecting)) {
         fanObserver.disconnect();
-        setTimeout(openFan, 450);
+        setTimeout(openFan, 1100); // let the peeking stack land and be seen first
       }
     }, { threshold: .2 });
     fanObserver.observe(desktopFan);
   }
   desktopFan.addEventListener('focusin', openFan);
+  desktopFan.addEventListener('pointerenter', openFan);
   reduceMotion.addEventListener('change', event => { if (event.matches) openFan(); });
+}
+
+/* Featured panels: each frame tours its site while it is on screen and rests when it leaves. */
+const tours = $$('.frame.auto');
+if (tours.length && 'IntersectionObserver' in window && !reduceMotion.matches) {
+  const tourObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) entry.target.classList.toggle('is-live', entry.isIntersecting);
+  }, { threshold: 0.35 });
+  tours.forEach(frame => tourObserver.observe(frame));
 }
