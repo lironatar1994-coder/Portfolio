@@ -255,10 +255,15 @@ if (heavy.length && 'IntersectionObserver' in window) {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
       warm.unobserve(entry.target);
-      for (const img of entry.target.querySelectorAll('img')) { img.loading = 'eager'; img.decode?.().catch(() => {}); }
+      for (const img of entry.target.querySelectorAll('img')) {
+        if (img.checkVisibility && !img.checkVisibility()) continue; // hidden on this screen size: never fetch it
+        img.loading = 'eager'; img.decode?.().catch(() => {});
+      }
     }
   }, { rootMargin: '120% 0px 120% 0px' });
-  heavy.forEach(section => warm.observe(section));
+  // only once the first screen has loaded, so preloading never competes with what the visitor sees first
+  const startWarm = () => setTimeout(() => heavy.forEach(section => warm.observe(section)), 1200);
+  if (document.readyState === 'complete') startWarm(); else addEventListener('load', startWarm, { once: true });
 }
 
 /* ---------- Reveal on scroll ---------- */

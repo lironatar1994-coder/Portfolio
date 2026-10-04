@@ -40,7 +40,7 @@ function frame(project, kind, { loading = 'lazy', priority = false, vt = '', cla
   const shot = isPhone ? capture.mobileCapture : capture.desktopCapture;
   const src = `/images/${project.slug}-${isPhone ? 'mobile' : 'desktop'}-full.webp`;
   const alt = isPhone ? `האתר הפעיל של ${project.hebrew} בתצוגת טלפון, לאורך כל העמוד` : `האתר הפעיל של ${project.hebrew} בתצוגת מחשב, לאורך כל העמוד`;
-  const attrs = `width="${shot.width}" height="${shot.height}" loading="${loading}" decoding="async"${priority ? ' fetchpriority="high"' : ''}`;
+  const attrs = `width="${shot.width}" height="${shot.height}" loading="${loading}" decoding="async"${priority ? ' fetchpriority="high"' : className.includes('auto') ? ' fetchpriority="low"' : ''}`;
   const image = mobileImage
     ? `<picture><source media="(max-width:760px)" srcset="${mobileSrc ? mobileSrc.src : `/images/${project.slug}-mobile-full.webp`}" width="${mobileSrc ? mobileSrc.width : capture.mobileCapture.width}" height="${mobileSrc ? mobileSrc.height : capture.mobileCapture.height}"><img src="${src}" alt="${escape(alt)}" ${attrs}></picture>`
     : `<img src="${src}" alt="${escape(alt)}" ${attrs}>`;
@@ -152,7 +152,7 @@ const processSection = `<section class="process" id="process" aria-labelledby="p
 
 const questions = [
   ['כמה זמן לוקח לבנות אתר?', 'אתר תדמית עולה בדרך כלל תוך שבועות ספורים. מערכות כמו הזמנות או הרשמה לוקחות קצת יותר, ולוח הזמנים נקבע כבר בשיחה הראשונה.'],
-  ['כמה זה עולה?', 'כל אתר נבנה לפי מה שהעסק צריך, אז המחיר נקבע אחרי שיחה קצרה. מקבלים הצעה מסודרת לפני שמתחילים, בלי הפתעות בדרך.'],
+  ['כמה זה עולה?', `${studio.priceFrom ? `אתר תדמית מתחיל ב-${studio.priceFrom} ₪. ` : ''}המחיר הסופי תלוי במה שהעסק צריך: מספר העמודים, מערכות כמו הזמנות או הרשמה, ותוכן. מקבלים הצעה מסודרת לפני שמתחילים, בלי הפתעות בדרך.`],
   ['האתר ייראה טוב בטלפון?', 'כל אתר מתוכנן קודם לטלפון, כי שם רוב הלקוחות שלכם יפגשו אותו. ואז גם למחשב, כמובן.'],
   ['אפשר לשנות דברים אחרי שהאתר עולה?', 'כן. אנחנו זמינים לעדכונים, לתוספות ולשינויים גם אחרי ההשקה, כדי שהאתר יגדל יחד עם העסק.'],
   ['מה עם דומיין, אחסון וגוגל?', 'אנחנו דואגים להכול: דומיין, אחסון, תעודת אבטחה והעלאה לאוויר. האתר נבנה מהיר ונקי, כדי שגוגל יבין אותו ולקוחות ימצאו אתכם.'],
@@ -167,7 +167,7 @@ const faq = `<section class="faq" id="faq" aria-labelledby="faq-title"><div clas
 const desktopOrder = ['miryam', 'koral', 'pizza', 'pinhas', 'libi'];
 const desktopFan = `<ul class="desktop-fan" aria-label="חמש עבודות נבחרות">${desktopOrder.map((slug, i) => {
   const p = bySlug[slug];
-  return `<li class="fan-card${i === 2 ? ' is-centre' : ''}" style="--angle:${(i-2)*14}deg;--layer:${5-Math.abs(i-2)};--delay:${Math.abs(i-2)*55}ms;--deal:${[0, 2, 4, 3, 1][i]};--spin:${(i - 2) * 7 + (i === 2 ? 3 : 0)}deg" data-name="${escape(p.hebrew)}" data-kind="${escape(p.kicker)}"><a class="fan-link" href="${heroTarget(slug)}" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="fan-face"><img src="/images/${slug}-card-20261004.webp" width="585" height="820" alt="" loading="eager" decoding="async"${i===2 ? ' fetchpriority="high"' : ''}>${live(p)}</span><span class="fan-label"><span>${escape(p.hebrew)}</span>${arrow}</span></a></li>`;
+  return `<li class="fan-card${i === 2 ? ' is-centre' : ''}" style="--angle:${(i-2)*14}deg;--layer:${5-Math.abs(i-2)};--delay:${Math.abs(i-2)*55}ms;--deal:${[0, 2, 4, 3, 1][i]};--spin:${(i - 2) * 7 + (i === 2 ? 3 : 0)}deg" data-name="${escape(p.hebrew)}" data-kind="${escape(p.kicker)}"><a class="fan-link" href="${heroTarget(slug)}" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="fan-face"><img src="/images/${slug}-card-20261004.webp" width="585" height="820" alt="" loading="${i === 2 ? 'eager' : 'lazy'}" decoding="async"${i===2 ? ' fetchpriority="high"' : ''}>${live(p)}</span><span class="fan-label"><span>${escape(p.hebrew)}</span>${arrow}</span></a></li>`;
 }).join('')}</ul>`;
 const hero = `<section class="hero hero-centered" aria-labelledby="hero-title">
   <div class="wrap hero-grid">
@@ -223,7 +223,7 @@ const contact = `<section class="contact" id="contact" aria-labelledby="contact-
 const footer = `<footer class="site-footer"><div class="wrap">
   <p class="footer-mark" aria-hidden="true">LA webs<i class="dot"></i></p>
   <nav class="footer-links" aria-label="ניווט בתחתית העמוד"><a href="/#work">העבודות</a><a href="/#process">התהליך</a><a href="tel:${studio.tel}">טלפון</a><a href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer">וואטסאפ</a></nav>
-  <div class="footer-bottom"><span>© ${new Date().getFullYear()} LA webs. מעוצב ומפותח אצלנו.</span><a class="back-top" href="#top">למעלה <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></a></div>
+  <div class="footer-bottom"><span>© ${new Date().getFullYear()} LA webs. מעוצב ומפותח אצלנו.</span><span class="legal-links"><a href="/privacy/">מדיניות פרטיות</a><a href="/accessibility/">הצהרת נגישות</a></span><a class="back-top" href="#top">למעלה <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></a></div>
 </div></footer>
 <a class="wa-float" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat}<span>וואטסאפ</span></a>
 <div class="cursor" aria-hidden="true" data-label="לצפייה"></div>`;
@@ -271,6 +271,24 @@ function casePage(project, index) {
     ${contact}`;
   return page({ title: `${project.hebrew} — ${project.headline} | LA webs`, description: project.description, body, bodyClass: 'case', pathname: `/work/${project.slug}/`, image: `/images/${project.slug}-desktop-20261004.webp`, themeColor: project.colors.bg });
 }
+
+/* ---------- Privacy policy and accessibility statement ---------- */
+const legalUpdated = '4 באוקטובר 2026';
+const legalPages = [
+  { path: 'privacy', title: 'מדיניות פרטיות | LA webs', h1: 'מדיניות פרטיות', description: 'איזה מידע נאסף באתר LA webs, איך משתמשים בו ואיך פונים אלינו בנושא פרטיות.', sections: [
+    ['מי אנחנו', [`LA webs הוא סטודיו לעיצוב ופיתוח אתרים ומערכות. לכל שאלה בנושא פרטיות אפשר לפנות בטלפון או בוואטסאפ: <a href="tel:${studio.tel}"><bdi>${studio.phone}</bdi></a>.`]],
+    ['איזה מידע נאסף', ['האתר לא שולח מידע אישי לשרת שלנו. הטופס בדף הנחיתה מנסח הודעה ופותח אותה בוואטסאפ שלכם, והמידע עובר אלינו רק אם תבחרו לשלוח אותה.', 'כשאתם פונים אלינו בוואטסאפ או בטלפון, נשתמש בפרטים שמסרתם רק כדי לחזור אליכם ולטפל בפנייה.']],
+    ['מדידה ופרסום', ['אנחנו משתמשים בכלי מדידה כדי להבין איך משתמשים באתר, ובתג של Google Ads כדי למדוד פניות שמגיעות מפרסום. הכלים האלה עשויים להשתמש בעוגיות ובמזהים דומים.', 'אפשר לנהל את העדפות הפרסום של Google ב<a href="https://myadcenter.google.com/" target="_blank" rel="noopener noreferrer">מרכז המודעות שלי</a>, ולחסום או למחוק עוגיות בהגדרות הדפדפן.']],
+    ['שמירה וזכויות', ['איננו מוכרים מידע ואיננו מעבירים אותו לגורמים אחרים, מלבד ספקי השירות שמפעילים את הכלים שצוינו כאן. אפשר לבקש לעיין במידע שמסרתם, לתקן אותו או למחוק אותו בפנייה אלינו.']],
+    ['שינויים', ['אם המדיניות תשתנה, הגרסה המעודכנת תופיע בעמוד הזה עם תאריך העדכון.']],
+  ] },
+  { path: 'accessibility', title: 'הצהרת נגישות | LA webs', h1: 'הצהרת נגישות', description: 'הצהרת הנגישות של אתר LA webs: ההתאמות שבוצעו ופרטי רכז הנגישות.', sections: [
+    ['המחויבות שלנו', ['אנחנו רוצים שכל אחד יוכל להשתמש באתר בנוחות, כולל אנשים עם מוגבלות. האתר נבנה בהתאם להנחיות התקן הישראלי 5568 ולהנחיות WCAG ברמה AA, ונבדק בכלים אוטומטיים ובבדיקה ידנית.']],
+    ['ההתאמות באתר', ['ניווט מלא במקלדת עם סימון ברור של הרכיב הפעיל, וקישור "דלגו לתוכן" בתחילת כל עמוד.', 'מבנה כותרות, תוויות לטפסים ולכפתורים וטקסט חלופי לתמונות, לתמיכה בקוראי מסך.', 'ניגודיות צבעים לפי התקן, וגופנים שאפשר להגדיל בדפדפן.', 'כיבוד ההגדרה "הפחתת תנועה" במערכת ההפעלה, וכפתור לעצירת התוכן המתחלף בראש העמוד.', 'התאמה מלאה לטלפון ולטאבלט.']],
+    ['אם משהו לא נגיש', [`למרות המאמצים, ייתכן שחלק מהתכנים עדיין לא נגישים במלואם. אם נתקלתם בבעיה, נשמח לשמוע ולתקן. רכז הנגישות: לירון עטאר, <a href="tel:${studio.tel}"><bdi>${studio.phone}</bdi></a> (טלפון או וואטסאפ).`]],
+  ] },
+];
+const legalPage = l => page({ title: l.title, description: l.description, bodyClass: 'case', pathname: `/${l.path}/`, body: `<section class="legal wrap"><h1 class="display">${l.h1}<span class="period">.</span></h1><p class="legal-date">עודכן: ${legalUpdated}</p>${l.sections.map(([h, ps]) => `<h2>${h}</h2>${ps.map(p => `<p>${p}</p>`).join('')}`).join('')}</section>${contact}` });
 
 /* ---------- Ads landing page (/lp/) ----------
    One goal (a conversation), no navigation leaks, headline matched to the ad group through ?t=, and a short form
@@ -349,7 +367,7 @@ function landingPage() {
     ${faq}
     ${contact}
   </main>
-  <footer class="lp-footer wrap"><span>© ${new Date().getFullYear()} LA webs</span><a href="/">לאתר הסטודיו ולכל העבודות</a></footer>
+  <footer class="lp-footer wrap"><span>© ${new Date().getFullYear()} LA webs</span><span class="legal-links"><a href="/privacy/">מדיניות פרטיות</a><a href="/accessibility/">הצהרת נגישות</a></span><a href="/">לאתר הסטודיו ולכל העבודות</a></footer>
   <nav class="lp-bar" aria-label="יצירת קשר מהירה"><a href="${wa}" target="_blank" rel="noopener noreferrer">${chat} וואטסאפ</a><a href="tel:${studio.tel}">${phoneIcon} חיוג</a></nav>`;
   return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="robots" content="noindex,follow">${head(title, description, { pathname: '/lp/' })}${adsTag()}</head><body class="lp"><a class="skip-link" href="#lead">דלגו לטופס</a>${body}</body></html>`;
 }
@@ -372,6 +390,10 @@ export async function build() {
     const dir = resolve(destination, 'work', project.slug);
     await mkdir(dir, { recursive: true });
     await writeFile(resolve(dir, 'index.html'), casePage(project, index).replace(/[\t ]+$/gm, ''));
+  }
+  for (const l of legalPages) {
+    await mkdir(resolve(destination, l.path), { recursive: true });
+    await writeFile(resolve(destination, l.path, 'index.html'), legalPage(l).replace(/[	 ]+$/gm, ''));
   }
   await mkdir(resolve(destination, 'lp'), { recursive: true });
   await writeFile(resolve(destination, 'lp/index.html'), landingPage().replace(/[\t ]+$/gm, ''));

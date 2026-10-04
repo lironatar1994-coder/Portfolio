@@ -2,7 +2,7 @@ export const studio = {
   name: 'LA webs', phone: '050-861-1888', tel: '+972508611888',
   whatsapp: 'https://wa.me/972508611888?text=' + encodeURIComponent('היי LA webs, ראיתי את העבודות שלכם ואשמח לדבר על אתר לעסק שלי.'),
   // Starting price for a business site, shown on the ads landing page when set (e.g. '4,900'). Only a real price.
-  priceFrom: null,
+  priceFrom: '2,500',
 };
 
 // Colors are the project's own brand colors, sampled from each live site (see docs/project-longcaptures.json).
