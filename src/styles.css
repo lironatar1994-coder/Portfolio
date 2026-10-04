@@ -754,3 +754,47 @@ bdi{unicode-bidi:isolate}
 @media (prefers-reduced-motion:reduce){
   .js .brand-headline>span,.js .brand-headline .period,.js .hero-copy>.lede,.js .hero-copy>.hero-actions{animation:none}
 }
+
+/* ---------- Works pass (4 October 2026) ---------- */
+/* Desktop: the site bleeds off the panel edge, sides alternate, and the phone rides on the seam. */
+@media (min-width:1000px){
+  .stack-item:not(.stack-next) .stack-panel{--pad:clamp(32px,3.6vw,60px);padding:var(--pad);grid-template-columns:minmax(0,4fr) minmax(0,7fr);align-items:center}
+  .stack-item:not(.stack-next) .stack-visual{align-self:stretch;display:flex;align-items:flex-end;padding:0;margin-block:calc(var(--pad) * .4) calc(var(--pad) * -1);margin-inline-end:calc(var(--pad) * -1)}
+  .stack-item:not(.stack-next) .stack-browser{width:100%;border-end-start-radius:0;border-end-end-radius:0;box-shadow:0 -10px 50px -26px rgb(0 0 0/.45)}
+  .stack-item:not(.stack-next) .stack-browser .shot{aspect-ratio:16/10.4}
+  .stack-item:not(.stack-next) .stack-phone{bottom:12%;inset-inline:4% auto;width:min(25%,210px);box-shadow:0 30px 60px -24px rgb(0 0 0/.55),inset 0 0 0 1px rgb(255 255 255/.12)}
+  /* every second project mirrors: the site on the other side */
+  .stack-item:nth-child(even):not(.stack-next) .stack-panel{grid-template-columns:minmax(0,7fr) minmax(0,4fr)}
+  .stack-item:nth-child(even):not(.stack-next) .stack-copy{order:2}
+  .stack-item:nth-child(even):not(.stack-next) .stack-visual{margin-inline:calc(var(--pad) * -1) 0}
+  .stack-item:nth-child(even):not(.stack-next) .stack-phone{inset-inline:auto 4%}
+  @media (hover:hover){.stack-item:not(.stack-next) .stack-visual:hover .stack-browser{transform:translateY(-8px)}}
+}
+@media (min-width:1000px) and (min-height:700px){
+  .stack-item:not(.stack-next) .stack-panel{min-height:min(calc(100svh - 120px),720px)}
+}
+
+/* Home, more work: on desktop all five sit in one row instead of hiding in a strip. */
+@media (min-width:1101px){
+  .home .catalog .strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));overflow:visible;padding-inline:var(--gutter);max-width:1640px;margin-inline:auto;cursor:auto}
+  .home .catalog .catalog-nav,.home .catalog .strip-dots{display:none}
+  .home .catalog .card-copy{padding:14px 16px 16px}
+  .home .catalog .card-copy h3{font-size:clamp(20px,1.6vw,26px)}
+  .home .catalog .card-domain{font-size:11px}
+  .home .catalog .card-arrow{width:38px;height:38px}
+}
+
+/* Phones: the work first, then a compact caption, so each project is about one screen. */
+@media (max-width:760px){
+  .stack-item:not(.stack-next) .stack-panel{display:flex;flex-direction:column;gap:0;padding:0}
+  .stack-item:not(.stack-next) .stack-visual{order:-1;width:100%;padding:20px 0 0;margin:0;display:flex;justify-content:center;background:color-mix(in srgb,var(--fg) 6%,var(--bg))}
+  .stack-item:not(.stack-next) .stack-phone{width:min(76%,290px);border-radius:30px 30px 0 0;padding:7px 7px 0}
+  .stack-item:not(.stack-next) .frame.stack-phone .shot{height:min(48svh,420px)}
+  .stack-item:not(.stack-next) .stack-copy{padding:22px 22px 26px;gap:8px}
+  .stack-item:not(.stack-next) .stack-name{font-size:clamp(32px,9vw,42px)}
+  .stack-item:not(.stack-next) .stack-kind{font-size:15px}
+  .stack-item:not(.stack-next) .stack-line{font-size:15.5px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .stack-item:not(.stack-next) .stack-actions{margin-top:8px;gap:16px}
+  .stack-item:not(.stack-next) .stack-actions .pill{min-height:46px;padding:0 20px;font-size:15px}
+  .stack-next .stack-panel{padding:28px 22px 0}
+}
