@@ -395,3 +395,29 @@ if (tours.length && 'IntersectionObserver' in window && !reduceMotion.matches) {
   }, { threshold: 0.35 });
   tours.forEach(frame => tourObserver.observe(frame));
 }
+
+/* ---------- Leads: report every WhatsApp, call and form contact (Google Ads tag only on the landing page) ---------- */
+const trackLead = method => {
+  window.dataLayer?.push({ event: 'lead', method });
+  const leadTo = window.LA_ADS?.lead;
+  if (leadTo && typeof window.gtag === 'function') window.gtag('event', 'conversion', { send_to: leadTo });
+};
+document.addEventListener('click', event => {
+  const link = event.target.closest('a[href^="https://wa.me"], a[href^="tel:"]');
+  if (link) trackLead(link.href.startsWith('tel:') ? 'call' : 'whatsapp');
+});
+
+/* ---------- Landing page form: write the WhatsApp message from the visitor's answers ---------- */
+const lead = $('#lead');
+lead?.addEventListener('submit', event => {
+  event.preventDefault();
+  const data = new FormData(lead);
+  const need = String(data.get('w') || '');
+  const ask = need && !need.startsWith('עוד לא') ? `אשמח לשמוע על ${need} לעסק שלי.` : 'אשמח לשמוע מה יתאים לעסק שלי.';
+  const text = `היי LA webs, אני ${String(data.get('n')).trim()} (${String(data.get('b')).trim()}). ${ask}`;
+  const url = `${lead.action}?text=${encodeURIComponent(text)}`;
+  trackLead('form');
+  const opened = window.open(url, '_blank'); // ('noopener' would make this always null, so the opener is cut by hand)
+  if (opened) opened.opener = null;
+  else location.href = url; // a blocked pop-up still reaches WhatsApp
+});

@@ -378,3 +378,21 @@ test('the hero hand turns by itself, names the front project and can be paused',
   // hero cards lead to their panel on this page when the project is featured
   await expect(page.locator(testInfo.project.name === 'desktop' ? '.fan-link[href="#project-pizza"]' : '.hand-link[href="#project-pizza"]')).toHaveCount(1);
 });
+
+test('ads landing page matches the ad group and writes the WhatsApp message from the form', async ({ page, context }) => {
+  const errors = observeErrors(page);
+  await page.goto('/lp/?t=hazmanot');
+  await expect(page.locator('meta[name="robots"][content*="noindex"]').first()).toHaveCount(1);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('מערכת הזמנות אונליין' + 'לעסק שלך.');
+  await expect(page.locator('#lead input[name="w"]:checked')).toHaveValue('מערכת הזמנות');
+  await expect(page.locator('.site-nav')).toHaveCount(0); // no navigation leaks on the ad page
+  await page.fill('#lead input[name="n"]', 'דנה');
+  await page.fill('#lead input[name="b"]', 'פיצרייה ברמת גן');
+  const [popup] = await Promise.all([context.waitForEvent('page'), page.locator('.lead-submit').click()]);
+  expect(decodeURIComponent(popup.url()).replaceAll('+', ' ')).toContain('אשמח לשמוע על מערכת הזמנות לעסק שלי'); // WhatsApp's redirect encodes spaces as +
+  await popup.close();
+  await page.goto('/lp/?t=<script>');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('אתר שנבנה לעסק שלך,' + 'ומביא אליו פניות.');
+  await expectNoOverflow(page);
+  expect(errors).toEqual([]);
+});

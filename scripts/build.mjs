@@ -272,6 +272,72 @@ function casePage(project, index) {
   return page({ title: `${project.hebrew} — ${project.headline} | LA webs`, description: project.description, body, bodyClass: 'case', pathname: `/work/${project.slug}/`, image: `/images/${project.slug}-desktop-20261004.webp`, themeColor: project.colors.bg });
 }
 
+/* ---------- Ads landing page (/lp/) ----------
+   One goal (a conversation), no navigation leaks, headline matched to the ad group through ?t=, and a short form
+   that writes the WhatsApp message for the visitor. Not indexed: it exists for paid traffic. */
+const lpNeeds = ['אתר תדמית', 'מערכת הזמנות', 'הרשמה לאירועים', 'קטלוג או חנות', 'עוד לא בטוח/ה'];
+const lpVariants = {
+  tadmit: { lines: ['בניית אתר תדמית', 'שנראה כמו העסק שלך'], need: 'אתר תדמית' },
+  hazmanot: { lines: ['מערכת הזמנות אונליין', 'לעסק שלך'], need: 'מערכת הזמנות' },
+  events: { lines: ['אתר והרשמה לאירועים', 'הכול במקום אחד'], need: 'הרשמה לאירועים' },
+  catalog: { lines: ['קטלוג דיגיטלי', 'שעושה סדר במוצרים'], need: 'קטלוג או חנות' },
+};
+const lpDefault = { lines: ['אתר שנבנה לעסק שלך,', 'ומביא אליו פניות'], need: lpNeeds[0] };
+const phoneIcon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>';
+const check = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+// Google Ads: set GOOGLE_ADS_ID (AW-…) and GOOGLE_ADS_LEAD (AW-…/label) when building to load the tag and report leads.
+function adsTag() {
+  const id = process.env.GOOGLE_ADS_ID, lead = process.env.GOOGLE_ADS_LEAD;
+  if (!id || !/^AW-\d+$/.test(id)) return '';
+  const leadTo = lead && /^AW-\d+\/[\w-]+$/.test(lead) ? lead : '';
+  return `<script async src="https://www.googletagmanager.com/gtag/js?id=${id}"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${id}');window.LA_ADS={lead:'${leadTo}'};</script>`;
+}
+
+function landingPage() {
+  const title = 'בניית אתר לעסק — עיצוב אישי, מושלם בטלפון | LA webs';
+  const description = 'אתרי תדמית, מערכות הזמנה וקטלוגים בעיצוב אישי, שנבנים מאפס ונראים מושלם בטלפון. שיחת היכרות קצרה, בלי עלות ובלי התחייבות.';
+  const wa = escape(studio.whatsapp);
+  const proof = featuredOrder.map(slug => bySlug[slug]);
+  const body = `
+  <header class="lp-header wrap">
+    <span class="brand" aria-label="LA webs">LA<span>webs</span><i class="dot" aria-hidden="true"></i></span>
+    <a class="lp-call" href="tel:${studio.tel}">${phoneIcon}<bdi>${studio.phone}</bdi></a>
+  </header>
+  <main id="main">
+    <section class="lp-hero" aria-labelledby="lp-title"><div class="wrap lp-hero-grid">
+      <div class="lp-copy hero-copy">
+        <h1 id="lp-title" class="display brand-headline"><span data-l1>${lpDefault.lines[0]}</span><span><span data-l2>${lpDefault.lines[1]}</span><span class="period">.</span></span></h1>
+        <p class="lede">עיצוב ופיתוח מאפס, בלי תבניות. אתרים ומערכות שנראים מושלם בטלפון ומובילים לקוחות לשיחה איתכם.</p>
+        <ul class="lp-points" role="list"><li>${check}עיצוב אישי, סביב העסק שלכם</li><li>${check}מהיר, מושלם בטלפון ומוכן לגוגל</li><li>${check}וואטסאפ וחיוג בלחיצה אחת</li></ul>
+        <div class="hero-actions"><a class="pill pill-cta" href="${wa}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a><a class="text-link" href="tel:${studio.tel}">או חייגו <bdi>${studio.phone}</bdi></a></div>
+      </div>
+      <form class="lead" id="lead" action="https://wa.me/${studio.tel.replace('+', '')}" method="get" target="_blank" aria-labelledby="lead-title">
+        <h2 id="lead-title" class="lead-title display">ספרו לנו על העסק<span class="period">.</span></h2>
+        <label class="field"><span>שם</span><input name="n" autocomplete="name" required maxlength="60"></label>
+        <label class="field"><span>העסק ומה הוא עושה</span><input name="b" required maxlength="80" placeholder="למשל: פיצרייה ברמת גן"></label>
+        <fieldset class="needs"><legend>מה צריך?</legend>${lpNeeds.map(need => `<label class="chip"><input type="radio" name="w" value="${need}"${need === lpDefault.need ? ' checked' : ''}><span>${need}</span></label>`).join('')}</fieldset>
+        <input type="hidden" name="text" value="היי LA webs, אשמח לשמוע על אתר לעסק שלי.">
+        <button class="pill pill-cta lead-submit" type="submit">${chat} שליחה בוואטסאפ</button>
+        <p class="lead-note">ההודעה נפתחת אצלכם בוואטסאפ, ואתם שולחים. שיחת היכרות קצרה, בלי עלות ובלי התחייבות.</p>
+      </form>
+      <script>(() => { const v = ${JSON.stringify(lpVariants)}[new URLSearchParams(location.search).get('t')]; if (!v) return;
+        document.querySelector('[data-l1]').textContent = v.lines[0]; document.querySelector('[data-l2]').textContent = v.lines[1];
+        const need = [...document.querySelectorAll('#lead input[name="w"]')].find(i => i.value === v.need); if (need) need.checked = true; })();</script>
+    </div></section>
+    <section class="lp-work" aria-labelledby="lp-work-title"><div class="wrap">
+      <h2 id="lp-work-title" class="display reveal">עבודות אמיתיות<span class="period">.</span><br>באוויר עכשיו<span class="period">.</span></h2>
+      <ul class="lp-cards" role="list">${proof.map(p => `<li class="lp-card reveal" style="${vars(p)}"><span class="lp-shot"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="מסך הפתיחה של ${escape(p.hebrew)} בטלפון" loading="lazy" decoding="async"></span><span class="lp-card-copy"><strong>${escape(p.hebrew)}</strong><span>${escape(p.kicker)}</span></span></li>`).join('')}</ul>
+    </div></section>
+    ${processSection}
+    ${faq}
+    ${contact}
+  </main>
+  <footer class="lp-footer wrap"><span>© ${new Date().getFullYear()} LA webs</span><a href="/">לאתר הסטודיו ולכל העבודות</a></footer>
+  <nav class="lp-bar" aria-label="יצירת קשר מהירה"><a href="${wa}" target="_blank" rel="noopener noreferrer">${chat} וואטסאפ</a><a href="tel:${studio.tel}">${phoneIcon} חיוג</a></nav>`;
+  return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="robots" content="noindex,follow">${head(title, description, { pathname: '/lp/' })}${adsTag()}</head><body class="lp"><a class="skip-link" href="#lead">דלגו לטופס</a>${body}</body></html>`;
+}
+
 export async function build() {
   await mkdir(destination, { recursive: true });
   // Retire the removed Vee case page even when building over an older output.
@@ -291,6 +357,8 @@ export async function build() {
     await mkdir(dir, { recursive: true });
     await writeFile(resolve(dir, 'index.html'), casePage(project, index).replace(/[\t ]+$/gm, ''));
   }
+  await mkdir(resolve(destination, 'lp'), { recursive: true });
+  await writeFile(resolve(destination, 'lp/index.html'), landingPage().replace(/[\t ]+$/gm, ''));
   await writeFile(resolve(destination, '404.html'), page({ title: 'העמוד לא נמצא | LA webs', description: 'העמוד שחיפשתם לא נמצא. אפשר לחזור לעבודות של LA webs.', body: `<section class="not-found wrap"><p class="kicker">404</p><h1 class="display">העמוד הזה<br>קצת הלך לאיבוד.</h1><p class="lede">אבל העבודות שלנו עדיין כאן.</p><a class="pill" href="/#work">לעבודות ${arrow}</a></section>${contact}`, bodyClass: 'case', pathname: '/404.html' }));
   await writeFile(resolve(destination, 'robots.txt'), process.env.SITE_ORIGIN ? `User-agent: *\nAllow: /\nSitemap: ${new URL('/sitemap.xml', process.env.SITE_ORIGIN)}\n` : 'User-agent: *\nDisallow: /\n');
   if (process.env.SITE_ORIGIN) await writeFile(resolve(destination, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/', ...projects.map(p => `/work/${p.slug}/`)].map(path => `<url><loc>${escape(new URL(path, process.env.SITE_ORIGIN).href)}</loc></url>`).join('')}</urlset>`);
