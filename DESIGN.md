@@ -104,3 +104,7 @@ Liron asked for a homepage that impresses prospective clients; credibility copy 
 - **FAQ (`#faq`).** Five questions in a hairline list beside a sticky title; `details` animate open with `::details-content` where supported.
 - **Pizza HaTanur** joined the projects (`slug: pizza`): the public PizzaManager demo at lawebs.co.il/PizzaManager. Its captures are a stitched flow (opening screen, menu, builder with toppings) from `scripts/capture-pizza.mjs`, encoded to WebP in Chrome.
 - The website-value chapter (`#studio`), the old work grid and the retired hero peek were removed with their CSS. Navigation is now העבודות / התהליך / שאלות / יצירת קשר.
+- **Every fan card is alive (second pass).** All five desktop fan cards carry a living layer; the centre one plays after the fan settles, the others start under the pointer or keyboard focus and stop when it leaves.
+- **Case pages on phones** now tour the phone capture by itself (`.frame.auto`) instead of showing a still top; nothing scrolls inside the page, so the earlier nested-scroll problem does not return.
+- **Sharing image.** `public/images/la-webs-share-20261004.jpg` (1200×630) is rendered from the new hero by `scripts/render-cover.mjs` and is the default `og:image`.
+- The "עוד עבודות." title is sized to stay on one line on phones on every page.

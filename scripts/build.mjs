@@ -47,7 +47,7 @@ function frame(project, kind, { loading = 'lazy', priority = false, vt = '', cla
   return `<div class="frame ${kind}${className ? ' ' + className : ''}"${vt ? ` style="view-transition-name:${vt}"` : ''}>${chrome}<div class="shot">${image}</div></div>`;
 }
 
-function head(title, description, { pathname = '/', image = '/images/la-webs-fan-cover.png', themeColor = '#f7f1e8' } = {}) {
+function head(title, description, { pathname = '/', image = '/images/la-webs-share-20261004.jpg', themeColor = '#f7f1e8' } = {}) {
   const origin = process.env.SITE_ORIGIN;
   const url = origin ? new URL(pathname, origin).href : null;
   return `<meta name="theme-color" content="${themeColor}">
@@ -139,7 +139,7 @@ const faq = `<section class="faq" id="faq" aria-labelledby="faq-title"><div clas
 const desktopOrder = ['miryam', 'koral', 'pizza', 'pinhas', 'libi'];
 const desktopFan = `<ul class="desktop-fan" aria-label="חמש עבודות נבחרות">${desktopOrder.map((slug, i) => {
   const p = bySlug[slug];
-  return `<li class="fan-card" style="--angle:${(i-2)*14}deg;--layer:${5-Math.abs(i-2)};--delay:${Math.abs(i-2)*55}ms"><a class="fan-link" href="/work/${slug}/" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="fan-face"><img src="/images/${slug}-card-20261004.webp" width="585" height="820" alt="" loading="eager" decoding="async"${i===2 ? ' fetchpriority="high"' : ''}>${i === 2 ? live(p) : ''}</span><span class="fan-label"><span>${escape(p.hebrew)}</span>${arrow}</span></a></li>`;
+  return `<li class="fan-card${i === 2 ? ' is-centre' : ''}" style="--angle:${(i-2)*14}deg;--layer:${5-Math.abs(i-2)};--delay:${Math.abs(i-2)*55}ms"><a class="fan-link" href="/work/${slug}/" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="fan-face"><img src="/images/${slug}-card-20261004.webp" width="585" height="820" alt="" loading="eager" decoding="async"${i===2 ? ' fetchpriority="high"' : ''}>${live(p)}</span><span class="fan-label"><span>${escape(p.hebrew)}</span>${arrow}</span></a></li>`;
 }).join('')}</ul>`;
 const hero = `<section class="hero hero-centered" aria-labelledby="hero-title">
   <div class="wrap hero-grid">
@@ -232,7 +232,7 @@ function casePage(project, index) {
     </section>
     <section class="case-stage row ${tone(project)}" style="${vars(project)}" aria-label="האתר בתצוגת טלפון">
       <div class="wrap stage-grid">
-        <div class="row-visual"><a class="row-shot-link" href="${project.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר הפעיל של ${escape(project.hebrew)} — נפתח בחלון חדש">${frame(project, 'phone', { className: 'float' })}</a></div>
+        <div class="row-visual"><a class="row-shot-link" href="${project.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר הפעיל של ${escape(project.hebrew)} — נפתח בחלון חדש">${frame(project, 'phone', { className: 'float auto' })}</a></div>
       </div>
     </section>
     ${beforeAfter}

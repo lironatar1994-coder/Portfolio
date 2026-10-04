@@ -571,7 +571,7 @@ bdi{unicode-bidi:isolate}
 }
 .live{position:absolute;top:0;left:0;width:100%;height:auto;max-width:none;opacity:0;pointer-events:none;transition:opacity .7s var(--ease)}
 .live.is-ready{opacity:1;animation:tour var(--tour-d,20s) var(--ease-io) .5s infinite alternate}
-.desktop-fan:not(.is-settled) .live{opacity:0;animation:none}
+.desktop-fan:not(.is-settled) .live,.fan-card:not(.is-centre):not(:hover):not(:focus-within) .live{opacity:0;animation:none}
 @media (max-width:760px){
   .hand-face{container-type:size}
   .hand-face img.live{inset:0 0 auto;height:auto;object-fit:fill}
@@ -644,7 +644,7 @@ bdi{unicode-bidi:isolate}
 
 /* More work on the homepage uses the case-page strip. */
 .home .catalog{padding-top:clamp(40px,5vw,72px)}
-@media (max-width:760px){.home .catalog-head .display{font-size:clamp(34px,9.4vw,48px)}}
+@media (max-width:760px){.catalog-head .display{font-size:clamp(34px,9.4vw,48px)}}
 
 @media (max-width:760px){
   /* The work belongs on the first screen: a compact statement, then the hand directly under it. */

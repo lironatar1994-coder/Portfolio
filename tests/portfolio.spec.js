@@ -219,7 +219,7 @@ test('case page desktop and phone windows scroll inside themselves', async ({ pa
   }
 });
 
-test('on phones the hero is a hand of cards and case pages show a still phone capture', async ({ page }, testInfo) => {
+test('on phones the hero is a hand of cards and case pages show a touring phone capture', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'Phone layout only');
   // the phone hero is a hand of cards: seven projects plus the studio card, the front one changes when a card behind it is tapped
   await page.goto('/');
@@ -238,7 +238,8 @@ test('on phones the hero is a hand of cards and case pages show a still phone ca
   await expect(page.locator('.case-stage')).toBeVisible();
   const box = await page.locator('.case-stage .frame.phone .shot').boundingBox();
   expect(box.height).toBeGreaterThan(page.viewportSize().height * 0.45);
-  expect(await page.locator('.case-stage .frame.phone .shot img').evaluate(img => getComputedStyle(img).transform)).toBe('none');
+  await page.locator('.case-stage .frame.phone').scrollIntoViewIfNeeded();
+  await expect(page.locator('.case-stage .frame.phone')).toHaveClass(/is-live/); // the phone capture tours the site by itself, nothing scrolls inside the page
   await expect(page.locator('#more .strip-item')).toHaveCount(liveSites.length - 1);
 });
 

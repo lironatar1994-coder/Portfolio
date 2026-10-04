@@ -293,7 +293,13 @@ if (desktopFan) {
     desktopFan.classList.add('is-open');
     setTimeout(() => {
       desktopFan.classList.add('is-settled');
-      setTimeout(() => goLive($('.live', desktopFan)), 500); // the centre card starts touring its site
+      setTimeout(() => goLive($('.is-centre .live', desktopFan)), 500); // the centre card starts touring its site
+      // every other card comes alive under the pointer or keyboard focus
+      for (const card of $$('.fan-card:not(.is-centre)', desktopFan)) {
+        const wake = () => goLive($('.live', card));
+        card.addEventListener('pointerenter', wake);
+        card.addEventListener('focusin', wake);
+      }
     }, reduceMotion.matches ? 0 : 1350);
   };
   if (reduceMotion.matches || !('IntersectionObserver' in window)) openFan();
