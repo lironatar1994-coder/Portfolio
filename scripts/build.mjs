@@ -320,6 +320,18 @@ function adsTag() {
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${id}');window.LA_ADS={lead:'${leadTo}'};</script>`;
 }
 
+// The lead form. Desktop shows it beside the hero; phones show it after the work and the comparison, once there is proof.
+const leadForm = id => `
+      <form class="lead" id="${id}" action="https://wa.me/${studio.tel.replace('+', '')}" method="get" target="_blank" aria-labelledby="${id}-title">
+        <h2 id="${id}-title" class="lead-title display">ספרו לנו על העסק<span class="period">.</span></h2>
+        <label class="field"><span>שם</span><input name="n" autocomplete="name" required maxlength="60"></label>
+        <label class="field"><span>העסק ומה הוא עושה</span><input name="b" required maxlength="80" placeholder="למשל: פיצרייה ברמת גן"></label>
+        <fieldset class="needs"><legend>מה צריך?</legend>${lpNeeds.map(need => `<label class="chip"><input type="radio" name="w" value="${need}"${need === lpDefault.need ? ' checked' : ''}><span>${need}</span></label>`).join('')}</fieldset>
+        <input type="hidden" name="text" value="היי LA webs, אשמח לשמוע על אתר לעסק שלי.">
+        <button class="pill pill-cta lead-submit" type="submit">${chat} שליחה בוואטסאפ</button>
+        <p class="lead-note">ההודעה נפתחת אצלכם בוואטסאפ, ואתם שולחים. שיחת היכרות קצרה, בלי עלות ובלי התחייבות.</p>
+      </form>`;
+
 function landingPage() {
   const title = 'בניית אתר לעסק — עיצוב אישי, מושלם בטלפון | LA webs';
   const description = 'אתרי תדמית, מערכות הזמנה וקטלוגים בעיצוב אישי, שנבנים מאפס ונראים מושלם בטלפון. שיחת היכרות קצרה, בלי עלות ובלי התחייבות.';
@@ -340,19 +352,11 @@ function landingPage() {
       </div>
       <div class="lead-deck">
       ${proof.map((p, i) => `<span class="deck-card" aria-hidden="true" style="${vars(p)};--d:${i};--r:${[-15, -6, 6, 15][i]}deg"><img src="/images/${p.slug}-card-20261004-300w.webp" width="300" height="421" alt="" decoding="async" fetchpriority="high"></span>`).join('')}
-      <form class="lead" id="lead" action="https://wa.me/${studio.tel.replace('+', '')}" method="get" target="_blank" aria-labelledby="lead-title">
-        <h2 id="lead-title" class="lead-title display">ספרו לנו על העסק<span class="period">.</span></h2>
-        <label class="field"><span>שם</span><input name="n" autocomplete="name" required maxlength="60"></label>
-        <label class="field"><span>העסק ומה הוא עושה</span><input name="b" required maxlength="80" placeholder="למשל: פיצרייה ברמת גן"></label>
-        <fieldset class="needs"><legend>מה צריך?</legend>${lpNeeds.map(need => `<label class="chip"><input type="radio" name="w" value="${need}"${need === lpDefault.need ? ' checked' : ''}><span>${need}</span></label>`).join('')}</fieldset>
-        <input type="hidden" name="text" value="היי LA webs, אשמח לשמוע על אתר לעסק שלי.">
-        <button class="pill pill-cta lead-submit" type="submit">${chat} שליחה בוואטסאפ</button>
-        <p class="lead-note">ההודעה נפתחת אצלכם בוואטסאפ, ואתם שולחים. שיחת היכרות קצרה, בלי עלות ובלי התחייבות.</p>
-      </form>
+      ${leadForm('lead')}
+      <a class="pill pill-cta lp-deck-cta" href="#lead-m">ספרו לנו על העסק ${down}</a>
       </div>
       <script>(() => { const v = ${JSON.stringify(lpVariants)}[new URLSearchParams(location.search).get('t')]; if (!v) return;
-        document.querySelector('[data-l1]').textContent = v.lines[0]; document.querySelector('[data-l2]').textContent = v.lines[1];
-        const need = [...document.querySelectorAll('#lead input[name="w"]')].find(i => i.value === v.need); if (need) need.checked = true; })();</script>
+        document.querySelector('[data-l1]').textContent = v.lines[0]; document.querySelector('[data-l2]').textContent = v.lines[1]; })();</script>
     </div></section>
     <section class="lp-work" aria-labelledby="lp-work-title"><div class="wrap">
       <h2 id="lp-work-title" class="display reveal">עבודות אמיתיות<span class="period">.</span><br>באוויר עכשיו<span class="period">.</span></h2>
@@ -375,13 +379,16 @@ function landingPage() {
           <li class="vs-note reveal">בונה אתרים מתאים כשמתחילים עם תקציב אפסי. כשהאתר צריך להביא לקוחות, זה הזמן לאתר שנבנה בשבילכם.</li></ul>
       </div>
     </div></section>
+    <section class="lp-lead-m" aria-label="טופס פנייה"><div class="wrap">${leadForm('lead-m')}</div></section>
+    <script>(() => { const v = ${JSON.stringify(lpVariants)}[new URLSearchParams(location.search).get('t')]; if (!v) return; // both forms exist now
+      document.querySelectorAll('form.lead input[name="w"]').forEach(i => { if (i.value === v.need) i.checked = true; }); })();</script>
     ${processSection}
     ${faq}
     ${contact}
   </main>
   <footer class="lp-footer wrap"><span>© ${new Date().getFullYear()} LA webs</span><span class="legal-links"><a href="/privacy/">מדיניות פרטיות</a><a href="/accessibility/">הצהרת נגישות</a></span><a href="/">לאתר הסטודיו ולכל העבודות</a></footer>
   <nav class="lp-bar" aria-label="יצירת קשר מהירה"><a href="${wa}" target="_blank" rel="noopener noreferrer">${chat} וואטסאפ</a><a href="tel:${studio.tel}">${phoneIcon} חיוג</a></nav>`;
-  return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="robots" content="noindex,follow">${head(title, description, { pathname: '/lp/' })}${adsTag()}</head><body class="lp"><a class="skip-link" href="#lead">דלגו לטופס</a>${body}</body></html>`;
+  return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="robots" content="noindex,follow">${head(title, description, { pathname: '/lp/' })}${adsTag()}</head><body class="lp"><a class="skip-link" href="#main">דלגו לתוכן</a>${body}</body></html>`;
 }
 
 export async function build() {

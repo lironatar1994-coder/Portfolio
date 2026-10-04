@@ -435,33 +435,34 @@ document.addEventListener('click', event => {
 });
 
 /* ---------- Landing page form: write the WhatsApp message from the visitor's answers ---------- */
-const lead = $('#lead');
-// A missing answer gets a gentle nudge instead of the browser's bubble alone.
-lead?.addEventListener('invalid', event => {
-  const field = event.target;
-  field.classList.remove('is-missing'); void field.offsetWidth; field.classList.add('is-missing');
-  field.addEventListener('input', () => field.classList.remove('is-missing'), { once: true });
-}, true);
-lead?.addEventListener('submit', event => {
-  event.preventDefault();
-  // the button confirms with a drawn check for a moment, then returns to its label
-  const button = $('.lead-submit', lead);
-  if (button && !button.classList.contains('is-sent')) {
-    const label = button.innerHTML;
-    button.classList.add('is-sent');
-    button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg> נפתח בוואטסאפ';
-    setTimeout(() => { button.classList.remove('is-sent'); button.innerHTML = label; }, 3500);
-  }
-  const data = new FormData(lead);
-  const need = String(data.get('w') || '');
-  const ask = need && !need.startsWith('עוד לא') ? `אשמח לשמוע על ${need} לעסק שלי.` : 'אשמח לשמוע מה יתאים לעסק שלי.';
-  const text = `היי LA webs, אני ${String(data.get('n')).trim()} (${String(data.get('b')).trim()}). ${ask}`;
-  const url = `${lead.action}?text=${encodeURIComponent(text)}`;
-  trackLead('form');
-  const opened = window.open(url, '_blank'); // ('noopener' would make this always null, so the opener is cut by hand)
-  if (opened) opened.opener = null;
-  else location.href = url; // a blocked pop-up still reaches WhatsApp
-});
+for (const lead of $$('form.lead')) { // one beside the hero (desktop), one after the proof (phones)
+  // A missing answer gets a gentle nudge instead of the browser's bubble alone.
+  lead.addEventListener('invalid', event => {
+    const field = event.target;
+    field.classList.remove('is-missing'); void field.offsetWidth; field.classList.add('is-missing');
+    field.addEventListener('input', () => field.classList.remove('is-missing'), { once: true });
+  }, true);
+  lead.addEventListener('submit', event => {
+    event.preventDefault();
+    // the button confirms with a drawn check for a moment, then returns to its label
+    const button = $('.lead-submit', lead);
+    if (button && !button.classList.contains('is-sent')) {
+      const label = button.innerHTML;
+      button.classList.add('is-sent');
+      button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg> נפתח בוואטסאפ';
+      setTimeout(() => { button.classList.remove('is-sent'); button.innerHTML = label; }, 3500);
+    }
+    const data = new FormData(lead);
+    const need = String(data.get('w') || '');
+    const ask = need && !need.startsWith('עוד לא') ? `אשמח לשמוע על ${need} לעסק שלי.` : 'אשמח לשמוע מה יתאים לעסק שלי.';
+    const text = `היי LA webs, אני ${String(data.get('n')).trim()} (${String(data.get('b')).trim()}). ${ask}`;
+    const url = `${lead.action}?text=${encodeURIComponent(text)}`;
+    trackLead('form');
+    const opened = window.open(url, '_blank'); // ('noopener' would make this always null, so the opener is cut by hand)
+    if (opened) opened.opener = null;
+    else location.href = url; // a blocked pop-up still reaches WhatsApp
+  });
+}
 
 /* ---------- Landing page deck: deal the project cards behind the form when it comes into view ---------- */
 const deck = $('.lead-deck');

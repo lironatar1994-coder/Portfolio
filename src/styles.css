@@ -1035,3 +1035,18 @@ html:not(.js) .cycle{display:none}
   .vs-points strong{font-size:22px}
   .vs-points span{font-size:16px}
 }
+
+/* ---------- Landing page order: proof before the ask on phones ---------- */
+.lp-deck-cta,.lp-lead-m{display:none}
+@media (max-width:760px){
+  /* the hero shows the hand of real projects with one button; the form waits until after the work and the comparison */
+  .lead-deck .lead{display:none}
+  .lead-deck{padding-top:0;margin-bottom:0;height:calc(min(60vw,260px) * 1.4 + 86px)}
+  .deck-card{width:min(60vw,260px);margin-left:calc(min(60vw,260px) / -2);top:14px}
+  .lp-deck-cta{display:inline-flex;position:absolute;bottom:0;left:0;right:0;margin-inline:auto;width:max-content;z-index:6;min-height:52px;padding:0 26px;font-size:16px;box-shadow:0 20px 40px -18px rgb(0 0 0/.6)}
+  .lp-deck-cta svg{width:18px;height:18px}
+  .lp-hero{padding-bottom:34px}
+  .lp-work{padding-top:56px}
+  .lp-lead-m{display:block;background:var(--ink);padding:52px 0 60px;scroll-margin-top:12px}
+  .lp-lead-m .lead{box-shadow:0 30px 70px -40px rgb(0 0 0/.7)}
+}

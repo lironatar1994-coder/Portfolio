@@ -384,11 +384,11 @@ test('ads landing page matches the ad group and writes the WhatsApp message from
   await page.goto('/lp/?t=hazmanot');
   await expect(page.locator('meta[name="robots"][content*="noindex"]').first()).toHaveCount(1);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('מערכת הזמנות אונליין' + 'לעסק שלך.');
-  await expect(page.locator('#lead input[name="w"]:checked')).toHaveValue('מערכת הזמנות');
+  await expect(page.locator('form.lead:visible input[name="w"]:checked')).toHaveValue('מערכת הזמנות');
   await expect(page.locator('.site-nav')).toHaveCount(0); // no navigation leaks on the ad page
-  await page.fill('#lead input[name="n"]', 'דנה');
-  await page.fill('#lead input[name="b"]', 'פיצרייה ברמת גן');
-  const [popup] = await Promise.all([context.waitForEvent('page'), page.locator('.lead-submit').click()]);
+  await page.fill('form.lead:visible input[name="n"]', 'דנה');
+  await page.fill('form.lead:visible input[name="b"]', 'פיצרייה ברמת גן');
+  const [popup] = await Promise.all([context.waitForEvent('page'), page.locator('form.lead:visible .lead-submit').click()]);
   expect(decodeURIComponent(popup.url()).replaceAll('+', ' ')).toContain('אשמח לשמוע על מערכת הזמנות לעסק שלי'); // WhatsApp's redirect encodes spaces as +
   await popup.close();
   await page.goto('/lp/?t=<script>');
@@ -403,4 +403,19 @@ test('landing page has no serious or critical WCAG violations', async ({ page })
   await expect(page.locator('.lead-deck')).toHaveClass(/is-dealt/);
   await page.waitForTimeout(1200); // let the deal land
   await expectAccessible(page);
+});
+
+test('on phones the landing page shows proof before the form', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'Phone order only');
+  await page.goto('/lp/');
+  await expect(page.locator('.lead-deck .lead')).toBeHidden();
+  await expect(page.locator('.lp-deck-cta')).toBeVisible();
+  const form = page.locator('#lead-m');
+  await expect(form).toBeAttached();
+  // the phone form comes after the work and the comparison
+  const order = await page.evaluate(() => ['.lp-work', '.lp-compare', '#lead-m'].map(s => document.querySelector(s).getBoundingClientRect().top + scrollY));
+  expect(order[0]).toBeLessThan(order[2]);
+  expect(order[1]).toBeLessThan(order[2]);
+  await page.locator('.lp-deck-cta').click();
+  await expect(form).toBeInViewport();
 });
