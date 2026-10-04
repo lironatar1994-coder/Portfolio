@@ -996,3 +996,42 @@ html:not(.js) .cycle{display:none}
 @keyframes deck-deal-short{from{transform:translateY(22vh) rotate(calc(var(--r) * 2))}}
 @media (max-width:760px){.deck-card{animation-name:deck-deal-short;animation-delay:calc(.1s + var(--d) * 90ms)}}
 @media (max-width:760px) and (prefers-reduced-motion:reduce){.deck-card{animation:none}}
+
+/* ---------- Landing page: template vs. our site, a drag slider instead of a table ---------- */
+.lp-compare h2{margin-bottom:clamp(28px,4vw,56px)}
+.vs-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(32px,5vw,96px);align-items:center}
+.vs-figure{display:grid;gap:14px;justify-items:center}
+.vs-figure figcaption{font-size:14px;color:var(--muted);text-align:center;max-width:34ch}
+.ba.vs{width:min(100%,360px);max-width:none;aspect-ratio:585/820;border-radius:34px;border:8px solid #15130f;box-shadow:0 40px 80px -40px rgb(41 37 33/.55);touch-action:pan-y;background:#f4f4f6}
+.vs .ba-control input{direction:rtl;touch-action:pan-y} /* the line follows the finger in RTL */
+.vs .ba-after{object-fit:cover;object-position:top}
+.vs .ba-handle{z-index:4}
+.vs-template{position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;padding:16px 14px;background:#f4f4f6;color:#8d8d97;font-family:Arial,Helvetica,sans-serif;direction:ltr}
+.tm-bar{display:flex;align-items:center;justify-content:space-between;height:26px}
+.tm-bar i{width:22px;height:6px;border-radius:3px;background:#d4d4da}
+.tm-bar b{font-size:12px;font-weight:700;color:#85858f}
+.tm-hero{height:32%;border-radius:6px;background:#e1e1e7;display:grid;place-items:center}
+.tm-hero svg{width:42px;height:42px;stroke:#c2c2ca;stroke-width:1.4}
+.tm-title{font-size:15px;font-weight:700;color:#7a7a84;text-align:center}
+.tm-line{height:7px;border-radius:4px;background:#dcdce2}
+.tm-line.short{width:62%;align-self:center}
+.tm-button{align-self:center;padding:8px 16px;border-radius:4px;background:#4a7bd8;color:#fff;font-size:12px}
+.tm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tm-grid i{height:48px;border-radius:4px;background:#e5e5ea}
+.vs-tag{position:absolute;top:14px;z-index:5;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;pointer-events:none}
+.vs-tag-template{left:14px;background:#fff;color:#5b5b64;box-shadow:0 2px 8px rgb(0 0 0/.12)}
+.vs-tag-ours{right:14px;background:var(--accent);color:#fff}
+.vs-points{display:grid;gap:28px}
+.vs-points li{position:relative;display:grid;gap:4px;padding-inline-start:26px}
+.vs-points li::before{content:'';position:absolute;inset-inline-start:0;top:.55em;width:11px;height:11px;border-radius:2px;background:var(--accent)}
+.vs-points strong{font-size:clamp(22px,2.1vw,32px);font-weight:700;line-height:1.2}
+.vs-points span{font-size:17px;color:var(--muted)}
+.vs-points .vs-note{padding:20px 0 0;border-top:1px solid var(--line);font-size:16px;color:var(--muted);max-width:52ch}
+.vs-points .vs-note::before{display:none}
+@media (max-width:860px){.vs-grid{grid-template-columns:1fr}}
+@media (max-width:760px){
+  .ba.vs{width:min(78vw,320px);border-width:7px;border-radius:30px}
+  .vs-points{gap:22px}
+  .vs-points strong{font-size:22px}
+  .vs-points span{font-size:16px}
+}

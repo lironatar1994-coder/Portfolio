@@ -301,14 +301,14 @@ const lpVariants = {
   catalog: { lines: ['קטלוג דיגיטלי', 'שעושה סדר במוצרים'], need: 'קטלוג או חנות' },
 };
 const lpDefault = { lines: ['אתר שנבנה לעסק שלך,', 'ומביא אליו פניות'], need: lpNeeds[0] };
-// The objection every competitor answers: why not build it yourself. Fair to the builders, specific about the difference.
+// The objection every competitor answers: why not build it yourself. Shown, not argued: a drag slider between a generic
+// template (drawn in CSS, clearly illustrative) and a real site we built, then three short differences.
 const lpCompare = [
-  ['עיצוב', 'תבנית שעסקים רבים משתמשים בה', 'עיצוב שנבנה סביב העסק שלכם'],
-  ['הזמן שלכם', 'אתם בונים, כותבים ומתקנים', 'אנחנו בונים, אתם מאשרים'],
-  ['טלפון ומהירות', 'תלוי בתבנית ובתוספים', 'מתוכנן קודם לטלפון ונטען מהר'],
-  ['כשצריך שינוי', 'פותחים עורך ומנסים לבד', 'שולחים הודעה ואנחנו מטפלים'],
-  ['הזמנות והרשמה', 'תוספים ומנויים חודשיים', 'נבנים לפי מה שהעסק צריך'],
+  ['עיצוב שנבנה סביב העסק', 'לא תבנית שעוד אלפי עסקים משתמשים בה.'],
+  ['אנחנו בונים, אתם מאשרים', 'בלי לילות מול עורך, טקסטים ותוספים.'],
+  ['שינוי? שולחים הודעה', 'ואנחנו מטפלים. בלי לחפש איפה הכפתור.'],
 ];
+const templateMock = `<div class="ba-before vs-template" aria-hidden="true"><span class="tm-bar"><i></i><b>Your Logo</b><i></i></span><span class="tm-hero"><svg viewBox="0 0 24 24" fill="none"><path d="M3 18 9 11l4 5 3-3 5 5M3 5h18v14H3z"/></svg></span><span class="tm-title">Welcome to Our Website</span><span class="tm-line"></span><span class="tm-line short"></span><span class="tm-button">Click Here</span><span class="tm-grid"><i></i><i></i><i></i></span><span class="tm-line"></span><span class="tm-line short"></span></div>`;
 const phoneIcon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>';
 const check = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
 // Google Ads: set GOOGLE_ADS_ID (AW-…) and GOOGLE_ADS_LEAD (AW-…/label) when building to load the tag and report leads.
@@ -360,11 +360,20 @@ function landingPage() {
     </div></section>
     <section class="lp-compare" aria-labelledby="lp-compare-title"><div class="wrap">
       <h2 id="lp-compare-title" class="display reveal">למה לא לבנות לבד<br>בבונה אתרים או ב-AI<span class="period">?</span></h2>
-      <div class="compare reveal" role="table" aria-label="בונה אתרים מול אתר שנבנה לעסק">
-        <div class="compare-row compare-head" role="row"><span role="columnheader"></span><span role="columnheader">בונה אתרים או AI</span><span role="columnheader">אתר מ-LA webs</span></div>
-        ${lpCompare.map(([topic, diy, ours]) => `<div class="compare-row" role="row"><strong role="rowheader">${topic}</strong><span role="cell">${diy}</span><span role="cell">${check}${ours}</span></div>`).join('')}
+      <div class="vs-grid">
+        <figure class="vs-figure">
+          <div class="ba vs" style="--cut:50%">
+            ${templateMock}
+            <img class="ba-after" src="/images/pizza-card-20261004.webp" width="585" height="820" alt="אתר שעוצב לעסק: מסך הפתיחה של פיצת התנור" loading="lazy" decoding="async">
+            <span class="ba-handle" aria-hidden="true"></span>
+            <span class="vs-tag vs-tag-template" aria-hidden="true">תבנית</span><span class="vs-tag vs-tag-ours" aria-hidden="true">LA webs</span>
+            <label class="ba-control"><span class="sr-only">השוואה בין תבנית כללית לאתר שעוצב לעסק</span><input type="range" min="0" max="100" value="50"></label>
+          </div>
+          <figcaption>גררו את הקו. משמאל תבנית כללית (להמחשה), מימין אתר שבנינו.</figcaption>
+        </figure>
+        <ul class="vs-points" role="list">${lpCompare.map(([title, text]) => `<li class="reveal"><strong>${title}</strong><span>${text}</span></li>`).join('')}
+          <li class="vs-note reveal">בונה אתרים מתאים כשמתחילים עם תקציב אפסי. כשהאתר צריך להביא לקוחות, זה הזמן לאתר שנבנה בשבילכם.</li></ul>
       </div>
-      <p class="compare-note reveal">בונה אתרים מתאים כשמתחילים עם תקציב אפסי. כשהאתר צריך להביא לקוחות, זה הזמן לאתר שנבנה בשבילכם.</p>
     </div></section>
     ${processSection}
     ${faq}

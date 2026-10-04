@@ -340,6 +340,28 @@ for (const compare of $$('.ba')) {
   });
 }
 
+/* Template vs. our site: the line sweeps once when it comes into view, so it is obvious it can be dragged. */
+for (const vs of $$('.ba.vs')) {
+  if (reduceMotion.matches || !('IntersectionObserver' in window)) break;
+  const input = $('input[type="range"]', vs);
+  let touched = false;
+  vs.addEventListener('pointerdown', () => { touched = true; });
+  input.addEventListener('input', event => { if (event.isTrusted) touched = true; });
+  const sweep = () => {
+    const keys = [50, 22, 80, 50], leg = 650, start = performance.now();
+    const ease = t => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+    const step = now => {
+      if (touched) return;
+      const t = (now - start) / leg, i = Math.min(Math.floor(t), keys.length - 2);
+      const value = keys[i] + (keys[i + 1] - keys[i]) * ease(Math.min(1, t - i));
+      input.value = value; vs.style.setProperty('--cut', `${value}%`);
+      if (t < keys.length - 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  new IntersectionObserver(([entry], observer) => { if (entry.isIntersecting) { observer.disconnect(); setTimeout(sweep, 350); } }, { threshold: 0.6 }).observe(vs);
+}
+
 /* Desktop fan: reveal once, keeping the visible stack and reduced-motion default usable. Once open it turns by
    itself: every card owns a slot (-2..2) and a turn moves each one slot to the left, so the card on the right of the
    centre comes forward and the leftmost card swings round behind the hand to the far right. */
