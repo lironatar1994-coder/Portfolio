@@ -145,7 +145,7 @@ test('phone cards enter once and remain visible after scrolling away and back', 
   await hand.evaluate(el => el.scrollIntoView({ behavior: 'instant', block: 'start' }));
   await expect(hand).toHaveClass(/is-dealing/);
   await page.evaluate(() => window.__dealStarts = 0);
-  await hand.evaluate(el => el.addEventListener('animationstart', () => window.__dealStarts++));
+  await hand.evaluate(el => el.addEventListener('animationstart', event => { if (event.target.classList.contains('hand-card')) window.__dealStarts++; })); // the caption's progress line runs on its own
   // Wait for the initial staggered entrance before counting replays.
   await page.waitForTimeout(1100);
   await page.evaluate(() => window.__dealStarts = 0);
@@ -361,4 +361,20 @@ test('capture public portfolio QA screenshots', async ({ page }, testInfo) => {
     await page.screenshot({ path: path.resolve(`docs/qa/${name}-${testInfo.project.name}.png`), fullPage: true, animations: 'disabled' });
     if (name === 'home') await page.screenshot({ path: path.resolve(`docs/qa/home-${testInfo.project.name}-viewport.png`), fullPage: false, animations: 'disabled' });
   }
+});
+
+test('the hero hand turns by itself, names the front project and can be paused', async ({ page }, testInfo) => {
+  const scope = testInfo.project.name === 'desktop' ? '.fan-stage' : '.hand';
+  await page.goto('/');
+  const caption = page.locator(`${scope} .cycle-text strong`);
+  await expect(caption).toHaveText('פיצת התנור');
+  await expect(caption).not.toHaveText('פיצת התנור', { timeout: 12_000 });
+  const toggle = page.locator(`${scope} .cycle-toggle`);
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+  const held = await caption.textContent();
+  await page.waitForTimeout(5000);
+  await expect(caption).toHaveText(held);
+  // hero cards lead to their panel on this page when the project is featured
+  await expect(page.locator(testInfo.project.name === 'desktop' ? '.fan-link[href="#project-pizza"]' : '.hand-link[href="#project-pizza"]')).toHaveCount(1);
 });

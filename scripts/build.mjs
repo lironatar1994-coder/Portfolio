@@ -75,6 +75,13 @@ const header = `<header class="site-header" id="top">
 </header>`;
 
 const order = ['pizza', 'koral', 'pinhas', 'miryam', 'libi', 'reuven', 'sos', 'seder', 'pdf'];
+// The featured four have their own panel on the homepage; a hero card for one of them scrolls to that panel,
+// so the visitor stays in the page's flow. Every other card opens its project page.
+const featuredOrder = ['pizza', 'koral', 'pinhas', 'miryam'];
+const heroTarget = slug => featuredOrder.includes(slug) ? `#project-${slug}` : `/work/${slug}/`;
+const pauseIcon = '<svg class="i-pause" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>';
+// The caption under a rotating hand: what the front project is, a progress line to the next turn, and a pause button.
+const cycle = first => `<div class="cycle"><button type="button" class="cycle-toggle" aria-pressed="false" aria-label="עצירת ההחלפה האוטומטית">${pauseIcon}</button><p class="cycle-text"><strong>${escape(first.hebrew)}</strong><span>${escape(first.kicker)}</span></p><span class="cycle-timer" aria-hidden="true"><i></i></span></div>`;
 const bySlug = Object.fromEntries(projects.map(p => [p.slug, p]));
 const work = order.map(slug => bySlug[slug]);
 
@@ -84,8 +91,9 @@ const handOrder = work.filter(p => !catalogOnly.includes(p.slug));
 // The front card comes alive: its long phone capture is fetched only when that card is in front, then tours the site.
 const live = p => `<img class="live" data-src="/images/${p.slug}-mobile-full.webp" width="${captures[p.slug].mobileCapture.width}" height="${captures[p.slug].mobileCapture.height}" alt="" decoding="async">`;
 const hand = `<div class="hand" role="group" aria-label="העבודות שלנו, כמו יד של קלפים">
-  <ul class="hand-cards" role="list">${handOrder.map((p, i) => `<li class="hand-card ${tone(p)}" style="${vars(p)};--i:${i}"><a class="hand-link" href="/work/${p.slug}/" draggable="false" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="hand-face"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async">${live(p)}</span><span class="hand-name"><span>${escape(p.hebrew)}</span><i aria-hidden="true"></i></span></a></li>`).join('')}<li class="hand-card hand-back" style="--i:${handOrder.length}"><a class="hand-link" href="#work" draggable="false" aria-label="לכל העבודות"><span class="hand-face"><img class="hand-mark" src="/la-monogram-white.svg" width="960" height="960" alt="" decoding="async"></span><span class="hand-name"><span>כל העבודות</span><i aria-hidden="true"></i></span></a></li>
+  <ul class="hand-cards" role="list">${handOrder.map((p, i) => `<li class="hand-card ${tone(p)}" style="${vars(p)};--i:${i}" data-name="${escape(p.hebrew)}" data-kind="${escape(p.kicker)}"><a class="hand-link" href="${heroTarget(p.slug)}" draggable="false" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="hand-face"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async"></span><span class="hand-name"><span>${escape(p.hebrew)}</span><i aria-hidden="true"></i></span></a></li>`).join('')}<li class="hand-card hand-back" style="--i:${handOrder.length}" data-name="כל העבודות" data-kind="אתרים, מערכות וקטלוגים"><a class="hand-link" href="#work" draggable="false" aria-label="לכל העבודות"><span class="hand-face"><img class="hand-mark" src="/la-monogram-white.svg" width="960" height="960" alt="" decoding="async"></span><span class="hand-name"><span>כל העבודות</span><i aria-hidden="true"></i></span></a></li>
   </ul>
+  ${cycle(handOrder[0])}
 </div>`;
 
 // Four featured projects as full-colour panels that stack on desktop; each frame tours the live site by itself.
@@ -158,14 +166,14 @@ const faq = `<section class="faq" id="faq" aria-labelledby="faq-title"><div clas
 const desktopOrder = ['miryam', 'koral', 'pizza', 'pinhas', 'libi'];
 const desktopFan = `<ul class="desktop-fan" aria-label="חמש עבודות נבחרות">${desktopOrder.map((slug, i) => {
   const p = bySlug[slug];
-  return `<li class="fan-card${i === 2 ? ' is-centre' : ''}" style="--angle:${(i-2)*14}deg;--layer:${5-Math.abs(i-2)};--delay:${Math.abs(i-2)*55}ms;--deal:${[0, 2, 4, 3, 1][i]};--spin:${(i - 2) * 7 + (i === 2 ? 3 : 0)}deg"><a class="fan-link" href="/work/${slug}/" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="fan-face"><img src="/images/${slug}-card-20261004.webp" width="585" height="820" alt="" loading="eager" decoding="async"${i===2 ? ' fetchpriority="high"' : ''}>${live(p)}</span><span class="fan-label"><span>${escape(p.hebrew)}</span>${arrow}</span></a></li>`;
+  return `<li class="fan-card${i === 2 ? ' is-centre' : ''}" style="--angle:${(i-2)*14}deg;--layer:${5-Math.abs(i-2)};--delay:${Math.abs(i-2)*55}ms;--deal:${[0, 2, 4, 3, 1][i]};--spin:${(i - 2) * 7 + (i === 2 ? 3 : 0)}deg" data-name="${escape(p.hebrew)}" data-kind="${escape(p.kicker)}"><a class="fan-link" href="${heroTarget(slug)}" aria-label="לפרויקט ${escape(p.hebrew)}"><span class="fan-face"><img src="/images/${slug}-card-20261004.webp" width="585" height="820" alt="" loading="eager" decoding="async"${i===2 ? ' fetchpriority="high"' : ''}>${live(p)}</span><span class="fan-label"><span>${escape(p.hebrew)}</span>${arrow}</span></a></li>`;
 }).join('')}</ul>`;
 const hero = `<section class="hero hero-centered" aria-labelledby="hero-title">
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <h1 id="hero-title" class="display brand-headline"><span>העסק שלך<span class="period">.</span></span><span>האתר שמתאים לו<span class="period">.</span></span></h1>
       <p class="lede">אתרים ומערכות בעיצוב אישי, שנבנים מאפס ונראים מושלם בטלפון.</p>
-      ${desktopFan}
+      <div class="fan-stage">${desktopFan}${cycle(bySlug[desktopOrder[2]])}</div>
       <div class="hero-actions"><a class="pill pill-cta" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a><a class="text-link hero-work-link" href="#work">לעבודות ${down}</a></div>
     </div>
     ${hand}

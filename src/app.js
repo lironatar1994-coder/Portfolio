@@ -11,6 +11,49 @@ const goLive = img => {
   (img.decode ? img.decode() : Promise.resolve()).then(() => img.classList.add('is-ready')).catch(() => {});
 };
 
+/* A hand that turns by itself: every few seconds the next project comes to the front, the caption names it and a
+   line runs to the next turn. It rests while hovered or focused, while off screen and while the tab is hidden, and
+   stops for good once the visitor pauses it or takes over. Reduced motion starts it paused. */
+const TURN_EVERY = 4000;
+function rotator(root, cycleEl, advance, frontCard) {
+  const toggle = $('.cycle-toggle', cycleEl), text = $('.cycle-text', cycleEl);
+  let timer = 0, holds = 0, visible = true, started = false, stopped = reduceMotion.matches;
+  cycleEl.style.setProperty('--cycle', `${TURN_EVERY}ms`);
+  const label = () => {
+    toggle.setAttribute('aria-pressed', String(stopped));
+    toggle.setAttribute('aria-label', stopped ? 'הפעלת ההחלפה האוטומטית' : 'עצירת ההחלפה האוטומטית');
+  };
+  const show = () => {
+    const card = frontCard();
+    if (!card) return;
+    text.classList.add('is-swapping');
+    setTimeout(() => {
+      text.querySelector('strong').textContent = card.dataset.name;
+      text.querySelector('span').textContent = card.dataset.kind;
+      text.classList.remove('is-swapping');
+    }, 220);
+  };
+  const run = () => {
+    clearTimeout(timer);
+    cycleEl.classList.remove('is-running');
+    if (!started || stopped || holds > 0 || !visible || document.hidden) return;
+    void cycleEl.offsetWidth; // restart the progress line from zero
+    cycleEl.classList.add('is-running');
+    timer = setTimeout(() => { advance(); show(); run(); }, TURN_EVERY);
+  };
+  const stop = () => { stopped = true; label(); run(); };
+  toggle.addEventListener('click', () => { if (stopped) { stopped = false; label(); run(); } else stop(); });
+  const hold = delta => { holds = Math.max(0, holds + delta); run(); };
+  root.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') hold(1); });
+  root.addEventListener('pointerleave', event => { if (event.pointerType === 'mouse') hold(-1); });
+  root.addEventListener('focusin', () => hold(1));
+  root.addEventListener('focusout', () => hold(-1));
+  if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; run(); }, { threshold: 0.25 }).observe(root);
+  document.addEventListener('visibilitychange', run);
+  label();
+  return { start: () => { started = true; run(); }, stop, show };
+}
+
 /* ---------- Mobile menu ---------- */
 const menuButton = $('.menu-toggle');
 const navigation = $('#site-nav');
@@ -109,8 +152,7 @@ if (hand) {
   let offset = 0;
   const posOf = i => wrap(base[i] + offset);
   const front = () => cardEls[base.findIndex((b, i) => posOf(i) === 0)];
-  let liveOn = false; // the front card starts touring its site once the deal has landed
-  const wake = () => { if (liveOn) goLive($('.live', front())); };
+  let handTurns = null; // the hand turns by itself once the deal has landed (see rotator)
   const layout = () => { cardEls.forEach((card, i) => {
     const pos = posOf(i);
     const prev = Number(card.style.getPropertyValue('--pos'));
@@ -124,7 +166,7 @@ if (hand) {
     card.style.setProperty('--abs', Math.abs(pos));
     card.style.setProperty('--depth', Math.abs(pos));
     card.classList.toggle('is-front', pos === 0);
-  }); wake(); };
+  }); };
   // dir = +1 turns the ring toward the start side in RTL (the front card slides left, the card on its right comes forward)
   const turn = steps => { offset -= steps; layout(); };
   layout();
@@ -132,14 +174,16 @@ if (hand) {
     // Phones: the hand sits under the headline on the first screen. The cards spring out into the fan once
     // when it is in view, then the front card comes alive.
     const cardsBox = $('.hand-cards', hand);
-    const comeAlive = () => { liveOn = true; wake(); };
+    const handCycle = $('.cycle', hand);
+    if (handCycle) handTurns = rotator(hand, handCycle, () => turn(1), front);
+    const comeAlive = () => handTurns?.start();
     if (cardsBox && 'IntersectionObserver' in window && mobile.matches) {
       hand.classList.add('is-waiting', 'is-closed');
       const dealObserver = new IntersectionObserver(([entry]) => {
         if (!entry.isIntersecting || entry.intersectionRatio < 0.3) return;
         dealObserver.unobserve(hand);
         // Same opening as the desktop fan: the cards are dealt onto a tight stack one by one, from the back of
-        // the hand to the front card, hold for a beat, then spring open. The front card comes alive once they land.
+        // the hand to the front card, hold for a beat, then spring open. Then the hand starts turning by itself.
         const rank = [...cardEls].sort((a, b) => Number(b.style.getPropertyValue('--abs')) - Number(a.style.getPropertyValue('--abs'))
           || Number(b.style.getPropertyValue('--pos')) - Number(a.style.getPropertyValue('--pos')));
         rank.forEach((card, i) => { card.style.setProperty('--deal', i); card.style.setProperty('--spin', `${(i % 2 ? 1 : -1) * (14 - i)}deg`); });
@@ -154,8 +198,8 @@ if (hand) {
         }, landed + 250);
       }, { threshold: [0, 0.3] });
       dealObserver.observe(hand);
-    } else if (mobile.matches) comeAlive(); // the hand is hidden on larger screens, so its capture is never fetched there
-    const markTouched = () => { hand.classList.add('is-touched'); };
+    } else if (mobile.matches) comeAlive(); // the hand is hidden on larger screens, so it never turns there
+    const markTouched = () => { hand.classList.add('is-touched'); handTurns?.stop(); }; // the visitor has taken over
     // Drag: the front card follows the pointer; a decisive drag turns the ring that way, a short one springs back.
     let startX = 0, startY = 0, dragging = false, moved = false, held = null, pointerId = null, pressed = null;
     // Phones nudge a tap toward the nearest large link, so a touch on the thin edge of a card behind lands on its
@@ -163,7 +207,7 @@ if (hand) {
     const cardAt = (x, y) => { const el = document.elementFromPoint(x, y); return el && el.closest('.hand-card'); };
     const settle = () => { if (held) { held.classList.remove('is-dragging'); held.style.translate = ''; held.style.rotate = ''; } dragging = false; held = null; };
     hand.addEventListener('pointerdown', event => {
-      if (event.button !== 0) return;
+      if (event.button !== 0 || event.target.closest('.cycle')) return; // the pause button is not a card
       dragging = true; moved = false; startX = event.clientX; startY = event.clientY; pointerId = event.pointerId;
       markTouched();
       held = front();
@@ -291,19 +335,36 @@ for (const compare of $$('.ba')) {
   });
 }
 
-/* Desktop fan: reveal once, keeping the visible stack and reduced-motion default usable. */
+/* Desktop fan: reveal once, keeping the visible stack and reduced-motion default usable. Once open it turns by
+   itself: every card owns a slot (-2..2) and a turn moves each one slot to the left, so the card on the right of the
+   centre comes forward and the leftmost card swings round behind the hand to the far right. */
 const desktopFan = $('.desktop-fan');
 if (desktopFan) {
   let opened = false;
+  const fanCards = $$('.fan-card', desktopFan);
+  let fanOffset = 0;
+  const slotOf = i => ((i - 2 + fanOffset + 2) % 5 + 5) % 5 - 2;
+  const place = () => fanCards.forEach((card, i) => {
+    const slot = slotOf(i), prev = Number(card.dataset.slot ?? i - 2);
+    const wrapping = Math.abs(slot - prev) > 2;
+    card.dataset.slot = slot;
+    card.classList.toggle('is-wrapping', wrapping);
+    card.classList.toggle('is-centre', slot === 0);
+    card.style.setProperty('--angle', `${slot * 14}deg`);
+    card.style.setProperty('--layer', wrapping ? 0 : 5 - Math.abs(slot));
+    if (wrapping) setTimeout(() => { card.style.setProperty('--layer', 5 - Math.abs(slot)); card.classList.remove('is-wrapping'); }, 1100);
+  });
+  const fanCycle = $('.fan-stage .cycle');
+  const fanTurns = fanCycle ? rotator(desktopFan, fanCycle, () => { fanOffset -= 1; place(); }, () => $('.fan-card.is-centre', desktopFan)) : null;
   const openFan = () => {
     if (opened) return;
     opened = true;
     desktopFan.classList.add('is-open');
     setTimeout(() => {
       desktopFan.classList.add('is-settled');
-      setTimeout(() => goLive($('.is-centre .live', desktopFan)), 500); // the centre card starts touring its site
-      // every other card comes alive under the pointer or keyboard focus
-      for (const card of $$('.fan-card:not(.is-centre)', desktopFan)) {
+      fanTurns?.start();
+      // a card tours its site under the pointer or keyboard focus (and the hand rests meanwhile)
+      for (const card of $$('.fan-card', desktopFan)) {
         const wake = () => goLive($('.live', card));
         card.addEventListener('pointerenter', wake);
         card.addEventListener('focusin', wake);
