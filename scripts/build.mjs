@@ -168,21 +168,22 @@ const included = [
   ['ליווי אחרי ההשקה', 'שינויים ועדכונים כשהעסק צריך.'],
 ];
 // What every site ships with, assembled on a phone as the list is read: each item checks itself off and adds its part
-// (design, fit, speed, contact buttons, address bar, a support message). Decorative; the list carries the content.
+// to a real site we built (Miryam Zelig): the design opens out of a skeleton, the page fits, a load bar runs, the
+// contact bar rises, the address capsule drops in and a support notification arrives. Complete, the phone grows a
+// little and browses the whole site by itself. Decorative; the list carries it.
 const lock = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/></svg>';
+const statusIcons = '<svg viewBox="0 0 54 12" aria-hidden="true"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/><path d="M27.5 3.2a8.6 8.6 0 0 1 11 0l-1.3 1.4a6.6 6.6 0 0 0-8.4 0zM29.9 5.8a5.2 5.2 0 0 1 6.2 0L33 9.4z"/><rect x="42" y="1.5" width="10" height="9" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.1"/><rect x="43.6" y="3.1" width="6.8" height="5.8" rx="1.3"/></svg>';
 const includedPhone = `<div class="inc-stage" aria-hidden="true">
     <div class="inc-phone">
       <span class="inc-screen">
-        <span class="inc-url">${lock}<bdi>yourbusiness.co.il</bdi></span>
-        <span class="inc-page">
-          <span class="inc-nav"><i></i><b>העסק שלך</b></span>
-          <span class="inc-hero"><i></i><b>העסק שלך,</b><b>באוויר.</b></span>
-          <span class="inc-line"></span><span class="inc-line short"></span>
-          <span class="inc-cards"><i></i><i></i></span>
-        </span>
-        <span class="inc-actions"><i class="wa">${chat} וואטסאפ</i><i class="call">${phoneIcon} חיוג</i></span>
+        <span class="inc-skeleton"><i class="sk-logo"></i><i class="sk-hero"></i><i class="sk-line"></i><i class="sk-line short"></i></span>
+        <span class="inc-page"><img src="/images/miryam-mobile-full.webp" width="585" height="7819" alt="" loading="lazy" decoding="async"></span>
+        <span class="inc-status"><b>9:41</b>${statusIcons}</span>
+        <span class="inc-island"></span>
         <span class="inc-load"></span>
-        <span class="inc-toast"><i class="chat-avatar"><img src="/la-monogram-white.svg" width="16" height="16" alt="" loading="lazy"></i><span><b>LA webs</b><small>עדכנו את שעות הפתיחה ✓</small></span></span>
+        <span class="inc-url">${lock}<bdi>miryamzelig.co.il</bdi></span>
+        <span class="inc-actions"><i class="wa">${chat} וואטסאפ</i><i class="call">${phoneIcon} חיוג</i></span>
+        <span class="inc-toast"><i class="inc-app"><img src="/la-monogram-white.svg" width="16" height="16" alt="" loading="lazy"></i><span><b>LA webs <small>עכשיו</small></b><span>עדכנו את הגלריה באתר ✓</span></span></span>
       </span>
     </div>
     <span class="inc-chip"><b>G</b>מוכן לגוגל</span>

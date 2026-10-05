@@ -430,13 +430,16 @@ if (includedBlock && $('.inc-stage', includedBlock) && !reduceMotion.matches) {
     const at = line();
     let on = -1;
     items.forEach((item, i) => { if (item.getBoundingClientRect().top < at) on = i; });
-    if (on === shown) return;
-    shown = on;
-    items.forEach((item, i) => {
+    if (on !== shown) items.forEach((item, i) => {
       item.classList.toggle('is-on', i <= on);
       stage.classList.toggle(`has-${i}`, i <= on);
       phone.classList.toggle(`has-${i}`, i <= on);
     });
+    shown = on;
+    // on phones the finale waits until the last item has slid up under the phone, then the phone grows into the
+    // runway below the list; beside the list (desktop) the last item read completes it
+    const last = items[items.length - 1];
+    stage.classList.toggle('is-complete', on === items.length - 1 && (!mobile.matches || last.getBoundingClientRect().bottom < stage.getBoundingClientRect().bottom));
   };
   addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
   addEventListener('resize', update);
