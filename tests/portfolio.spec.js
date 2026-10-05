@@ -392,8 +392,19 @@ test('ads landing page matches the ad group and writes the WhatsApp message from
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('מערכת הזמנות אונליין' + 'לעסק שלך.');
   await expect(page.locator('form.lead:visible input[name="w"]:checked')).toHaveValue('מערכת הזמנות');
   await expect(page.locator('.site-nav')).toHaveCount(0); // no navigation leaks on the ad page
-  await page.fill('form.lead:visible input[name="n"]', 'דנה');
-  await page.fill('form.lead:visible input[name="b"]', 'פיצרייה ברמת גן');
+  // the form is a conversation: one question at a time, each answer sent with Enter, the need as a quick reply
+  const form = page.locator('form.lead:visible');
+  await form.scrollIntoViewIfNeeded();
+  await expect(form.locator('input[name="b"]')).toBeHidden();
+  await form.locator('input[name="n"]').press('Enter'); // an empty answer does not move on
+  await expect(form.locator('input[name="b"]')).toBeHidden();
+  await form.locator('input[name="n"]').fill('דנה');
+  await form.locator('input[name="n"]').press('Enter');
+  await expect(form.locator('[data-echo]')).toHaveText(', דנה');
+  await form.locator('input[name="b"]').fill('פיצרייה ברמת גן');
+  await form.locator('input[name="b"]').press('Enter');
+  await form.locator('.chip', { hasText: 'מערכת הזמנות' }).click();
+  await expect(form.locator('.lead-bubble')).toContainText('אני דנה (פיצרייה ברמת גן)');
   const [popup] = await Promise.all([context.waitForEvent('page'), page.locator('form.lead:visible .lead-submit').click()]);
   expect(decodeURIComponent(popup.url()).replaceAll('+', ' ')).toContain('אשמח לשמוע על מערכת הזמנות לעסק שלי'); // WhatsApp's redirect encodes spaces as +
   await popup.close();

@@ -336,13 +336,34 @@ function adsTag() {
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${id}');window.LA_ADS={lead:'${leadTo}'};</script>`;
 }
 
-// The lead form. Desktop shows it beside the hero; phones show it after the work and the process, once there is proof.
-const leadForm = id => `
+// The lead form, written as a WhatsApp conversation: the studio asks one thing at a time and each answer becomes a
+// sent bubble, ending with the ready message and the send button. app.js runs the conversation; without it (or with
+// reduced motion) every question shows at once and it is an ordinary form. Desktop shows it beside the hero; phones
+// show it after the work and the process, once there is proof.
+const send = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg>';
+const leadForm = (id, title = 'ספרו לנו על העסק') => `
       <form class="lead" id="${id}" action="https://wa.me/${studio.tel.replace('+', '')}" method="get" target="_blank" aria-labelledby="${id}-title">
-        <h2 id="${id}-title" class="lead-title display">ספרו לנו על העסק<span class="period">.</span></h2>
-        <label class="field"><span>שם</span><input name="n" autocomplete="name" required maxlength="60"></label>
-        <label class="field"><span>העסק ומה הוא עושה</span><input name="b" required maxlength="80" placeholder="למשל: פיצרייה ברמת גן"></label>
-        <fieldset class="needs"><legend>מה צריך?</legend>${lpNeeds.map(need => `<label class="chip"><input type="radio" name="w" value="${need}"${need === lpDefault.need ? ' checked' : ''}><span>${need}</span></label>`).join('')}</fieldset>
+        <h2 id="${id}-title" class="lead-title display">${title}<span class="period">.</span></h2>
+        <div class="lead-chat">
+          <div class="lead-chat-head" aria-hidden="true"><i class="chat-avatar"><img src="/la-monogram-white.svg" width="20" height="20" alt=""></i><b>LA webs</b><small>זמינים עכשיו</small></div>
+          <div class="lead-step">
+            <label class="lead-q" for="${id}-n">היי, כאן LA webs. איך קוראים לך?</label>
+            <span class="lead-a"><input id="${id}-n" name="n" autocomplete="name" required maxlength="60" placeholder="השם שלך" enterkeyhint="next"><button class="lead-next" type="button" aria-label="המשך">${send}</button></span>
+          </div>
+          <div class="lead-step">
+            <label class="lead-q" for="${id}-b">נעים מאוד<span data-echo></span>! מה העסק ומה הוא עושה?</label>
+            <span class="lead-a"><input id="${id}-b" name="b" required maxlength="80" placeholder="למשל: פיצרייה ברמת גן" enterkeyhint="next"><button class="lead-next" type="button" aria-label="המשך">${send}</button></span>
+          </div>
+          <fieldset class="lead-step" aria-labelledby="${id}-w">
+            <p class="lead-q" id="${id}-w">ומה צריך?</p>
+            <span class="lead-chips">${lpNeeds.map(need => `<label class="chip"><input type="radio" name="w" value="${need}"${need === lpDefault.need ? ' checked' : ''}><span>${need}</span></label>`).join('')}</span>
+          </fieldset>
+          <div class="lead-step lead-end">
+            <p class="lead-q">מעולה! ההודעה מוכנה. שולחים, וממשיכים בוואטסאפ:</p>
+            <p class="lead-bubble">היי LA webs, אשמח לשמוע על ${lpDefault.need} לעסק שלי.</p>
+          </div>
+          <span class="lead-typing" aria-hidden="true" hidden><i></i><i></i><i></i></span>
+        </div>
         <input type="hidden" name="text" value="היי LA webs, אשמח לשמוע על אתר לעסק שלי.">
         <button class="pill pill-cta lead-submit" type="submit">${chat} שליחה בוואטסאפ</button>
         <p class="lead-note">ההודעה נפתחת אצלכם בוואטסאפ, ואתם שולחים. שיחת היכרות קצרה, בלי עלות ובלי התחייבות.</p>
@@ -379,7 +400,7 @@ function landingPage() {
       <ul class="lp-cards" role="list" tabindex="0" aria-label="עבודות נבחרות (אפשר לגלול הצידה)">${proof.map(p => `<li class="lp-card reveal" style="${vars(p)}"><span class="lp-shot"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="מסך הפתיחה של ${escape(p.hebrew)} בטלפון" loading="lazy" decoding="async"></span><span class="lp-card-copy"><strong>${escape(p.hebrew)}</strong><span>${escape(p.kicker)}</span></span></li>`).join('')}</ul>
     </div></section>
     ${processSection}
-    <section class="lp-lead-m" aria-label="טופס פנייה"><div class="wrap">${leadForm('lead-m')}</div></section>
+    <section class="lp-lead-m" aria-label="טופס פנייה"><div class="wrap">${leadForm('lead-m', 'הבא בתור: העסק שלך')}</div></section>
     <script>(() => { const v = ${JSON.stringify(lpVariants)}[new URLSearchParams(location.search).get('t')]; if (!v) return; // both forms exist now
       document.querySelectorAll('form.lead input[name="w"]').forEach(i => { if (i.value === v.need) i.checked = true; }); })();</script>
     ${faq}

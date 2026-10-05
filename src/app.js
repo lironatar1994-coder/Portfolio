@@ -428,7 +428,77 @@ document.addEventListener('click', event => {
 });
 
 /* ---------- Landing page form: write the WhatsApp message from the visitor's answers ---------- */
+// The message in parts: what the visitor typed, or the slot it will fill (shown faded in the preview).
+const leadMessage = lead => {
+  const data = new FormData(lead);
+  const name = String(data.get('n') || '').trim(), business = String(data.get('b') || '').trim();
+  const need = String(data.get('w') || '');
+  const ask = need && !need.startsWith('עוד לא') ? `אשמח לשמוע על ${need} לעסק שלי.` : 'אשמח לשמוע מה יתאים לעסק שלי.';
+  return [['היי LA webs, אני '], [name, 'השם שלכם'], [' ('], [business, 'העסק'], [`). ${ask}`]];
+};
+const leadText = lead => leadMessage(lead).map(([text]) => text).join('');
 for (const lead of $$('form.lead')) { // one beside the hero (desktop), one after the proof (phones)
+  const bubble = $('.lead-bubble', lead);
+  const preview = () => {
+    if (!bubble) return;
+    bubble.replaceChildren(...leadMessage(lead).map(([text, slot]) => {
+      if (slot === undefined) return document.createTextNode(text);
+      const part = document.createElement('span');
+      part.className = text ? 'lead-said' : 'lead-slot';
+      part.textContent = text || slot;
+      return part;
+    }));
+  };
+  preview();
+  lead.addEventListener('input', preview);
+  lead.addEventListener('change', () => { preview(); if (!reduceMotion.matches) bubble?.animate([{ transform: 'scale(.97)' }, { transform: 'none' }], { duration: 280, easing: 'cubic-bezier(.3,1.5,.5,1)' }); });
+
+  // The conversation: one question at a time, each after a moment of "typing". An answer is sent with Enter or the
+  // arrow and stays editable; a chip answers the need. Reduced motion keeps the turns but drops the typing pauses.
+  const steps = $$('.lead-step', lead), typing = $('.lead-typing', lead), echo = $('[data-echo]', lead);
+  if (steps.length) {
+    lead.classList.add('is-chat');
+    let reached = -1;
+    const echoName = () => { if (echo) { const name = $('input[name="n"]', lead).value.trim(); echo.textContent = name ? `, ${name}` : ''; } };
+    lead.addEventListener('input', echoName);
+    const show = (index, focus) => {
+      if (index <= reached || !steps[index]) return;
+      reached = index;
+      const step = steps[index];
+      const reveal = () => {
+        typing.hidden = true;
+        step.classList.add('is-shown');
+        if (index === steps.length - 1) lead.classList.add('is-done');
+        if (focus) ($('input:not([type="radio"])', step) || $('input:checked', step) || $('input', step) || $('.lead-submit', lead))?.focus({ preventScroll: true });
+        if (reached > 0) (index === steps.length - 1 ? $('.lead-submit', lead) : step).scrollIntoView({ block: 'nearest', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+      };
+      if (reduceMotion.matches) return reveal();
+      step.before(typing); typing.hidden = false;
+      setTimeout(reveal, index === 0 ? 650 : 900);
+    };
+    const answer = step => {
+      const input = $('input:not([type="radio"])', step);
+      if (input && !input.value.trim()) { input.value = ''; input.reportValidity(); return; }
+      step.classList.add('is-answered');
+      show(steps.indexOf(step) + 1, true);
+    };
+    for (const step of steps) {
+      $('.lead-next', step)?.addEventListener('click', () => answer(step));
+      for (const chip of $$('input[type="radio"]', step)) chip.addEventListener('click', () => answer(step));
+    }
+    lead.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' || !event.target.matches('.lead-step input:not([type="radio"])')) return;
+      event.preventDefault();
+      answer(event.target.closest('.lead-step'));
+    });
+    // the studio opens the conversation once the form is on screen
+    if ('IntersectionObserver' in window) new IntersectionObserver(([entry], observer) => {
+      if (!entry.isIntersecting) return;
+      observer.disconnect();
+      setTimeout(() => show(0), Math.max(0, 900 - performance.now()));
+    }, { threshold: 0.3 }).observe(lead);
+    else show(0);
+  }
   // A missing answer gets a gentle nudge instead of the browser's bubble alone.
   lead.addEventListener('invalid', event => {
     const field = event.target;
@@ -445,11 +515,7 @@ for (const lead of $$('form.lead')) { // one beside the hero (desktop), one afte
       button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg> נפתח בוואטסאפ';
       setTimeout(() => { button.classList.remove('is-sent'); button.innerHTML = label; }, 3500);
     }
-    const data = new FormData(lead);
-    const need = String(data.get('w') || '');
-    const ask = need && !need.startsWith('עוד לא') ? `אשמח לשמוע על ${need} לעסק שלי.` : 'אשמח לשמוע מה יתאים לעסק שלי.';
-    const text = `היי LA webs, אני ${String(data.get('n')).trim()} (${String(data.get('b')).trim()}). ${ask}`;
-    const url = `${lead.action}?text=${encodeURIComponent(text)}`;
+    const url = `${lead.action}?text=${encodeURIComponent(leadText(lead))}`;
     trackLead('form');
     const opened = window.open(url, '_blank'); // ('noopener' would make this always null, so the opener is cut by hand)
     if (opened) opened.opener = null;

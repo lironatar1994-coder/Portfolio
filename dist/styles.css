@@ -850,12 +850,9 @@ html:not(.js) .cycle{display:none}
 .lp-points svg{width:20px;height:20px;color:var(--accent);stroke-width:2.2}
 .lead{display:grid;gap:16px;padding:clamp(24px,2.6vw,36px);border-radius:24px;background:#fffaf4;box-shadow:0 30px 70px -40px rgb(41 37 33/.45),0 0 0 1px rgb(41 37 33/.06)}
 .lead-title{font-size:clamp(26px,2.2vw,34px);line-height:1.15}
-.field{display:grid;gap:6px;font-size:15px;font-weight:600}
-.field input{font:inherit;font-weight:400;font-size:17px;height:52px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);transition:border-color .2s,box-shadow .2s}
-.field input::placeholder{color:#8a8178}
-.field input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
-.needs{border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-.needs legend{font-size:15px;font-weight:600;margin-bottom:8px;padding:0}
+.lead-a input{font:inherit;font-weight:400;font-size:17px;height:52px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+.lead-a input::placeholder{color:#8a8178}
+.lead-a input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
 .chip{position:relative;cursor:pointer}
 .chip input{position:absolute;inset:0;opacity:0;cursor:pointer;margin:0}
 .chip span{display:inline-flex;align-items:center;min-height:42px;padding:0 16px;border-radius:999px;font-size:15px;font-weight:500;box-shadow:inset 0 0 0 1px var(--line);background:#fff;transition:background .2s,color .2s,box-shadow .2s}
@@ -960,18 +957,18 @@ html:not(.js) .cycle{display:none}
 .chip:active span{transform:scale(.94);transition-duration:.08s}
 @keyframes chip-pop{0%{transform:scale(.9)}55%{transform:scale(1.07)}100%{transform:scale(1)}}
 .chip input:checked+span{animation:chip-pop .38s cubic-bezier(.3,1.5,.5,1)}
-.field input{transition:border-color .2s,box-shadow .2s,transform .25s var(--ease)}
-.field input:focus{transform:translateY(-1px)}
+.lead-a input{transition:border-color .2s,box-shadow .2s,transform .25s var(--ease)}
+.lead-a input:focus{transform:translateY(-1px)}
 @keyframes check-draw{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
 .lead-submit.is-sent{background:#2f7a4f;pointer-events:none}
 .lead-submit.is-sent svg{stroke-dasharray:24;animation:check-draw .5s var(--ease) .1s both}
 @keyframes field-nudge{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.field input.is-missing{border-color:var(--accent);animation:field-nudge .35s ease 2}
+.lead-a input.is-missing{border-color:var(--accent);animation:field-nudge .35s ease 2}
 .card-link:active{transform:scale(.985);transition-duration:.1s}
 @media (prefers-reduced-motion:reduce){
   .stack-panel{transform:none}
   .stack-panel::after{opacity:0}
-  .chip input:checked+span,.field input.is-missing,.lead-submit.is-sent svg{animation:none}
+  .chip input:checked+span,.lead-a input.is-missing,.lead-submit.is-sent svg{animation:none}
 }
 /* phones: the deck sits at the fold, so a shorter deal keeps the cards on screen from the first frame (faster largest paint) */
 @keyframes deck-deal-short{from{transform:translateY(22vh) rotate(calc(var(--r) * 2))}}
@@ -1098,3 +1095,63 @@ html:not(.js) .cycle{display:none}
   .process + .lp-lead-m{padding-top:8px}
 }
 @media (prefers-reduced-motion:reduce){.scene *,.scene *::after{animation:none!important}}
+
+/* ---------- Lead form as a conversation (5 October 2026) ---------- */
+/* The studio asks one thing at a time on a WhatsApp-like wallpaper. Each answer turns into a sent bubble (and stays
+   editable), the chips are quick replies, and the last turn is the ready message with the send button. Without JS
+   every turn shows and it is an ordinary form. */
+.lead-chat{display:flex;flex-direction:column;gap:12px;padding:12px 12px 14px;border-radius:18px;background:#efe5d8}
+.lead-chat-head{display:flex;align-items:center;gap:10px;padding:0 2px 10px;border-bottom:1px solid rgb(41 37 33/.08);font-size:14px}
+.lead-chat-head .chat-avatar{width:30px;height:30px}
+.lead-chat-head .chat-avatar img{width:18px;height:18px}
+.lead-chat-head small{display:flex;align-items:center;gap:6px;margin-inline-start:auto;font-size:12px;color:var(--muted)}
+.lead-chat-head small::before{content:'';width:7px;height:7px;border-radius:50%;background:#3aa776}
+.lead-step{display:grid;gap:8px;min-width:0;margin:0;padding:0;border:0}
+.lead-q,.lead-typing{justify-self:start;align-self:flex-start;max-width:88%;padding:9px 13px;border-radius:16px 16px 5px 16px;background:#fff;color:var(--ink);font-size:15px;font-weight:500;line-height:1.45;box-shadow:0 1px 1px rgb(41 37 33/.08)}
+.lead-typing{display:flex;gap:4px;align-items:center;padding:13px 14px}
+.lead-typing[hidden]{display:none}
+.lead-typing i{width:7px;height:7px;border-radius:50%;background:#a59a8e;animation:chat-dot 1s ease-in-out infinite}
+.lead-typing i:nth-child(2){animation-delay:.15s}
+.lead-typing i:nth-child(3){animation-delay:.3s}
+.lead-a{justify-self:end;position:relative;display:flex;align-items:center;width:min(100%,310px);max-width:100%}
+.lead-a input{flex:1;min-width:0;font:inherit;font-size:16px;font-weight:400;height:48px;padding:0 16px;padding-inline-end:52px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);transition:background .3s,color .3s,border-color .3s,border-radius .3s,padding .3s,box-shadow .2s}
+.lead-next{position:absolute;inset-inline-end:5px;display:grid;place-items:center;width:38px;height:38px;border:0;border-radius:50%;background:var(--accent);color:#fff;cursor:pointer;transition:opacity .25s,transform .25s var(--ease)}
+.lead-next svg{width:18px;height:18px;stroke:currentColor;stroke-width:2.2}
+.lead-next:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.lead-step.is-answered .lead-a{width:auto}
+.lead-step.is-answered .lead-a input:not(:focus){field-sizing:content;min-width:4ch;background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;border-radius:16px 16px 16px 5px;padding-inline-end:16px;cursor:text}
+.lead-step.is-answered .lead-a input:not(:focus)+.lead-next{opacity:0;transform:scale(.5);pointer-events:none}
+.lead-chips{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+.lead-bubble{justify-self:end;max-width:94%;padding:10px 14px;border-radius:16px 16px 16px 5px;background:var(--accent);color:#fff;font-size:15px;line-height:1.5;box-shadow:0 10px 20px -14px rgb(140 54 32/.9);overflow-wrap:anywhere}
+.lead-said{font-weight:700}
+.lead-slot{text-decoration:underline dashed 1px;text-underline-offset:4px}
+
+.is-chat .lead-step:not(.is-shown),.is-chat:not(.is-done) .lead-submit,.is-chat:not(.is-done) .lead-note{display:none}
+.is-chat .lead-step.is-shown{animation:lead-in .45s var(--ease) both}
+.is-chat .lead-step.is-shown .lead-a,.is-chat .lead-step.is-shown .lead-bubble{animation:lead-in .45s var(--ease) .22s both}
+.is-chat .lead-step.is-shown .chip{animation:lead-in .4s var(--ease) both}
+.is-chat .lead-step.is-shown .chip:nth-child(1){animation-delay:.2s}
+.is-chat .lead-step.is-shown .chip:nth-child(2){animation-delay:.26s}
+.is-chat .lead-step.is-shown .chip:nth-child(3){animation-delay:.32s}
+.is-chat .lead-step.is-shown .chip:nth-child(4){animation-delay:.38s}
+.is-chat .lead-step.is-shown .chip:nth-child(5){animation-delay:.44s}
+.is-chat.is-done .lead-submit{animation:lead-in .5s var(--ease) .45s both}
+.is-chat.is-done .lead-note{animation:lead-in .5s var(--ease) .55s both}
+.lead-typing:not([hidden]){animation:lead-in .3s var(--ease) both}
+@keyframes lead-in{from{opacity:0;transform:translateY(10px) scale(.96)}}
+@media (max-width:760px){
+  .lead-chat{margin-inline:-6px}
+  .lead-bubble,.lead-q{font-size:14.5px}
+  /* scrolled to, the send button and the newest turn clear the fixed WhatsApp/call bar; the jump shows the card's top */
+  .lead-submit,.lead-step{scroll-margin-bottom:96px}
+  .lp-lead-m .lead{scroll-margin-top:16px}
+}
+@media (prefers-reduced-motion:reduce){.lead-chat *,.is-chat .lead-submit,.is-chat .lead-note{animation:none!important}}
+/* beside the desktop hero the form starts higher, so the first turns sit on the first screen */
+@media (min-width:761px){
+  .lead-deck{padding-top:clamp(80px,8vw,112px)}
+  .lead-deck .lead{gap:14px}
+  /* the conversation grows downward, so the copy holds its place at the top instead of riding the form's bottom edge */
+  .lp-hero-grid{align-items:start}
+  .lp-copy{padding-top:clamp(40px,5vw,80px)}
+}
