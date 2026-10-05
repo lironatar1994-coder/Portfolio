@@ -416,6 +416,36 @@ if (scenesToPlay.length && 'IntersectionObserver' in window && !reduceMotion.mat
   scenesToPlay.forEach(scene => { scene.classList.add('is-armed'); sceneObserver.observe(scene); });
 }
 
+/* What's included: the phone gains a part for every item read. An item is read once its top passes a line: the
+   middle of the screen beside the phone (desktop), or just under the pinned phone (phones). Tapping an item brings
+   it to that line. */
+const includedBlock = $('.included');
+if (includedBlock && $('.inc-stage', includedBlock) && !reduceMotion.matches) {
+  const items = $$('.included-list li', includedBlock), stage = $('.inc-stage', includedBlock), phone = $('.inc-phone', stage);
+  includedBlock.classList.add('is-armed');
+  let shown = -2, queued = false;
+  const line = () => mobile.matches ? stage.getBoundingClientRect().bottom + 40 : innerHeight * 0.55;
+  const update = () => {
+    queued = false;
+    const at = line();
+    let on = -1;
+    items.forEach((item, i) => { if (item.getBoundingClientRect().top < at) on = i; });
+    if (on === shown) return;
+    shown = on;
+    items.forEach((item, i) => {
+      item.classList.toggle('is-on', i <= on);
+      stage.classList.toggle(`has-${i}`, i <= on);
+      phone.classList.toggle(`has-${i}`, i <= on);
+    });
+  };
+  addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
+  addEventListener('resize', update);
+  update();
+  items.forEach(item => item.addEventListener('click', () => {
+    scrollTo({ top: scrollY + item.getBoundingClientRect().top - line() + 24, behavior: 'smooth' });
+  }));
+}
+
 /* ---------- Leads: report every WhatsApp, call and form contact (Google Ads tag only on the landing page) ---------- */
 const trackLead = method => {
   window.dataLayer?.push({ event: 'lead', method });

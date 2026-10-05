@@ -17,6 +17,7 @@ const pad = n => String(n).padStart(2, '0');
 const arrow = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 18 6 6M6 17V6h11"/></svg>';
 const down = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>';
 const check = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+const phoneIcon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>';
 const arrowOut = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 7 7 17M7 7h10v10"/></svg>';
 const chat = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v9a1.5 1.5 0 0 1-1.5 1.5H10l-4.6 3.6c-.6.5-1.4 0-1.4-.7z"/></svg>';
 const brand = '<a class="brand" href="/" aria-label="LA webs — לעמוד הבית">LA<span>webs</span><i class="dot" aria-hidden="true"></i></a>';
@@ -166,12 +167,33 @@ const included = [
   ['דומיין, אחסון ואבטחה', 'אנחנו מעלים לאוויר ודואגים לכל השאר.'],
   ['ליווי אחרי ההשקה', 'שינויים ועדכונים כשהעסק צריך.'],
 ];
+// What every site ships with, assembled on a phone as the list is read: each item checks itself off and adds its part
+// (design, fit, speed, contact buttons, address bar, a support message). Decorative; the list carries the content.
+const lock = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"/></svg>';
+const includedPhone = `<div class="inc-stage" aria-hidden="true">
+    <div class="inc-phone">
+      <span class="inc-screen">
+        <span class="inc-url">${lock}<bdi>yourbusiness.co.il</bdi></span>
+        <span class="inc-page">
+          <span class="inc-nav"><i></i><b>העסק שלך</b></span>
+          <span class="inc-hero"><i></i><b>העסק שלך,</b><b>באוויר.</b></span>
+          <span class="inc-line"></span><span class="inc-line short"></span>
+          <span class="inc-cards"><i></i><i></i></span>
+        </span>
+        <span class="inc-actions"><i class="wa">${chat} וואטסאפ</i><i class="call">${phoneIcon} חיוג</i></span>
+        <span class="inc-load"></span>
+        <span class="inc-toast"><i class="chat-avatar"><img src="/la-monogram-white.svg" width="16" height="16" alt="" loading="lazy"></i><span><b>LA webs</b><small>עדכנו את שעות הפתיחה ✓</small></span></span>
+      </span>
+    </div>
+    <span class="inc-chip"><b>G</b>מוכן לגוגל</span>
+  </div>`;
 const processSection = `<section class="process" id="process" aria-labelledby="process-title"><div class="wrap">
   <h2 id="process-title" class="display reveal">מרעיון<br>לאתר באוויר<span class="period">.</span></h2>
   <ol class="steps" role="list">${steps.map((x, i) => `<li class="step reveal" style="--s:${i}">${x.scene}<span class="step-n" aria-hidden="true">${i + 1}<i></i></span><h3 class="display">${x.title}</h3><p>${x.text}</p></li>`).join('')}</ol>
   <div class="included">
     <h3 class="display included-title reveal">ובכל אתר שיוצא מאיתנו<span class="period">:</span></h3>
-    <ul class="included-list" role="list">${included.map(([title, text]) => `<li class="reveal"><strong>${title}</strong><span>${text}</span></li>`).join('')}</ul>
+    <ul class="included-list" role="list">${included.map(([title, text]) => `<li class="reveal"><i class="inc-check" aria-hidden="true">${check}</i><strong>${title}</strong><span>${text}</span></li>`).join('')}</ul>
+    ${includedPhone}
   </div>
 </div></section>`;
 
@@ -326,7 +348,6 @@ const lpVariants = {
   catalog: { lines: ['קטלוג דיגיטלי', 'שעושה סדר במוצרים'], need: 'קטלוג או חנות' },
 };
 const lpDefault = { lines: ['אתר שנבנה לעסק שלך,', 'ומביא אליו פניות'], need: lpNeeds[0] };
-const phoneIcon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>';
 // Google Ads: set GOOGLE_ADS_ID (AW-…) and GOOGLE_ADS_LEAD (AW-…/label) when building to load the tag and report leads.
 function adsTag() {
   const id = process.env.GOOGLE_ADS_ID, lead = process.env.GOOGLE_ADS_LEAD;

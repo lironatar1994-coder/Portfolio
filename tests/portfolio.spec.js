@@ -186,6 +186,13 @@ test('process and FAQ answer the questions before contact', async ({ page }) => 
   await expect(scene).toHaveClass(/is-playing/);
   await page.evaluate(() => scrollTo(0, 0));
   await expect(scene).not.toHaveClass(/is-playing/);
+  // what's included assembles on the phone as it is read; tapping the last item completes it
+  const phone = page.locator('.inc-phone');
+  await page.locator('.included-list li').first().scrollIntoViewIfNeeded();
+  await expect(phone).not.toHaveClass(/has-5/);
+  await page.locator('.included-list li').last().click();
+  await expect(phone).toHaveClass(/has-5/);
+  await expect(page.locator('.included-list li.is-on')).toHaveCount(6);
   const qa = page.locator('#faq details.qa');
   await expect(qa).toHaveCount(5);
   await qa.first().locator('summary').click();
