@@ -1,4 +1,2 @@
 User-agent: *
-Allow: /
-Sitemap: https://lawebs.co.il/sitemap.xml
-Sitemap: https://lawebs.co.il/seder/sitemap.xml
+Disallow: /

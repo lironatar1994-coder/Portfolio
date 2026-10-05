@@ -900,25 +900,6 @@ html:not(.js) .cycle{display:none}
   .lp-bar svg{width:20px;height:20px}
 }
 
-/* Landing page: the "why not build it yourself" comparison. */
-.lp-compare{padding:clamp(56px,7vw,110px) 0}
-.lp-compare h2{font-size:clamp(36px,4.4vw,72px);line-height:1.08;margin-bottom:clamp(28px,4vw,52px)}
-.compare{display:grid;border-top:1px solid var(--line)}
-.compare-row{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,4fr) minmax(0,4fr);gap:16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line);font-size:17px}
-.compare-row strong{font-weight:600}
-.compare-row span:nth-child(2){color:var(--muted)}
-.compare-row span:nth-child(3){display:flex;align-items:center;gap:10px;font-weight:600}
-.compare-row svg{width:20px;height:20px;flex-shrink:0;color:var(--accent);stroke-width:2.2}
-.compare-head{font-size:14px;font-weight:600;color:var(--muted);padding-block:12px}
-.compare-head span:nth-child(3){color:var(--accent-deep)}
-.compare-note{margin-top:22px;font-size:17px;max-width:62ch;color:var(--muted)}
-@media (max-width:760px){
-  .compare-row{grid-template-columns:1fr 1fr;gap:6px 14px;font-size:15.5px;padding:16px 0}
-  .compare-row strong{grid-column:1/-1;font-size:16px}
-  .compare-head{display:none}
-  .compare-row span:nth-child(2)::before{content:'בונה אתרים: ';font-weight:600}
-}
-
 /* Privacy policy and accessibility statement */
 .legal{max-width:820px;padding-block:clamp(24px,4vw,56px) clamp(64px,8vw,120px)}
 .legal h1{font-size:clamp(44px,6vw,88px);line-height:1.05}
@@ -997,49 +978,10 @@ html:not(.js) .cycle{display:none}
 @media (max-width:760px){.deck-card{animation-name:deck-deal-short;animation-delay:calc(.1s + var(--d) * 90ms)}}
 @media (max-width:760px) and (prefers-reduced-motion:reduce){.deck-card{animation:none}}
 
-/* ---------- Landing page: template vs. our site, a drag slider instead of a table ---------- */
-.lp-compare h2{margin-bottom:clamp(28px,4vw,56px)}
-.vs-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(32px,5vw,96px);align-items:center}
-.vs-figure{display:grid;gap:14px;justify-items:center}
-.vs-figure figcaption{font-size:14px;color:var(--muted);text-align:center;max-width:34ch}
-.ba.vs{width:min(100%,360px);max-width:none;aspect-ratio:585/820;border-radius:34px;border:8px solid #15130f;box-shadow:0 40px 80px -40px rgb(41 37 33/.55);touch-action:pan-y;background:#f4f4f6}
-.vs .ba-control input{direction:rtl;touch-action:pan-y} /* the line follows the finger in RTL */
-.vs .ba-after{object-fit:cover;object-position:top}
-.vs .ba-handle{z-index:4}
-.vs-template{position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;padding:16px 14px;background:#f4f4f6;color:#8d8d97;font-family:Arial,Helvetica,sans-serif;direction:ltr}
-.tm-bar{display:flex;align-items:center;justify-content:space-between;height:26px}
-.tm-bar i{width:22px;height:6px;border-radius:3px;background:#d4d4da}
-.tm-bar b{font-size:12px;font-weight:700;color:#85858f}
-.tm-hero{height:32%;border-radius:6px;background:#e1e1e7;display:grid;place-items:center}
-.tm-hero svg{width:42px;height:42px;stroke:#c2c2ca;stroke-width:1.4}
-.tm-title{font-size:15px;font-weight:700;color:#7a7a84;text-align:center}
-.tm-line{height:7px;border-radius:4px;background:#dcdce2}
-.tm-line.short{width:62%;align-self:center}
-.tm-button{align-self:center;padding:8px 16px;border-radius:4px;background:#4a7bd8;color:#fff;font-size:12px}
-.tm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.tm-grid i{height:48px;border-radius:4px;background:#e5e5ea}
-.vs-tag{position:absolute;top:14px;z-index:5;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;pointer-events:none}
-.vs-tag-template{left:14px;background:#fff;color:#5b5b64;box-shadow:0 2px 8px rgb(0 0 0/.12)}
-.vs-tag-ours{right:14px;background:var(--accent);color:#fff}
-.vs-points{display:grid;gap:28px}
-.vs-points li{position:relative;display:grid;gap:4px;padding-inline-start:26px}
-.vs-points li::before{content:'';position:absolute;inset-inline-start:0;top:.55em;width:11px;height:11px;border-radius:2px;background:var(--accent)}
-.vs-points strong{font-size:clamp(22px,2.1vw,32px);font-weight:700;line-height:1.2}
-.vs-points span{font-size:17px;color:var(--muted)}
-.vs-points .vs-note{padding:20px 0 0;border-top:1px solid var(--line);font-size:16px;color:var(--muted);max-width:52ch}
-.vs-points .vs-note::before{display:none}
-@media (max-width:860px){.vs-grid{grid-template-columns:1fr}}
-@media (max-width:760px){
-  .ba.vs{width:min(78vw,320px);border-width:7px;border-radius:30px}
-  .vs-points{gap:22px}
-  .vs-points strong{font-size:22px}
-  .vs-points span{font-size:16px}
-}
-
 /* ---------- Landing page order: proof before the ask on phones ---------- */
 .lp-deck-cta,.lp-lead-m{display:none}
 @media (max-width:760px){
-  /* the hero shows the hand of real projects with one button; the form waits until after the work and the comparison */
+  /* the hero shows the hand of real projects with one button; the form waits until after the work and the process */
   .lead-deck .lead{display:none}
   .lead-deck{padding-top:0;margin-bottom:0;height:calc(min(60vw,260px) * 1.4 + 86px)}
   .deck-card{width:min(60vw,260px);margin-left:calc(min(60vw,260px) / -2);top:14px}
@@ -1050,3 +992,109 @@ html:not(.js) .cycle{display:none}
   .lp-lead-m{display:block;background:var(--ink);padding:52px 0 60px;scroll-margin-top:12px}
   .lp-lead-m .lead{box-shadow:0 30px 70px -40px rgb(0 0 0/.7)}
 }
+
+/* ---------- Process scenes (5 October 2026) ---------- */
+/* Each step acts itself out, one story across the three: a pizzeria writes in, its design paints over the wireframe,
+   and the site goes live and gets its first message. Unarmed (no JS, reduced motion) a scene shows its last frame;
+   armed, it holds on its first frame and loops only while on screen. */
+.step{gap:12px}
+.step-n{font-size:clamp(64px,6vw,112px)}
+.scene{position:relative;height:290px;margin-bottom:14px;border-radius:24px;overflow:hidden;background:radial-gradient(120% 90% at 50% 110%,rgb(184 74 44/.16),transparent 60%),rgb(247 241 232/.045);box-shadow:inset 0 0 0 1px rgb(247 241 232/.1);color:var(--paper)}
+.scene.is-armed *{animation-duration:9s;animation-iteration-count:infinite;animation-fill-mode:both;animation-timing-function:var(--ease);animation-delay:calc(var(--s,0) * .6s);animation-play-state:paused}
+.scene.is-armed.is-playing *{animation-play-state:running}
+
+/* 1 · the conversation */
+.scene-chat{display:flex;flex-direction:column;gap:9px;padding:14px 16px}
+.chat-head{display:flex;align-items:center;gap:10px;padding-bottom:12px;margin-bottom:4px;border-bottom:1px solid rgb(247 241 232/.1);font-size:14px}
+.chat-avatar{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--accent)}
+.chat-avatar img{width:20px;height:20px}
+.chat-head small{display:flex;align-items:center;gap:6px;margin-inline-start:auto;font-size:12px;color:rgb(247 241 232/.62)}
+.chat-head small::before{content:'';width:7px;height:7px;border-radius:50%;background:#4cc38a}
+.bubble{max-width:80%;padding:9px 13px;border-radius:16px;font-size:14.5px;line-height:1.4;transform-origin:var(--from) bottom}
+.bubble.sent{align-self:flex-end;background:var(--accent);color:#fff;border-end-end-radius:5px;--from:left}
+.bubble.got{background:var(--paper);color:var(--ink);border-end-start-radius:5px;--from:right}
+.reply{display:grid;justify-items:start}
+.reply>*{grid-area:1/1}
+.typing{display:flex;gap:4px;align-items:center;padding:13px 14px;opacity:0}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.scene-chat.is-armed .b1{animation-name:chat-1}
+.scene-chat.is-armed .b2{animation-name:chat-2}
+.scene-chat.is-armed .typing{animation-name:chat-typing}
+.scene-chat.is-armed .b3{animation-name:chat-3}
+.scene.is-armed .typing i{animation:chat-dot 1s ease-in-out infinite}
+.scene.is-armed .typing i:nth-child(2){animation-delay:.15s}
+.scene.is-armed .typing i:nth-child(3){animation-delay:.3s}
+@keyframes chat-1{0%,5%{opacity:0;transform:translateY(12px) scale(.85)}10%,88%{opacity:1;transform:none}94%,100%{opacity:0}}
+@keyframes chat-2{0%,15%{opacity:0;transform:translateY(12px) scale(.85)}20%,88%{opacity:1;transform:none}94%,100%{opacity:0}}
+@keyframes chat-typing{0%,27%{opacity:0;transform:scale(.8)}30%,43%{opacity:1;transform:none}46%,100%{opacity:0;transform:scale(.8)}}
+@keyframes chat-3{0%,45%{opacity:0;transform:translateY(12px) scale(.85)}50%,88%{opacity:1;transform:none}94%,100%{opacity:0}}
+@keyframes chat-dot{0%,60%,100%{transform:none;opacity:.45}30%{transform:translateY(-4px);opacity:1}}
+
+/* 2 · the design paints over the wireframe, after its colours and type fly in */
+.mini-phone{position:absolute;left:50%;bottom:-34px;translate:-50% 0;width:150px;height:270px;border:6px solid #0e0d0b;border-radius:28px;overflow:hidden;background:#22201c;box-shadow:0 30px 60px -24px rgb(0 0 0/.8),0 0 0 1px rgb(247 241 232/.12)}
+.mini-phone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.wire{position:absolute;inset:0;display:flex;flex-direction:column;gap:9px;padding:14px 11px}
+.wire i{display:block;border-radius:5px;background:rgb(247 241 232/.11)}
+.w-bar{height:9px;width:42%}
+.w-hero{height:40%}
+.w-line{height:7px}
+.w-line.short{width:62%}
+.wire .w-btn{align-self:center;width:58%;height:26px;border-radius:999px;background:rgb(184 74 44/.45)}
+.scan{position:absolute;inset-inline:0;top:100%;height:2px;background:#ff6a45;box-shadow:0 0 16px 4px rgb(255 106 69/.55);opacity:0}
+.token{position:absolute;display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:14px;background:var(--paper);color:var(--ink);box-shadow:0 18px 30px -14px rgb(0 0 0/.7)}
+.t-colors{top:34px;right:14px}
+.t-colors i{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1px rgb(0 0 0/.14)}
+.t-type{bottom:62px;left:14px;flex-direction:column;gap:2px;line-height:1}
+.t-type b{font-family:Heebo,inherit;font-size:21px;font-weight:800}
+.t-type small{font-size:10px;letter-spacing:.06em;color:var(--muted);direction:ltr}
+.scene-build.is-armed .t-colors{animation-name:build-token-a}
+.scene-build.is-armed .t-type{animation-name:build-token-b}
+.scene-build.is-armed .paint{animation-name:build-paint;animation-timing-function:cubic-bezier(.45,0,.55,1)}
+.scene-build.is-armed .scan{animation-name:build-scan;animation-timing-function:cubic-bezier(.45,0,.55,1)}
+@keyframes build-token-a{0%,4%{opacity:0;transform:translateY(10px) scale(.7)}9%,20%{opacity:1;transform:none}30%,100%{opacity:0;transform:translate(-62px,80px) scale(.35)}}
+@keyframes build-token-b{0%,10%{opacity:0;transform:translateY(10px) scale(.7)}15%,22%{opacity:1;transform:none}32%,100%{opacity:0;transform:translate(62px,-50px) scale(.35)}}
+@keyframes build-paint{0%,30%{clip-path:inset(0 0 100% 0);opacity:1}60%,88%{clip-path:inset(0 0 0 0);opacity:1}95%,100%{clip-path:inset(0 0 0 0);opacity:0}}
+@keyframes build-scan{0%,30%{top:0;opacity:0}32%,58%{opacity:1}60%,100%{top:100%;opacity:0}}
+
+/* 3 · live: the phone rises, the badges land, and the first message arrives */
+.live-glow{position:absolute;left:50%;bottom:10px;translate:-50% 0;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgb(210 50 31/.38),transparent 64%)}
+.live-pill{position:absolute;top:100px;right:14px;display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:rgb(16 34 26/.92);color:#8ee6b9;font-size:13px;font-weight:700;box-shadow:inset 0 0 0 1px rgb(76 195 138/.45)}
+.live-pill i{position:relative;width:8px;height:8px;border-radius:50%;background:#4cc38a}
+.live-pill i::after{content:'';position:absolute;inset:0;border-radius:50%;background:#4cc38a;animation:live-ping 1.8s cubic-bezier(0,0,.2,1) infinite}
+.live-chip{position:absolute;left:14px;display:flex;align-items:center;gap:5px;padding:7px 11px 7px 12px;border-radius:999px;background:var(--paper);color:var(--ink);font-size:13px;font-weight:700;box-shadow:0 14px 26px -14px rgb(0 0 0/.7)}
+.live-chip svg{width:15px;height:15px;color:var(--accent);stroke:currentColor;stroke-width:2.6}
+.live-chip.c1{top:122px}
+.live-chip.c2{top:166px}
+.toast{position:absolute;top:14px;left:50%;translate:-50% 0;z-index:2;display:flex;align-items:center;gap:10px;width:min(252px,calc(100% - 24px));padding:9px 12px;border-radius:16px;background:var(--paper);color:var(--ink);box-shadow:0 20px 40px -16px rgb(0 0 0/.75)}
+.toast-icon{display:grid;place-items:center;flex:none;width:32px;height:32px;border-radius:50%;background:#25d366;color:#fff}
+.toast-icon svg{width:17px;height:17px;stroke:currentColor;stroke-width:2}
+.toast>span{display:grid;min-width:0;line-height:1.3}
+.toast b{font-size:13px}
+.toast small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scene-live.is-armed .mini-phone{animation-name:live-phone}
+.scene-live.is-armed .live-glow{animation-name:live-glow}
+.scene-live.is-armed .live-pill{animation-name:live-pop-1}
+.scene-live.is-armed .c1{animation-name:live-pop-2}
+.scene-live.is-armed .c2{animation-name:live-pop-3}
+.scene-live.is-armed .toast{animation-name:live-toast}
+@keyframes live-phone{0%,3%{opacity:0;transform:translateY(80px)}17%,90%{opacity:1;transform:none}97%,100%{opacity:0;transform:none}}
+@keyframes live-glow{0%,12%{opacity:0;transform:scale(.6)}24%,88%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}
+@keyframes live-pop-1{0%,19%{opacity:0;transform:scale(.6)}24%,88%{opacity:1;transform:none}94%,100%{opacity:0;transform:none}}
+@keyframes live-pop-2{0%,27%{opacity:0;transform:translateX(-12px) scale(.7)}32%,88%{opacity:1;transform:none}94%,100%{opacity:0;transform:none}}
+@keyframes live-pop-3{0%,33%{opacity:0;transform:translateX(-12px) scale(.7)}38%,88%{opacity:1;transform:none}94%,100%{opacity:0;transform:none}}
+@keyframes live-toast{0%,47%{opacity:0;transform:translateY(-28px) scale(.96)}53%,86%{opacity:1;transform:none}93%,100%{opacity:0;transform:translateY(-28px) scale(.96)}}
+@keyframes live-ping{to{transform:scale(3);opacity:0}}
+
+@media (max-width:760px){
+  /* stacked, each step is met on its own: the scene, then the numeral beside its title, then the line */
+  .steps{gap:40px}
+  .step{grid-template-columns:auto minmax(0,1fr);column-gap:14px;row-gap:10px;padding-top:22px}
+  .step .scene,.step p{grid-column:1/-1}
+  .step .scene{margin-bottom:6px}
+  .step-n{font-size:58px;align-self:end}
+  .step h3{margin-top:0;align-self:end;padding-bottom:4px}
+  .scene{height:264px}
+  .scene.is-armed *{animation-delay:0s}
+  .process + .lp-lead-m{padding-top:8px}
+}
+@media (prefers-reduced-motion:reduce){.scene *,.scene *::after{animation:none!important}}

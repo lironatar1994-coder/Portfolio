@@ -340,28 +340,6 @@ for (const compare of $$('.ba')) {
   });
 }
 
-/* Template vs. our site: the line sweeps once when it comes into view, so it is obvious it can be dragged. */
-for (const vs of $$('.ba.vs')) {
-  if (reduceMotion.matches || !('IntersectionObserver' in window)) break;
-  const input = $('input[type="range"]', vs);
-  let touched = false;
-  vs.addEventListener('pointerdown', () => { touched = true; });
-  input.addEventListener('input', event => { if (event.isTrusted) touched = true; });
-  const sweep = () => {
-    const keys = [50, 22, 80, 50], leg = 650, start = performance.now();
-    const ease = t => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
-    const step = now => {
-      if (touched) return;
-      const t = (now - start) / leg, i = Math.min(Math.floor(t), keys.length - 2);
-      const value = keys[i] + (keys[i + 1] - keys[i]) * ease(Math.min(1, t - i));
-      input.value = value; vs.style.setProperty('--cut', `${value}%`);
-      if (t < keys.length - 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  };
-  new IntersectionObserver(([entry], observer) => { if (entry.isIntersecting) { observer.disconnect(); setTimeout(sweep, 350); } }, { threshold: 0.6 }).observe(vs);
-}
-
 /* Desktop fan: reveal once, keeping the visible stack and reduced-motion default usable. Once open it turns by
    itself: every card owns a slot (-2..2) and a turn moves each one slot to the left, so the card on the right of the
    centre comes forward and the leftmost card swings round behind the hand to the far right. */
@@ -421,6 +399,21 @@ if (tours.length && 'IntersectionObserver' in window && !reduceMotion.matches) {
     for (const entry of entries) entry.target.classList.toggle('is-live', entry.isIntersecting);
   }, { threshold: 0.35 });
   tours.forEach(frame => tourObserver.observe(frame));
+}
+
+/* Process scenes: armed scenes hold on their first frame. A scene starts from the beginning once most of it is on
+   screen, so the visitor sees the story open, and rewinds once it has fully left. Unarmed (no JS, reduced motion)
+   they show their finished state. */
+const scenesToPlay = $$('.scene');
+if (scenesToPlay.length && 'IntersectionObserver' in window && !reduceMotion.matches) {
+  const rewind = scene => { scene.classList.remove('is-armed', 'is-playing'); void scene.offsetWidth; scene.classList.add('is-armed'); };
+  const sceneObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (entry.intersectionRatio >= 0.6) entry.target.classList.add('is-playing');
+      else if (!entry.isIntersecting && entry.target.classList.contains('is-playing')) rewind(entry.target);
+    }
+  }, { threshold: [0, 0.6] });
+  scenesToPlay.forEach(scene => { scene.classList.add('is-armed'); sceneObserver.observe(scene); });
 }
 
 /* ---------- Leads: report every WhatsApp, call and form contact (Google Ads tag only on the landing page) ---------- */

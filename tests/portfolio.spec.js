@@ -180,6 +180,12 @@ test('process and FAQ answer the questions before contact', async ({ page }) => 
   await page.goto('/');
   await ready(page);
   await expect(page.locator('#process .step')).toHaveCount(3);
+  // each step acts itself out while on screen, and rests once it leaves
+  const scene = page.locator('#process .scene').first();
+  await scene.scrollIntoViewIfNeeded();
+  await expect(scene).toHaveClass(/is-playing/);
+  await page.evaluate(() => scrollTo(0, 0));
+  await expect(scene).not.toHaveClass(/is-playing/);
   const qa = page.locator('#faq details.qa');
   await expect(qa).toHaveCount(5);
   await qa.first().locator('summary').click();
@@ -412,8 +418,8 @@ test('on phones the landing page shows proof before the form', async ({ page }, 
   await expect(page.locator('.lp-deck-cta')).toBeVisible();
   const form = page.locator('#lead-m');
   await expect(form).toBeAttached();
-  // the phone form comes after the work and the comparison
-  const order = await page.evaluate(() => ['.lp-work', '.lp-compare', '#lead-m'].map(s => document.querySelector(s).getBoundingClientRect().top + scrollY));
+  // the phone form comes after the work and the process
+  const order = await page.evaluate(() => ['.lp-work', '#process', '#lead-m'].map(s => document.querySelector(s).getBoundingClientRect().top + scrollY));
   expect(order[0]).toBeLessThan(order[2]);
   expect(order[1]).toBeLessThan(order[2]);
   await page.locator('.lp-deck-cta').click();

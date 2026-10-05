@@ -16,6 +16,7 @@ const escape = value => String(value).replaceAll('&', '&amp;').replaceAll('"', '
 const pad = n => String(n).padStart(2, '0');
 const arrow = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 18 6 6M6 17V6h11"/></svg>';
 const down = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>';
+const check = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
 const arrowOut = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 7 7 17M7 7h10v10"/></svg>';
 const chat = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v9a1.5 1.5 0 0 1-1.5 1.5H10l-4.6 3.6c-.6.5-1.4 0-1.4-.7z"/></svg>';
 const brand = '<a class="brand" href="/" aria-label="LA webs — לעמוד הבית">LA<span>webs</span><i class="dot" aria-hidden="true"></i></a>';
@@ -127,12 +128,36 @@ const featuredSection = `<section class="featured" id="work" aria-labelledby="wo
     </article></li></ol>
 </section>`;
 
-// How a project runs, in three steps. The sequence is the information, so the numerals stay.
+// How a project runs, in three steps. The sequence is the information, so the numerals stay. Each step acts itself
+// out in a small looping scene, one story across the three: a pizzeria writes in, its design paints over the
+// wireframe, and the site goes live and gets its first message. The scenes are decorative; the text carries it.
+const pizzaShot = cls => `<img class="${cls}" src="/images/pizza-card-20261004-300w.webp" width="300" height="421" alt="" loading="lazy" decoding="async">`;
+const scenes = [
+  `<div class="scene scene-chat" aria-hidden="true">
+    <span class="chat-head"><i class="chat-avatar"><img src="/la-monogram-white.svg" width="20" height="20" alt=""></i><b>LA webs</b><small>זמינים עכשיו</small></span>
+    <span class="bubble sent b1">היי, יש לי פיצרייה ברמת גן</span>
+    <span class="bubble sent b2">צריך אתר שיביא הזמנות</span>
+    <span class="reply"><span class="bubble got typing"><i></i><i></i><i></i></span><span class="bubble got b3">מעולה! נדבר מחר ב-10?</span></span>
+  </div>`,
+  `<div class="scene scene-build" aria-hidden="true">
+    <span class="mini-phone"><span class="wire"><i class="w-bar"></i><i class="w-hero"></i><i class="w-line"></i><i class="w-line short"></i><i class="w-btn"></i></span>${pizzaShot('paint')}<i class="scan"></i></span>
+    <span class="token t-colors"><i style="background:#141614"></i><i style="background:#d2321f"></i><i style="background:#f4e6c8"></i></span>
+    <span class="token t-type"><b>אבג</b><small>Heebo</small></span>
+  </div>`,
+  `<div class="scene scene-live" aria-hidden="true">
+    <i class="live-glow"></i>
+    <span class="mini-phone">${pizzaShot('shot-live')}</span>
+    <span class="live-pill"><i></i>באוויר</span>
+    <span class="live-chip c1">${check}מהיר</span>
+    <span class="live-chip c2">${check}מוכן לגוגל</span>
+    <span class="toast"><i class="toast-icon">${chat}</i><span><b>הודעה חדשה</b><small>היי, אפשר משלוח לרמת גן?</small></span></span>
+  </div>`,
+];
 const steps = [
   { title: 'שיחה אחת.', text: 'מספרים לנו על העסק, על הלקוחות ועל מה שחשוב לכם. משם כבר ברור מה האתר צריך לעשות.' },
   { title: 'עיצוב ובנייה.', text: 'עיצוב שנבנה סביב העסק שלכם ופיתוח מאפס, בלי תבניות. רואים את האתר מתקדם לאורך כל הדרך.' },
   { title: 'עולים לאוויר.', text: 'האתר עולה מהיר, מוכן לטלפון ולגוגל. ואנחנו נשארים זמינים גם אחרי ההשקה.' },
-];
+].map((step, i) => ({ ...step, scene: scenes[i] }));
 const included = [
   ['עיצוב אישי מאפס', 'בלי תבניות. כל פרט נבנה סביב העסק שלכם.'],
   ['מושלם בטלפון', 'מתוכנן קודם למסך הקטן, שם רוב הלקוחות יפגשו אותו.'],
@@ -143,7 +168,7 @@ const included = [
 ];
 const processSection = `<section class="process" id="process" aria-labelledby="process-title"><div class="wrap">
   <h2 id="process-title" class="display reveal">מרעיון<br>לאתר באוויר<span class="period">.</span></h2>
-  <ol class="steps" role="list">${steps.map((x, i) => `<li class="step reveal" style="--s:${i}"><span class="step-n" aria-hidden="true">${i + 1}<i></i></span><h3 class="display">${x.title}</h3><p>${x.text}</p></li>`).join('')}</ol>
+  <ol class="steps" role="list">${steps.map((x, i) => `<li class="step reveal" style="--s:${i}">${x.scene}<span class="step-n" aria-hidden="true">${i + 1}<i></i></span><h3 class="display">${x.title}</h3><p>${x.text}</p></li>`).join('')}</ol>
   <div class="included">
     <h3 class="display included-title reveal">ובכל אתר שיוצא מאיתנו<span class="period">:</span></h3>
     <ul class="included-list" role="list">${included.map(([title, text]) => `<li class="reveal"><strong>${title}</strong><span>${text}</span></li>`).join('')}</ul>
@@ -301,16 +326,7 @@ const lpVariants = {
   catalog: { lines: ['קטלוג דיגיטלי', 'שעושה סדר במוצרים'], need: 'קטלוג או חנות' },
 };
 const lpDefault = { lines: ['אתר שנבנה לעסק שלך,', 'ומביא אליו פניות'], need: lpNeeds[0] };
-// The objection every competitor answers: why not build it yourself. Shown, not argued: a drag slider between a generic
-// template (drawn in CSS, clearly illustrative) and a real site we built, then three short differences.
-const lpCompare = [
-  ['עיצוב שנבנה סביב העסק', 'לא תבנית שעוד אלפי עסקים משתמשים בה.'],
-  ['אנחנו בונים, אתם מאשרים', 'בלי לילות מול עורך, טקסטים ותוספים.'],
-  ['שינוי? שולחים הודעה', 'ואנחנו מטפלים. בלי לחפש איפה הכפתור.'],
-];
-const templateMock = `<div class="ba-before vs-template" aria-hidden="true"><span class="tm-bar"><i></i><b>Your Logo</b><i></i></span><span class="tm-hero"><svg viewBox="0 0 24 24" fill="none"><path d="M3 18 9 11l4 5 3-3 5 5M3 5h18v14H3z"/></svg></span><span class="tm-title">Welcome to Our Website</span><span class="tm-line"></span><span class="tm-line short"></span><span class="tm-button">Click Here</span><span class="tm-grid"><i></i><i></i><i></i></span><span class="tm-line"></span><span class="tm-line short"></span></div>`;
 const phoneIcon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>';
-const check = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
 // Google Ads: set GOOGLE_ADS_ID (AW-…) and GOOGLE_ADS_LEAD (AW-…/label) when building to load the tag and report leads.
 function adsTag() {
   const id = process.env.GOOGLE_ADS_ID, lead = process.env.GOOGLE_ADS_LEAD;
@@ -320,7 +336,7 @@ function adsTag() {
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${id}');window.LA_ADS={lead:'${leadTo}'};</script>`;
 }
 
-// The lead form. Desktop shows it beside the hero; phones show it after the work and the comparison, once there is proof.
+// The lead form. Desktop shows it beside the hero; phones show it after the work and the process, once there is proof.
 const leadForm = id => `
       <form class="lead" id="${id}" action="https://wa.me/${studio.tel.replace('+', '')}" method="get" target="_blank" aria-labelledby="${id}-title">
         <h2 id="${id}-title" class="lead-title display">ספרו לנו על העסק<span class="period">.</span></h2>
@@ -362,27 +378,10 @@ function landingPage() {
       <h2 id="lp-work-title" class="display reveal">עבודות אמיתיות<span class="period">.</span><br>באוויר עכשיו<span class="period">.</span></h2>
       <ul class="lp-cards" role="list" tabindex="0" aria-label="עבודות נבחרות (אפשר לגלול הצידה)">${proof.map(p => `<li class="lp-card reveal" style="${vars(p)}"><span class="lp-shot"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="מסך הפתיחה של ${escape(p.hebrew)} בטלפון" loading="lazy" decoding="async"></span><span class="lp-card-copy"><strong>${escape(p.hebrew)}</strong><span>${escape(p.kicker)}</span></span></li>`).join('')}</ul>
     </div></section>
-    <section class="lp-compare" aria-labelledby="lp-compare-title"><div class="wrap">
-      <h2 id="lp-compare-title" class="display reveal">למה לא לבנות לבד<br>בבונה אתרים או ב-AI<span class="period">?</span></h2>
-      <div class="vs-grid">
-        <figure class="vs-figure">
-          <div class="ba vs" style="--cut:50%">
-            ${templateMock}
-            <img class="ba-after" src="/images/pizza-card-20261004.webp" width="585" height="820" alt="אתר שעוצב לעסק: מסך הפתיחה של פיצת התנור" loading="lazy" decoding="async">
-            <span class="ba-handle" aria-hidden="true"></span>
-            <span class="vs-tag vs-tag-template" aria-hidden="true">תבנית</span><span class="vs-tag vs-tag-ours" aria-hidden="true">LA webs</span>
-            <label class="ba-control"><span class="sr-only">השוואה בין תבנית כללית לאתר שעוצב לעסק</span><input type="range" min="0" max="100" value="50"></label>
-          </div>
-          <figcaption>גררו את הקו. משמאל תבנית כללית (להמחשה), מימין אתר שבנינו.</figcaption>
-        </figure>
-        <ul class="vs-points" role="list">${lpCompare.map(([title, text]) => `<li class="reveal"><strong>${title}</strong><span>${text}</span></li>`).join('')}
-          <li class="vs-note reveal">בונה אתרים מתאים כשמתחילים עם תקציב אפסי. כשהאתר צריך להביא לקוחות, זה הזמן לאתר שנבנה בשבילכם.</li></ul>
-      </div>
-    </div></section>
+    ${processSection}
     <section class="lp-lead-m" aria-label="טופס פנייה"><div class="wrap">${leadForm('lead-m')}</div></section>
     <script>(() => { const v = ${JSON.stringify(lpVariants)}[new URLSearchParams(location.search).get('t')]; if (!v) return; // both forms exist now
       document.querySelectorAll('form.lead input[name="w"]').forEach(i => { if (i.value === v.need) i.checked = true; }); })();</script>
-    ${processSection}
     ${faq}
     ${contact}
   </main>
