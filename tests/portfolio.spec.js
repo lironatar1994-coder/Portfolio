@@ -194,7 +194,7 @@ test('process and FAQ answer the questions before contact', async ({ page }) => 
   await expect(phone).toHaveClass(/has-5/);
   await expect(page.locator('.included-list li.is-on')).toHaveCount(6);
   const qa = page.locator('#faq details.qa');
-  await expect(qa).toHaveCount(5);
+  await expect(qa).toHaveCount(7);
   await qa.first().locator('summary').click();
   await expect(qa.first()).toHaveAttribute('open', '');
   await expect(qa.first().locator('p')).toBeVisible();
@@ -353,7 +353,7 @@ test('without JavaScript the work, navigation, process and FAQ remain usable', a
     await expect(page.locator('#work .stack-item:not(.stack-next)')).toHaveCount(featuredSlugs.length);
     await expect(page.locator('#process .step h3')).toHaveCount(3);
     await expect(page.locator('#process .step').first()).toHaveCSS('opacity', '1');
-    await expect(page.locator('#faq details.qa')).toHaveCount(5);
+    await expect(page.locator('#faq details.qa')).toHaveCount(7);
     await expectNoOverflow(page);
     await page.locator('#project-koral .stack-actions a.pill').click();
     await expect(page.getByRole('heading', { level: 1 })).toContainText('קורל אירועים');
@@ -416,7 +416,7 @@ test('ads landing page matches the ad group and writes the WhatsApp message from
   expect(decodeURIComponent(popup.url()).replaceAll('+', ' ')).toContain('אשמח לשמוע על מערכת הזמנות לעסק שלי'); // WhatsApp's redirect encodes spaces as +
   await popup.close();
   await page.goto('/lp/?t=<script>');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('אתר שנבנה לעסק שלך,' + 'ומביא אליו פניות.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('אתר שנבנה לעסק שלך' + 'ומביא אליו פניות.');
   await expectNoOverflow(page);
   expect(errors).toEqual([]);
 });

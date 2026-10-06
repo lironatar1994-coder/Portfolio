@@ -1262,3 +1262,23 @@ html:not(.js) .cycle{display:none}
   .included-list li{padding-inline-start:40px}
 }
 @media (prefers-reduced-motion:reduce){.inc-stage *{transition:none!important;animation:none!important}}
+
+/* ---------- Landing page, first-screen pass (6 October 2026) ---------- */
+/* The proof cards carry a link to the live site; it opens in a new tab so the ad page stays open. */
+.lp-card-link{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:14px;font-weight:600;color:var(--ink);padding-bottom:2px;border-bottom:1.5px solid currentColor;width:max-content}
+.lp-card-link svg{width:15px;height:15px;transition:transform .35s var(--ease)}
+.lp-card-link:hover svg{transform:translate(-3px,-3px)}
+/* On the landing page the included phone is shown complete, so the chip is always on and nothing waits for a scroll. */
+.lp .inc-chip{opacity:1;transform:none}
+@media (max-width:760px){
+  /* Phones: headline, one line, three points, then the cards and the button, all on the first screen. */
+  .lp .hero-copy{gap:12px}
+  .lp .hero-copy .display{font-size:clamp(31px,8.6vw,42px);line-height:1.1}
+  .lp .hero-copy .lede{font-size:16px;line-height:1.5;max-width:30ch}
+  .lp-points{gap:5px;font-size:15.5px}
+  .lp-points svg{width:18px;height:18px}
+  .lead-deck{height:calc(min(54vw,230px) * 1.4 + 78px)}
+  .deck-card{width:min(54vw,230px);margin-left:calc(min(54vw,230px) / -2);top:10px}
+  .lp-deck-cta{min-height:48px;padding:0 22px;font-size:15px}
+  .lp-hero{padding-bottom:26px}
+}

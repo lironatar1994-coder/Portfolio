@@ -420,7 +420,7 @@ if (scenesToPlay.length && 'IntersectionObserver' in window && !reduceMotion.mat
    middle of the screen beside the phone (desktop), or just under the pinned phone (phones). Tapping an item brings
    it to that line. */
 const includedBlock = $('.included');
-if (includedBlock && $('.inc-stage', includedBlock) && !reduceMotion.matches) {
+if (includedBlock && $('.inc-stage', includedBlock) && !reduceMotion.matches && !document.body.classList.contains('lp')) {
   const items = $$('.included-list li', includedBlock), stage = $('.inc-stage', includedBlock), phone = $('.inc-phone', stage);
   includedBlock.classList.add('is-armed');
   let shown = -2, queued = false;

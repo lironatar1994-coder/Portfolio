@@ -201,6 +201,8 @@ const processSection = `<section class="process" id="process" aria-labelledby="p
 const questions = [
   ['כמה זמן לוקח לבנות אתר?', 'אתר תדמית עולה בדרך כלל תוך שבועות ספורים. מערכות כמו הזמנות או הרשמה לוקחות קצת יותר, ולוח הזמנים נקבע כבר בשיחה הראשונה.'],
   ['כמה זה עולה?', `${studio.priceFrom ? `אתר תדמית מתחיל ב-${studio.priceFrom} ₪. ` : ''}המחיר הסופי תלוי במה שהעסק צריך: מספר העמודים, מערכות כמו הזמנות או הרשמה, ותוכן. מקבלים הצעה מסודרת לפני שמתחילים, בלי הפתעות בדרך.`],
+  ['מה קורה אחרי שאני שולח הודעה?', 'חוזרים אליכם באותו יום לשיחת היכרות קצרה, ואחריה מקבלים הצעה מסודרת. בלי עלות ובלי התחייבות.'],
+  ['צריך להכין תוכן ותמונות?', 'לא חובה. מספיק לספר על העסק: את הטקסטים כותבים יחד, ואפשר לעבוד עם התמונות שיש לכם.'],
   ['האתר ייראה טוב בטלפון?', 'כל אתר מתוכנן קודם לטלפון, כי שם רוב הלקוחות שלכם יפגשו אותו. ואז גם למחשב, כמובן.'],
   ['אפשר לשנות דברים אחרי שהאתר עולה?', 'כן. אנחנו זמינים לעדכונים, לתוספות ולשינויים גם אחרי ההשקה, כדי שהאתר יגדל יחד עם העסק.'],
   ['מה עם דומיין, אחסון וגוגל?', 'אנחנו דואגים להכול: דומיין, אחסון, תעודת אבטחה והעלאה לאוויר. האתר נבנה מהיר ונקי, כדי שגוגל יבין אותו ולקוחות ימצאו אתכם.'],
@@ -348,7 +350,7 @@ const lpVariants = {
   events: { lines: ['אתר והרשמה לאירועים', 'הכול במקום אחד'], need: 'הרשמה לאירועים' },
   catalog: { lines: ['קטלוג דיגיטלי', 'שעושה סדר במוצרים'], need: 'קטלוג או חנות' },
 };
-const lpDefault = { lines: ['אתר שנבנה לעסק שלך,', 'ומביא אליו פניות'], need: lpNeeds[0] };
+const lpDefault = { lines: ['אתר שנבנה לעסק שלך', 'ומביא אליו פניות'], need: lpNeeds[0] };
 // Google Ads: set GOOGLE_ADS_ID (AW-…) and GOOGLE_ADS_LEAD (AW-…/label) when building to load the tag and report leads.
 function adsTag() {
   const id = process.env.GOOGLE_ADS_ID, lead = process.env.GOOGLE_ADS_LEAD;
@@ -405,8 +407,8 @@ function landingPage() {
     <section class="lp-hero" aria-labelledby="lp-title"><div class="wrap lp-hero-grid">
       <div class="lp-copy hero-copy">
         <h1 id="lp-title" class="display brand-headline"><span data-l1>${lpDefault.lines[0]}</span><span><span data-l2>${lpDefault.lines[1]}</span><span class="period">.</span></span></h1>
-        <p class="lede">עיצוב ופיתוח מאפס, בלי תבניות. אתרים ומערכות שנראים מושלם בטלפון ומובילים לקוחות לשיחה איתכם.</p>
-        <ul class="lp-points" role="list"><li>${check}עיצוב אישי, סביב העסק שלכם</li><li>${check}מהיר, מושלם בטלפון ומוכן לגוגל</li><li>${check}וואטסאפ וחיוג בלחיצה אחת</li>${studio.priceFrom ? `<li>${check}אתר תדמית החל מ-${escape(studio.priceFrom)} ₪</li>` : ''}</ul>
+        <p class="lede">עיצוב ופיתוח מאפס, בלי תבניות. שיחת היכרות קצרה, בלי עלות.</p>
+        <ul class="lp-points" role="list"><li>${check}עיצוב אישי, סביב העסק שלכם</li><li>${check}מהיר, מושלם בטלפון ומוכן לגוגל</li>${studio.priceFrom ? `<li>${check}אתר תדמית החל מ-${escape(studio.priceFrom)} ₪</li>` : `<li>${check}וואטסאפ וחיוג בלחיצה אחת</li>`}</ul>
         <div class="hero-actions"><a class="pill pill-cta" href="${wa}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat} נדבר בוואטסאפ</a><a class="text-link" href="tel:${studio.tel}">או חייגו <bdi>${studio.phone}</bdi></a></div>
       </div>
       <div class="lead-deck">
@@ -419,7 +421,7 @@ function landingPage() {
     </div></section>
     <section class="lp-work" aria-labelledby="lp-work-title"><div class="wrap">
       <h2 id="lp-work-title" class="display reveal">עבודות אמיתיות<span class="period">.</span><br>באוויר עכשיו<span class="period">.</span></h2>
-      <ul class="lp-cards" role="list" tabindex="0" aria-label="עבודות נבחרות (אפשר לגלול הצידה)">${proof.map(p => `<li class="lp-card reveal" style="${vars(p)}"><span class="lp-shot"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="מסך הפתיחה של ${escape(p.hebrew)} בטלפון" loading="lazy" decoding="async"></span><span class="lp-card-copy"><strong>${escape(p.hebrew)}</strong><span>${escape(p.kicker)}</span></span></li>`).join('')}</ul>
+      <ul class="lp-cards" role="list" tabindex="0" aria-label="עבודות נבחרות (אפשר לגלול הצידה)">${proof.map(p => `<li class="lp-card reveal" style="${vars(p)}"><span class="lp-shot"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="מסך הפתיחה של ${escape(p.hebrew)} בטלפון" loading="lazy" decoding="async"></span><span class="lp-card-copy"><strong>${escape(p.hebrew)}</strong><span>${escape(p.kicker)}</span><a class="lp-card-link" href="${p.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר של ${escape(p.hebrew)} — נפתח בחלון חדש">לאתר ${arrowOut}</a></span></li>`).join('')}</ul>
     </div></section>
     ${processSection}
     <section class="lp-lead-m" aria-label="טופס פנייה"><div class="wrap">${leadForm('lead-m', 'הבא בתור: העסק שלך')}</div></section>
