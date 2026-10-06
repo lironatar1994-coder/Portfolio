@@ -451,9 +451,8 @@ if (includedBlock && $('.inc-stage', includedBlock) && !reduceMotion.matches && 
 
 /* ---------- Leads: report every WhatsApp, call and form contact (Google Ads tag only on the landing page) ---------- */
 const trackLead = method => {
-  window.dataLayer?.push({ event: 'lead', method });
-  const leadTo = window.LA_ADS?.lead;
-  if (leadTo && typeof window.gtag === 'function') window.gtag('event', 'conversion', { send_to: leadTo });
+  // Opening WhatsApp or the dialer is contact intent; delivery of a real enquiry is not observable here.
+  window.LA_trackContact?.(method);
 };
 document.addEventListener('click', event => {
   const link = event.target.closest('a[href^="https://wa.me"], a[href^="tel:"]');
@@ -548,7 +547,8 @@ for (const lead of $$('form.lead')) { // one beside the hero (desktop), one afte
       button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg> נפתח בוואטסאפ';
       setTimeout(() => { button.classList.remove('is-sent'); button.innerHTML = label; }, 3500);
     }
-    const url = `${lead.action}?text=${encodeURIComponent(leadText(lead))}`;
+    const source = window.LA_contactSource?.() || '';
+    const url = `${lead.action}?text=${encodeURIComponent(leadText(lead) + source)}`;
     trackLead('form');
     const opened = window.open(url, '_blank'); // ('noopener' would make this always null, so the opener is cut by hand)
     if (opened) opened.opener = null;

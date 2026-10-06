@@ -1,4 +1,12 @@
-# LA webs — current visual direction (16 September 2026)
+# LA webs — committed visual direction (6 October 2026)
+
+The current production identity is `studio`: daylight canvas #F7F9FC, navy #17243B, cobalt action #244BE8, secondary text #52627A. White lead forms have pale blue chat surfaces, dark readable labels and cobalt buttons. Paid landing pages retain navy opening chapters and light reading sections. Client project colours remain intact. This replaces the paper/terracotta and all-dark default identities described in the historical notes below.
+
+The primary paid destination is `/lp/short/`; `/lp/` remains for a later measured comparison. The goal is Israeli business visitors starting an informed conversation on mobile. The palette is a design judgment supported by contrast and usability checks, not a claim of an empirically proven best Israeli colour. Research and limitations are in `docs/ads/research-20261006.md`.
+
+Theme previews remain explicitly selectable. Previous session choices use an older storage key, so ordinary visitors receive the committed identity. The share image is `la-webs-share-studio-20261006.jpg`.
+
+## Historical visual direction (superseded)
 
 Warm paper (#fcfbf8), charcoal (#20201e) and a deeper red (#bc3528). Client project colors and supplied assets remain intact. Plex Hebrew at 700 now carries headings; Frank Ruhl Libre remains on the LA webs wordmark so the existing logo and monogram stay consistent.
 

@@ -53,11 +53,11 @@ function frame(project, kind, { loading = 'lazy', priority = false, vt = '', cla
 // Colour themes: 'paper' (ivory, charcoal, terracotta), 'cobalt' (cream, black, electric blue), 'night' (deep charcoal,
 // hot coral) and 'night-cobalt' (deep charcoal, electric blue). THEME picks the build; ?theme=… previews any of them on
 // the live site and sticks for the session, so two directions can be compared on real pages before one is chosen.
-export const themes = { paper: '#f7f1e8', cobalt: '#f6f4ee', night: '#121110', 'night-cobalt': '#121110' };
-export const theme = themes[process.env.THEME] ? process.env.THEME : 'night-cobalt';
+export const themes = { studio: '#f7f9fc', paper: '#f7f1e8', cobalt: '#f6f4ee', night: '#121110', 'night-cobalt': '#121110' };
+export const theme = themes[process.env.THEME] ? process.env.THEME : 'studio';
 const htmlOpen = `<html lang="he" dir="rtl" data-theme="${theme}">`;
-const themeSwitch = `<script>(()=>{try{const q=new URLSearchParams(location.search).get('theme'),k='la-theme',ok=${JSON.stringify(Object.keys(themes))};if(q&&ok.includes(q))sessionStorage.setItem(k,q);const t=sessionStorage.getItem(k);if(t&&ok.includes(t))document.documentElement.dataset.theme=t}catch{}})()</script>`;
-function head(title, description, { pathname = '/', image = '/images/la-webs-share-20261006.jpg', themeColor = themes[theme] } = {}) {
+const themeSwitch = `<script>(()=>{try{const q=new URLSearchParams(location.search).get('theme'),k='la-theme-studio-20261006',ok=${JSON.stringify(Object.keys(themes))};if(q&&ok.includes(q))sessionStorage.setItem(k,q);const t=sessionStorage.getItem(k);if(t&&ok.includes(t))document.documentElement.dataset.theme=t}catch{}})()</script>`;
+function head(title, description, { pathname = '/', image = '/images/la-webs-share-studio-20261006.jpg', themeColor = themes[theme] } = {}) {
   const origin = process.env.SITE_ORIGIN;
   const url = origin ? new URL(pathname, origin).href : null;
   return `<meta name="theme-color" content="${themeColor}">
@@ -343,12 +343,12 @@ function casePage(project, index) {
 }
 
 /* ---------- Privacy policy and accessibility statement ---------- */
-const legalUpdated = '4 באוקטובר 2026';
+const legalUpdated = '6 באוקטובר 2026';
 const legalPages = [
   { path: 'privacy', title: 'מדיניות פרטיות | LA webs', h1: 'מדיניות פרטיות', description: 'איזה מידע נאסף באתר LA webs, איך משתמשים בו ואיך פונים אלינו בנושא פרטיות.', sections: [
     ['מי אנחנו', [`LA webs הוא סטודיו לעיצוב ופיתוח אתרים ומערכות. לכל שאלה בנושא פרטיות אפשר לפנות בטלפון או בוואטסאפ: <a href="tel:${studio.tel}"><bdi>${studio.phone}</bdi></a>.`]],
     ['איזה מידע נאסף', ['האתר לא שולח מידע אישי לשרת שלנו. הטופס בדף הנחיתה מנסח הודעה ופותח אותה בוואטסאפ שלכם, והמידע עובר אלינו רק אם תבחרו לשלוח אותה.', 'כשאתם פונים אלינו בוואטסאפ או בטלפון, נשתמש בפרטים שמסרתם רק כדי לחזור אליכם ולטפל בפנייה.']],
-    ['מדידה ופרסום', ['אנחנו משתמשים בכלי מדידה כדי להבין איך משתמשים באתר, ובתג של Google Ads כדי למדוד פניות שמגיעות מפרסום. הכלים האלה עשויים להשתמש בעוגיות ובמזהים דומים.', 'אפשר לנהל את העדפות הפרסום של Google ב<a href="https://myadcenter.google.com/" target="_blank" rel="noopener noreferrer">מרכז המודעות שלי</a>, ולחסום או למחוק עוגיות בהגדרות הדפדפן.']],
+    ['מדידה ופרסום', ['אנחנו משתמשים בכלי מדידה כדי להבין איך משתמשים באתר. תגי פרסום של Google ו־Meta, כאשר הוגדרו, נטענים בדפי הנחיתה רק אחרי אישור מדידה. לחיצה על וואטסאפ או חיוג מעידה על כוונת פנייה ואינה מאשרת שהודעה נשלחה.', 'אפשר לבחור להמשיך בלי מדידת פרסום. לבחירה מחדש מחקו את נתוני האתר בדפדפן. אפשר לנהל את העדפות הפרסום של Google ב<a href="https://myadcenter.google.com/" target="_blank" rel="noopener noreferrer">מרכז המודעות שלי</a>.']],
     ['שמירה וזכויות', ['איננו מוכרים מידע ואיננו מעבירים אותו לגורמים אחרים, מלבד ספקי השירות שמפעילים את הכלים שצוינו כאן. אפשר לבקש לעיין במידע שמסרתם, לתקן אותו או למחוק אותו בפנייה אלינו.']],
     ['שינויים', ['אם המדיניות תשתנה, הגרסה המעודכנת תופיע בעמוד הזה עם תאריך העדכון.']],
   ] },
@@ -377,11 +377,7 @@ const lpVariants = {
 const lpDefault = { lines: ['אתר שנבנה לעסק שלך', 'ומביא אליו פניות'], need: lpNeeds[0] };
 // Google Ads: set GOOGLE_ADS_ID (AW-…) and GOOGLE_ADS_LEAD (AW-…/label) when building to load the tag and report leads.
 function adsTag() {
-  const id = process.env.GOOGLE_ADS_ID, lead = process.env.GOOGLE_ADS_LEAD;
-  if (!id || !/^AW-\d+$/.test(id)) return '';
-  const leadTo = lead && /^AW-\d+\/[\w-]+$/.test(lead) ? lead : '';
-  return `<script async src="https://www.googletagmanager.com/gtag/js?id=${id}"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${id}');window.LA_ADS={lead:'${leadTo}'};</script>`;
+  return '<script src="/ads-config.js"></script><script src="/ads-tracking.js" defer></script>';
 }
 
 // The lead form, written as a WhatsApp conversation: the studio asks one thing at a time and each answer becomes a
@@ -393,7 +389,7 @@ const leadForm = (id, title = 'ספרו לנו על העסק') => `
       <form class="lead" id="${id}" action="https://wa.me/${studio.tel.replace('+', '')}" method="get" target="_blank" aria-labelledby="${id}-title">
         <h2 id="${id}-title" class="lead-title display">${title}<span class="period">.</span></h2>
         <div class="lead-chat">
-          <div class="lead-chat-head" aria-hidden="true"><i class="chat-avatar"><img src="/la-monogram-white.svg" width="20" height="20" alt=""></i><b>LA webs</b><small>זמינים עכשיו</small></div>
+          <div class="lead-chat-head" aria-hidden="true"><i class="chat-avatar"><img src="/la-monogram-white.svg" width="20" height="20" alt=""></i><b>LA webs</b><small>שיחת היכרות</small></div>
           <div class="lead-step">
             <label class="lead-q" for="${id}-n">היי, כאן LA webs. איך קוראים לך?</label>
             <span class="lead-a"><input id="${id}-n" name="n" autocomplete="name" required maxlength="60" placeholder="השם שלך" enterkeyhint="next"><button class="lead-next" type="button" aria-label="המשך">${send}</button></span>

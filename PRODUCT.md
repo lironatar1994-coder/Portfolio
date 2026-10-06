@@ -18,7 +18,7 @@ Hebrew only, RTL. Studio positioning rather than a personal freelancer portfolio
 The user confirmed the studio name LA Webs. The user delegated reference research, selection, design planning, and the build. The design must be visually exceptional and focus on the work.
 
 ## Stack
-Implementation choice: static HTML, CSS and JavaScript, generated with a dependency-free Node build. No client framework required for this content-led site. Static case-study pages preserve direct links and SEO. Private Sites preview; final studio-domain deployment is undecided.
+Static HTML, CSS and JavaScript, generated with a dependency-free Node build. Static case-study pages preserve direct links and SEO. Production is https://lawebs.co.il, published through deploy.ps1 with a matching GitHub revision and rollback backup. Paid traffic starts at /lp/short/. Advertising tracking identifiers remain unset until verified in the user's advertising accounts.
 
 ## Evidence on Hand
 See docs/project-inventory.md and docs/studio-research.md. Public production URLs and studio contact are verified live. Source assets belong to the user's projects.

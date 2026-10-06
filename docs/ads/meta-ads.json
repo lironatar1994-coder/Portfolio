@@ -1,0 +1,33 @@
+{
+  "status": "PREPARED_NOT_UPLOADED",
+  "campaign": "LA webs | ישראל | בניית אתרים",
+  "requestedState": "DRAFT",
+  "budget": null,
+  "country": "IL",
+  "language": "Hebrew",
+  "facebookPageId": null,
+  "trackingEvent": "Contact",
+  "trackingMeaning": "Contact intent only, not a confirmed lead",
+  "ads": [
+    {
+      "name": "עבודות אמיתיות",
+      "primaryText": "אתר שמציג את העסק כמו שצריך. ב־LA webs מעצבים ומפתחים סביב העסק שלכם, עם התאמה לטלפון ודרך קצרה לפנייה. צפו בעבודות שלנו וקבעו שיחת היכרות בלי עלות.",
+      "headline": "האתר הבא יכול להיות שלכם",
+      "description": "עיצוב אישי · שיחת היכרות בלי עלות",
+      "cta": "LEARN_MORE",
+      "url": "https://lawebs.co.il/lp/short/?utm_source=facebook&utm_medium=paid_social&utm_campaign=lawebs_websites&utm_content=real_work",
+      "feed": "creatives/lawebs-feed.png",
+      "story": "creatives/lawebs-story.png"
+    },
+    {
+      "name": "אתר תדמית",
+      "primaryText": "אתר תדמית החל מ־2,500 ₪, בעיצוב אישי סביב העסק שלכם. נבנה יחד אתר שמציג את מה שאתם עושים ומקל על לקוחות ליצור קשר. המחיר הסופי נקבע לפי היקף הפרויקט.",
+      "headline": "אתר תדמית החל מ־2,500 ₪",
+      "description": "רואים עבודות אמיתיות, ואז מדברים",
+      "cta": "LEARN_MORE",
+      "url": "https://lawebs.co.il/lp/short/?t=tadmit&utm_source=facebook&utm_medium=paid_social&utm_campaign=lawebs_websites&utm_content=price",
+      "feed": "creatives/lawebs-feed.png",
+      "story": "creatives/lawebs-story.png"
+    }
+  ]
+}
