@@ -24,7 +24,7 @@ function serviceBody(s) {
   <section class="seo-faq wrap"><h2>לפני שמתחילים</h2>${s.questions.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</section>`;
 }
 
-function metadata(html, {title,description,path,origin,nodes=[],image='/images/la-webs-share-20261004.jpg'}) {
+function metadata(html, {title,description,path,origin,nodes=[],image='/images/la-webs-share-20261006.jpg'}) {
   if(origin)html=html.replace(/<meta name="robots" content="noindex,nofollow">/g,'');
   html=html.replace(/<script type="application\/ld\+json" data-seo="schema">[\s\S]*?<\/script>/g,'');
   html=html.replace(/<link rel="stylesheet" href="\/seo\.css[^\"]*">/g,'');

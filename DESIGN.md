@@ -168,5 +168,5 @@ Liron asked whether a completely different palette would make visitors say "wow"
 - `paper` (default): ivory #f7f1e8, charcoal #292521, terracotta #b84a2c.
 - `cobalt`: cream #f6f4ee, near-black #15171c, electric blue #2b3cff.
 - `night`: deep charcoal #121110 (chapters on #1d1a17), ivory type, hot coral #ff6a3d. Text on the accent is dark (`--on-accent`), since white on coral fails contrast.
-- `night-cobalt`: the dark page with electric blue #5b6cff.
+- `night-cobalt` (default since 6 October 2026): the dark page with electric blue #6b7aff (#5b6cff left dark text at 4.5:1, just under AA).
 `THEME=<name>` picks the build (theme-color follows it); `?theme=<name>` on any page previews a theme on the live site and sticks for the browser session, so two directions can be compared on real pages. The light lead-form card keeps the paper inks in the dark themes; the fan and hand cards, header pills, sticky bar, browser-frame bar, chip and chat bubbles are overridden. Israel check (same day): RTL, Hebrew-native type, WhatsApp first with a 972 number, 050 phone format, prices in ₪, plural direct address, mobile first, accessibility statement and privacy policy are all in place.

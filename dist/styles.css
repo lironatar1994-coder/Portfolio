@@ -1319,7 +1319,8 @@ html:not(.js) .cycle{display:none}
 [data-theme="cobalt"] .lp-bar{background:rgb(246 244 238/.94)}
 
 [data-theme="night"],[data-theme="night-cobalt"]{--paper:#121110;--paper-deep:#1d1a17;--ink:#f3ece2;--muted:#aaa198;--line:#2e2a26;--accent:#ff6a3d;--accent-deep:#ff8a66;--on-accent:#141110}
-[data-theme="night-cobalt"]{--accent:#5b6cff;--accent-deep:#8491ff}
+[data-theme="night-cobalt"]{--accent:#6b7aff;--accent-deep:#8e9aff} /* dark text on this blue is 5.2:1; #5b6cff was 4.5 */
+:is([data-theme="night"],[data-theme="night-cobalt"]) .stack-next .stack-line{opacity:1}
 :is([data-theme="night"],[data-theme="night-cobalt"]) body{background:var(--paper);color:var(--ink)}
 :is([data-theme="night"],[data-theme="night-cobalt"]) :is(.brand,.site-nav,.menu-toggle){background:rgb(29 26 23/.9);color:var(--ink);box-shadow:0 1px 0 rgb(255 255 255/.05),0 10px 30px -18px rgb(0 0 0/.8)}
 :is([data-theme="night"],[data-theme="night-cobalt"]) .site-nav>a:not(.pill):hover{background:rgb(255 255 255/.08)}
@@ -1354,3 +1355,4 @@ html:not(.js) .cycle{display:none}
 :is([data-theme="night"],[data-theme="night-cobalt"]) :is(.inc-chip,.lead-q,.lead-chat,.lead-chat-head){color:#292521}
 :is([data-theme="night"],[data-theme="night-cobalt"]) .lead-chat-head small{color:#686057}
 :is([data-theme="night"],[data-theme="night-cobalt"]) :is(.lead-bubble,.lead-next){color:var(--on-accent)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .lp .hero-actions .text-link{color:var(--ink)}

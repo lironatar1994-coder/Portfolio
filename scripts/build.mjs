@@ -54,10 +54,10 @@ function frame(project, kind, { loading = 'lazy', priority = false, vt = '', cla
 // hot coral) and 'night-cobalt' (deep charcoal, electric blue). THEME picks the build; ?theme=… previews any of them on
 // the live site and sticks for the session, so two directions can be compared on real pages before one is chosen.
 export const themes = { paper: '#f7f1e8', cobalt: '#f6f4ee', night: '#121110', 'night-cobalt': '#121110' };
-export const theme = themes[process.env.THEME] ? process.env.THEME : 'paper';
+export const theme = themes[process.env.THEME] ? process.env.THEME : 'night-cobalt';
 const htmlOpen = `<html lang="he" dir="rtl" data-theme="${theme}">`;
 const themeSwitch = `<script>(()=>{try{const q=new URLSearchParams(location.search).get('theme'),k='la-theme',ok=${JSON.stringify(Object.keys(themes))};if(q&&ok.includes(q))sessionStorage.setItem(k,q);const t=sessionStorage.getItem(k);if(t&&ok.includes(t))document.documentElement.dataset.theme=t}catch{}})()</script>`;
-function head(title, description, { pathname = '/', image = '/images/la-webs-share-20261004.jpg', themeColor = themes[theme] } = {}) {
+function head(title, description, { pathname = '/', image = '/images/la-webs-share-20261006.jpg', themeColor = themes[theme] } = {}) {
   const origin = process.env.SITE_ORIGIN;
   const url = origin ? new URL(pathname, origin).href : null;
   return `<meta name="theme-color" content="${themeColor}">
