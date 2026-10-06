@@ -1282,3 +1282,28 @@ html:not(.js) .cycle{display:none}
   .lp-deck-cta{min-height:48px;padding:0 22px;font-size:15px}
   .lp-hero{padding-bottom:26px}
 }
+
+/* ---------- Short landing page (/lp/short/, 6 October 2026) ---------- */
+/* Three steps as lines: the numeral beside the title, no scene. */
+.steps-compact .step{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:16px;row-gap:6px;align-items:baseline;padding-top:26px}
+.steps-compact .step-n{grid-row:1/3;align-self:start;font-size:clamp(44px,4.2vw,64px);line-height:.9}
+.steps-compact .step h3{margin-top:0;font-size:clamp(22px,2vw,30px)}
+.steps-compact .step p{font-size:16px}
+/* The included list without the phone: one quiet grid. */
+.included-compact{display:block}
+.included-compact .included-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(22px,2.6vw,36px) clamp(28px,4vw,64px);padding:0}
+.included-compact .included-list li{padding-inline-start:40px}
+@media (min-width:761px) and (max-width:1100px){.included-compact .included-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){
+  .steps-compact{gap:26px}
+  .steps-compact .step-n{font-size:44px}
+  .included-compact .included-list{grid-template-columns:1fr;gap:18px;padding:0}
+  /* Phones: no card deck under the headline (the work appears once, in the next section); the button leads to the form. */
+  .lp-short .deck-card{display:none}
+  .lp-short .lead-deck{height:auto;padding:0;margin:0}
+  .lp-short .lp-deck-cta{position:static;width:100%;justify-content:center;margin-top:6px}
+  .lp-short .lp-hero{padding-bottom:30px}
+  /* The page ends in the form; the sticky bar carries WhatsApp and call. */
+  .lp-short .contact{display:none}
+  .lp-short .lp-lead-m{padding-bottom:40px}
+}

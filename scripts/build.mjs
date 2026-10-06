@@ -208,9 +208,22 @@ const questions = [
   ['מה עם דומיין, אחסון וגוגל?', 'אנחנו דואגים להכול: דומיין, אחסון, תעודת אבטחה והעלאה לאוויר. האתר נבנה מהיר ונקי, כדי שגוגל יבין אותו ולקוחות ימצאו אתכם.'],
 ];
 const plus = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
-const faq = `<section class="faq" id="faq" aria-labelledby="faq-title"><div class="wrap faq-grid">
+const faqFor = list => `<section class="faq" id="faq" aria-labelledby="faq-title"><div class="wrap faq-grid">
   <h2 id="faq-title" class="display reveal">שאלות<br>שחוזרות<span class="period">.</span></h2>
-  <div class="faq-list">${questions.map(([q, a]) => `<details class="qa reveal"><summary><span>${q}</span>${plus}</summary><p>${a}</p></details>`).join('')}</div>
+  <div class="faq-list">${list.map(([q, a]) => `<details class="qa reveal"><summary><span>${q}</span>${plus}</summary><p>${a}</p></details>`).join('')}</div>
+</div></section>`;
+const faq = faqFor(questions);
+// The short landing page keeps the five questions a visitor asks before writing; hosting and later changes stay on the site.
+const faqShort = faqFor(questions.filter(([q]) => !q.startsWith('אפשר לשנות') && !q.startsWith('מה עם דומיין')));
+
+// Compact process for the short landing page: the three steps as lines and the included list without the phone.
+const processCompact = `<section class="process process-compact" id="process" aria-labelledby="process-title"><div class="wrap">
+  <h2 id="process-title" class="display reveal">מרעיון<br>לאתר באוויר<span class="period">.</span></h2>
+  <ol class="steps steps-compact" role="list">${steps.map((x, i) => `<li class="step reveal" style="--s:${i}"><span class="step-n" aria-hidden="true">${i + 1}<i></i></span><h3 class="display">${x.title}</h3><p>${x.text}</p></li>`).join('')}</ol>
+  <div class="included included-compact">
+    <h3 class="display included-title reveal">ובכל אתר שיוצא מאיתנו<span class="period">:</span></h3>
+    <ul class="included-list" role="list">${included.map(([title, text]) => `<li class="reveal"><i class="inc-check" aria-hidden="true">${check}</i><strong>${title}</strong><span>${text}</span></li>`).join('')}</ul>
+  </div>
 </div></section>`;
 
 // Five real projects sharing one pivot. The centred card is the visible stack before opening, and comes alive once open.
@@ -342,7 +355,10 @@ const legalPage = l => page({ title: l.title, description: l.description, bodyCl
 
 /* ---------- Ads landing page (/lp/) ----------
    One goal (a conversation), no navigation leaks, headline matched to the ad group through ?t=, and a short form
-   that writes the WhatsApp message for the visitor. Not indexed: it exists for paid traffic. */
+   that writes the WhatsApp message for the visitor. Not indexed: it exists for paid traffic.
+   /lp/short/ is the same page cut for a test against it: every project shown once (no card deck on phones), the
+   process as three lines, the included list without the phone, five questions, and on phones the page ends in the
+   form (no contact block). Google Ads can split traffic between the two final URLs. */
 const lpNeeds = ['אתר תדמית', 'מערכת הזמנות', 'הרשמה לאירועים', 'קטלוג או חנות', 'עוד לא בטוח/ה'];
 const lpVariants = {
   tadmit: { lines: ['בניית אתר תדמית', 'שנראה כמו העסק שלך'], need: 'אתר תדמית' },
@@ -393,7 +409,7 @@ const leadForm = (id, title = 'ספרו לנו על העסק') => `
         <p class="lead-note">ההודעה נפתחת אצלכם בוואטסאפ, ואתם שולחים. שיחת היכרות קצרה, בלי עלות ובלי התחייבות.</p>
       </form>`;
 
-function landingPage() {
+function landingPage({ short = false } = {}) {
   const title = 'בניית אתר לעסק — עיצוב אישי, מושלם בטלפון | LA webs';
   const description = 'אתרי תדמית, מערכות הזמנה וקטלוגים בעיצוב אישי, שנבנים מאפס ונראים מושלם בטלפון. שיחת היכרות קצרה, בלי עלות ובלי התחייבות.';
   const wa = escape(studio.whatsapp);
@@ -423,16 +439,17 @@ function landingPage() {
       <h2 id="lp-work-title" class="display reveal">עבודות אמיתיות<span class="period">.</span><br>באוויר עכשיו<span class="period">.</span></h2>
       <ul class="lp-cards" role="list" tabindex="0" aria-label="עבודות נבחרות (אפשר לגלול הצידה)">${proof.map(p => `<li class="lp-card reveal" style="${vars(p)}"><span class="lp-shot"><img src="/images/${p.slug}-card-20261004.webp" width="585" height="820" alt="מסך הפתיחה של ${escape(p.hebrew)} בטלפון" loading="lazy" decoding="async"></span><span class="lp-card-copy"><strong>${escape(p.hebrew)}</strong><span>${escape(p.kicker)}</span><a class="lp-card-link" href="${p.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר של ${escape(p.hebrew)} — נפתח בחלון חדש">לאתר ${arrowOut}</a></span></li>`).join('')}</ul>
     </div></section>
-    ${processSection}
+    ${short ? processCompact : processSection}
+    ${short ? faqShort : ''}
     <section class="lp-lead-m" aria-label="טופס פנייה"><div class="wrap">${leadForm('lead-m', 'הבא בתור: העסק שלך')}</div></section>
     <script>(() => { const v = ${JSON.stringify(lpVariants)}[new URLSearchParams(location.search).get('t')]; if (!v) return; // both forms exist now
       document.querySelectorAll('form.lead input[name="w"]').forEach(i => { if (i.value === v.need) i.checked = true; }); })();</script>
-    ${faq}
+    ${short ? '' : faq}
     ${contact}
   </main>
   <footer class="lp-footer wrap"><span>© ${new Date().getFullYear()} LA webs</span><span class="legal-links"><a href="/privacy/">מדיניות פרטיות</a><a href="/accessibility/">הצהרת נגישות</a></span><a href="/">לאתר הסטודיו ולכל העבודות</a></footer>
   <nav class="lp-bar" aria-label="יצירת קשר מהירה"><a href="${wa}" target="_blank" rel="noopener noreferrer">${chat} וואטסאפ</a><a href="tel:${studio.tel}">${phoneIcon} חיוג</a></nav>`;
-  return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="robots" content="noindex,follow">${head(title, description, { pathname: '/lp/' })}${adsTag()}</head><body class="lp"><a class="skip-link" href="#main">דלגו לתוכן</a>${body}</body></html>`;
+  return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="robots" content="noindex,follow">${head(title, description, { pathname: short ? '/lp/short/' : '/lp/' })}${adsTag()}</head><body class="lp${short ? ' lp-short' : ''}"><a class="skip-link" href="#main">דלגו לתוכן</a>${body}</body></html>`;
 }
 
 export async function build() {
@@ -460,6 +477,8 @@ export async function build() {
   }
   await mkdir(resolve(destination, 'lp'), { recursive: true });
   await writeFile(resolve(destination, 'lp/index.html'), landingPage().replace(/[\t ]+$/gm, ''));
+  await mkdir(resolve(destination, 'lp/short'), { recursive: true });
+  await writeFile(resolve(destination, 'lp/short/index.html'), landingPage({ short: true }).replace(/[\t ]+$/gm, ''));
   await writeFile(resolve(destination, '404.html'), page({ title: 'העמוד לא נמצא | LA webs', description: 'העמוד שחיפשתם לא נמצא. אפשר לחזור לעבודות של LA webs.', body: `<section class="not-found wrap"><p class="kicker">404</p><h1 class="display">העמוד הזה<br>קצת הלך לאיבוד.</h1><p class="lede">אבל העבודות שלנו עדיין כאן.</p><a class="pill" href="/#work">לעבודות ${arrow}</a></section>${contact}`, bodyClass: 'case', pathname: '/404.html' }));
   await writeFile(resolve(destination, 'robots.txt'), process.env.SITE_ORIGIN ? `User-agent: *\nAllow: /\nSitemap: ${new URL('/sitemap.xml', process.env.SITE_ORIGIN)}\n` : 'User-agent: *\nDisallow: /\n');
   if (process.env.SITE_ORIGIN) await writeFile(resolve(destination, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/', ...projects.map(p => `/work/${p.slug}/`)].map(path => `<url><loc>${escape(new URL(path, process.env.SITE_ORIGIN).href)}</loc></url>`).join('')}</urlset>`);

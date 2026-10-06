@@ -443,3 +443,29 @@ test('on phones the landing page shows proof before the form', async ({ page }, 
   await page.locator('.lp-deck-cta').click();
   await expect(form).toBeInViewport();
 });
+
+test('short landing page shows each project once and ends in the form on phones', async ({ page }, testInfo) => {
+  const errors = observeErrors(page);
+  const response = await page.goto('/lp/short/');
+  expect(response.status()).toBe(200);
+  await ready(page);
+  await expect(page.locator('meta[name="robots"][content*="noindex"]').first()).toHaveCount(1);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('אתר שנבנה לעסק שלך');
+  await expect(page.locator('.scene')).toHaveCount(0);
+  await expect(page.locator('.inc-stage')).toHaveCount(0);
+  await expect(page.locator('#faq details.qa')).toHaveCount(5);
+  await expect(page.locator('.lp-cards .lp-card')).toHaveCount(4);
+  if (testInfo.project.name === 'mobile') {
+    await expect(page.locator('.deck-card').first()).toBeHidden();
+    await expect(page.locator('#contact')).toBeHidden();
+    const faqTop = await page.locator('#faq').evaluate(el => el.getBoundingClientRect().top + scrollY);
+    const formTop = await page.locator('.lp-lead-m').evaluate(el => el.getBoundingClientRect().top + scrollY);
+    expect(formTop).toBeGreaterThan(faqTop);
+  } else {
+    await expect(page.locator('.lead-deck .lead')).toBeVisible();
+  }
+  await expectImages(page);
+  await expectNoOverflow(page);
+  expect(errors).toEqual([]);
+  await expectAccessible(page);
+});
