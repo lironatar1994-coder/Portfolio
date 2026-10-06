@@ -1311,3 +1311,46 @@ html:not(.js) .cycle{display:none}
 .deck-names{display:none}
 .deck-names a{display:inline-flex;align-items:center;gap:4px;min-height:32px;padding:0 11px;border-radius:999px;font-size:13px;font-weight:600;color:var(--paper);box-shadow:inset 0 0 0 1px rgb(247 241 232/.28)}
 .deck-names svg{width:12px;height:12px}
+
+/* ---------- Colour themes (6 October 2026) ----------
+   The default is paper. Each theme overrides the tokens and the few places that name a colour directly. */
+[data-theme="cobalt"]{--paper:#f6f4ee;--paper-deep:#ebe7dc;--ink:#15171c;--muted:#5f636c;--line:#d8d4c8;--accent:#2b3cff;--accent-deep:#1f2ccc}
+[data-theme="cobalt"] .brand,[data-theme="cobalt"] .site-nav,[data-theme="cobalt"] .menu-toggle{background:rgb(246 244 238/.9)}
+[data-theme="cobalt"] .lp-bar{background:rgb(246 244 238/.94)}
+
+[data-theme="night"],[data-theme="night-cobalt"]{--paper:#121110;--paper-deep:#1d1a17;--ink:#f3ece2;--muted:#aaa198;--line:#2e2a26;--accent:#ff6a3d;--accent-deep:#ff8a66;--on-accent:#141110}
+[data-theme="night-cobalt"]{--accent:#5b6cff;--accent-deep:#8491ff}
+:is([data-theme="night"],[data-theme="night-cobalt"]) body{background:var(--paper);color:var(--ink)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) :is(.brand,.site-nav,.menu-toggle){background:rgb(29 26 23/.9);color:var(--ink);box-shadow:0 1px 0 rgb(255 255 255/.05),0 10px 30px -18px rgb(0 0 0/.8)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .site-nav>a:not(.pill):hover{background:rgb(255 255 255/.08)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .site-nav{background:rgb(29 26 23/.9)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .skip-link,:is([data-theme="night"],[data-theme="night-cobalt"]) .js .cursor.is-work,:is([data-theme="night"],[data-theme="night-cobalt"]) .strip-btn:hover{color:var(--on-accent)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .pill-cta{background:var(--accent);color:var(--on-accent)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .pill-cta:hover{background:var(--accent-deep)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) :is(.fan-link,.hand-link){background:#1d1a17;color:var(--ink);box-shadow:0 22px 44px -20px rgb(0 0 0/.9),0 0 0 1px rgb(255 255 255/.08)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .hand-back .hand-name,:is([data-theme="night"],[data-theme="night-cobalt"]) .stack-next{color:var(--on-accent);--fg:var(--on-accent)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .hand-back .hand-name i{background:var(--on-accent)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) :is(.process,.lp-hero,.lp-lead-m){background:var(--paper-deep);color:var(--ink)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .lp .hero-copy :is(.display,.lede){color:var(--ink)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .contact{color:var(--on-accent)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .contact .period{color:var(--on-accent)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .contact .pill-light{background:var(--on-accent);color:var(--ink)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .contact-note{color:rgb(20 17 16/.8)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .phone-link bdi{text-decoration-color:rgb(20 17 16/.5)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .lp-bar{background:rgb(29 26 23/.94);box-shadow:0 -10px 30px -18px rgb(0 0 0/.8)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .lp-bar a:first-child{background:var(--accent);color:var(--on-accent)}
+/* the lead form stays a light card on the dark page, so its own text keeps the paper-theme inks */
+:is([data-theme="night"],[data-theme="night-cobalt"]) .lead{color:#292521}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .lead-a input{color:#292521;border-color:#dcd0c3}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .chip span{box-shadow:inset 0 0 0 1px #dcd0c3}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .chip input:checked+span{background:#292521;color:#fff}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .lead-note{color:#686057}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .lead .pill-cta{background:#292521;color:#fff}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .deck-names a{color:var(--ink)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .frame.browser .bar{background:#1d1a17;border-bottom-color:rgb(255 255 255/.08)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .frame.browser .bar bdi{background:#2a2622;color:#cfc7bd}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .wa-float{border-color:rgb(255 255 255/.12)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) ::selection{background:var(--accent);color:var(--on-accent)}
+:is([data-theme="night"],[data-theme="night-cobalt"]) :is(.inc-chip,.lead-q,.lead-chat,.lead-chat-head){color:#292521}
+:is([data-theme="night"],[data-theme="night-cobalt"]) .lead-chat-head small{color:#686057}
+:is([data-theme="night"],[data-theme="night-cobalt"]) :is(.lead-bubble,.lead-next){color:var(--on-accent)}

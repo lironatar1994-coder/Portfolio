@@ -50,7 +50,14 @@ function frame(project, kind, { loading = 'lazy', priority = false, vt = '', cla
   return `<div class="frame ${kind}${className ? ' ' + className : ''}"${vt ? ` style="view-transition-name:${vt}"` : ''}>${chrome}<div class="shot">${image}</div></div>`;
 }
 
-function head(title, description, { pathname = '/', image = '/images/la-webs-share-20261004.jpg', themeColor = '#f7f1e8' } = {}) {
+// Colour themes: 'paper' (ivory, charcoal, terracotta), 'cobalt' (cream, black, electric blue), 'night' (deep charcoal,
+// hot coral) and 'night-cobalt' (deep charcoal, electric blue). THEME picks the build; ?theme=… previews any of them on
+// the live site and sticks for the session, so two directions can be compared on real pages before one is chosen.
+export const themes = { paper: '#f7f1e8', cobalt: '#f6f4ee', night: '#121110', 'night-cobalt': '#121110' };
+export const theme = themes[process.env.THEME] ? process.env.THEME : 'paper';
+const htmlOpen = `<html lang="he" dir="rtl" data-theme="${theme}">`;
+const themeSwitch = `<script>(()=>{try{const q=new URLSearchParams(location.search).get('theme'),k='la-theme',ok=${JSON.stringify(Object.keys(themes))};if(q&&ok.includes(q))sessionStorage.setItem(k,q);const t=sessionStorage.getItem(k);if(t&&ok.includes(t))document.documentElement.dataset.theme=t}catch{}})()</script>`;
+function head(title, description, { pathname = '/', image = '/images/la-webs-share-20261004.jpg', themeColor = themes[theme] } = {}) {
   const origin = process.env.SITE_ORIGIN;
   const url = origin ? new URL(pathname, origin).href : null;
   return `<meta name="theme-color" content="${themeColor}">
@@ -63,7 +70,7 @@ function head(title, description, { pathname = '/', image = '/images/la-webs-sha
   <link rel="preload" href="/fonts/frank-ruhl-libre-hebrew.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/plex-hebrew-400-hebrew.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.css?v=${assetVersion}">
-  <script>document.documentElement.classList.add('js')</script>
+  <script>document.documentElement.classList.add('js')</script>${themeSwitch}
   <script type="module" src="/app.js?v=${assetVersion}"></script>`;
 }
 
@@ -292,7 +299,7 @@ const footer = `<footer class="site-footer"><div class="wrap">
 <div class="cursor" aria-hidden="true" data-label="לצפייה"></div>`;
 
 function page({ title, description, body, bodyClass = '', pathname = '/', image, themeColor }) {
-  return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}">${head(title, description, { pathname, image, themeColor })}</head><body class="${bodyClass}"><a class="skip-link" href="#main">דלגו לתוכן</a>${header}<main id="main">${body}</main>${footer}</body></html>`;
+  return `<!doctype html>${htmlOpen}<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}">${head(title, description, { pathname, image, themeColor })}</head><body class="${bodyClass}"><a class="skip-link" href="#main">דלגו לתוכן</a>${header}<main id="main">${body}</main>${footer}</body></html>`;
 }
 
 function casePage(project, index) {
@@ -451,7 +458,7 @@ function landingPage({ short = false } = {}) {
   </main>
   <footer class="lp-footer wrap"><span>© ${new Date().getFullYear()} LA webs</span><span class="legal-links"><a href="/privacy/">מדיניות פרטיות</a><a href="/accessibility/">הצהרת נגישות</a></span><a href="/">לאתר הסטודיו ולכל העבודות</a></footer>
   <nav class="lp-bar" aria-label="יצירת קשר מהירה"><a href="${wa}" target="_blank" rel="noopener noreferrer">${chat} וואטסאפ</a><a href="tel:${studio.tel}">${phoneIcon} חיוג</a></nav>`;
-  return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="robots" content="noindex,follow">${head(title, description, { pathname: short ? '/lp/short/' : '/lp/' })}${adsTag()}</head><body class="lp${short ? ' lp-short' : ''}"><a class="skip-link" href="#main">דלגו לתוכן</a>${body}</body></html>`;
+  return `<!doctype html>${htmlOpen}<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="robots" content="noindex,follow">${head(title, description, { pathname: short ? '/lp/short/' : '/lp/' })}${adsTag()}</head><body class="lp${short ? ' lp-short' : ''}"><a class="skip-link" href="#main">דלגו לתוכן</a>${body}</body></html>`;
 }
 
 export async function build() {
@@ -466,7 +473,7 @@ export async function build() {
   let home = await readFile(resolve(root, 'src/index.html'), 'utf8');
   const homeTitle = home.match(/<title>(.*?)<\/title>/)[1];
   const homeDescription = home.match(/<meta name="description" content="(.*?)">/)[1];
-  home = home.replace('<!--HEAD-->', head(homeTitle, homeDescription)).replace('<!--HEADER-->', header).replace('<!--HERO-->', hero).replace('<!--FEATURED-->', featuredSection).replace('<!--MORE-->', catalogStrip(more)).replace('<!--PROCESS-->', processSection).replace('<!--FAQ-->', faq).replace('<!--CONTACT-->', contact).replace('<!--FOOTER-->', footer).replace('<!--CURSOR-->', '');
+  home = home.replace('<html lang="he" dir="rtl">', htmlOpen).replace('<!--HEAD-->', head(homeTitle, homeDescription)).replace('<!--HEADER-->', header).replace('<!--HERO-->', hero).replace('<!--FEATURED-->', featuredSection).replace('<!--MORE-->', catalogStrip(more)).replace('<!--PROCESS-->', processSection).replace('<!--FAQ-->', faq).replace('<!--CONTACT-->', contact).replace('<!--FOOTER-->', footer).replace('<!--CURSOR-->', '');
   await writeFile(resolve(destination, 'index.html'), home.replace(/[\t ]+$/gm, ''));
   for (const [index, project] of projects.entries()) {
     const dir = resolve(destination, 'work', project.slug);

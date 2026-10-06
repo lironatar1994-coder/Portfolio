@@ -162,3 +162,11 @@ The `/lp/` hero is an ink stage (header included): ivory headline, terracotta ca
 
 ## Short landing page for a split test (6 October 2026)
 `/lp/short/` is `landingPage({ short: true })`: the same page with every project shown once. On phones the dealt deck under the headline is the work (a first attempt without it made the first screen text only, so it came back), the four names under it open the live sites, the separate works section is hidden, the process is three lines (`steps-compact`, numeral beside the title, no scenes), the included list has no phone (`included-compact`), five questions instead of seven, and the page ends in the form (the contact block is hidden on phones; the sticky bar stays). Desktop keeps the deck behind the form and the contact block. Phone height 3,400px against 5,600px for `/lp/` (about 4 screens against 6.6). Both are `noindex` and carry the same `?t=` variants and lead tracking, so Google Ads can split traffic between the two final URLs and the numbers decide which stays.
+
+## Colour themes (6 October 2026)
+Liron asked whether a completely different palette would make visitors say "wow", and liked both a dark direction and an electric-blue accent. Rather than argue, the site now carries four selectable themes, implemented as token overrides plus the few places that name a colour directly (`[data-theme=…]` block at the end of `styles.css`):
+- `paper` (default): ivory #f7f1e8, charcoal #292521, terracotta #b84a2c.
+- `cobalt`: cream #f6f4ee, near-black #15171c, electric blue #2b3cff.
+- `night`: deep charcoal #121110 (chapters on #1d1a17), ivory type, hot coral #ff6a3d. Text on the accent is dark (`--on-accent`), since white on coral fails contrast.
+- `night-cobalt`: the dark page with electric blue #5b6cff.
+`THEME=<name>` picks the build (theme-color follows it); `?theme=<name>` on any page previews a theme on the live site and sticks for the browser session, so two directions can be compared on real pages. The light lead-form card keeps the paper inks in the dark themes; the fan and hand cards, header pills, sticky bar, browser-frame bar, chip and chat bubbles are overridden. Israel check (same day): RTL, Hebrew-native type, WhatsApp first with a 972 number, 050 phone format, prices in ₪, plural direct address, mobile first, accessibility statement and privacy policy are all in place.
