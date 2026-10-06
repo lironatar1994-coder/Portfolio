@@ -356,9 +356,10 @@ const legalPage = l => page({ title: l.title, description: l.description, bodyCl
 /* ---------- Ads landing page (/lp/) ----------
    One goal (a conversation), no navigation leaks, headline matched to the ad group through ?t=, and a short form
    that writes the WhatsApp message for the visitor. Not indexed: it exists for paid traffic.
-   /lp/short/ is the same page cut for a test against it: every project shown once (no card deck on phones), the
-   process as three lines, the included list without the phone, five questions, and on phones the page ends in the
-   form (no contact block). Google Ads can split traffic between the two final URLs. */
+   /lp/short/ is the same page cut for a test against it: every project shown once (on phones the dealt deck under
+   the headline is the work, with the four names under it linking to the live sites, and the separate works section
+   is hidden), the process as three lines, the included list without the phone, five questions, and on phones the
+   page ends in the form (no contact block). Google Ads can split traffic between the two final URLs. */
 const lpNeeds = ['אתר תדמית', 'מערכת הזמנות', 'הרשמה לאירועים', 'קטלוג או חנות', 'עוד לא בטוח/ה'];
 const lpVariants = {
   tadmit: { lines: ['בניית אתר תדמית', 'שנראה כמו העסק שלך'], need: 'אתר תדמית' },
@@ -432,6 +433,7 @@ function landingPage({ short = false } = {}) {
       ${leadForm('lead')}
       <a class="pill pill-cta lp-deck-cta" href="#lead-m">ספרו לנו על העסק ${down}</a>
       </div>
+      ${short ? `<ul class="deck-names" role="list" aria-label="האתרים שבקלפים">${proof.map(p => `<li><a href="${p.url}" target="_blank" rel="noopener noreferrer" aria-label="לאתר של ${escape(p.hebrew)} — נפתח בחלון חדש">${escape(p.hebrew)} ${arrowOut}</a></li>`).join('')}</ul>` : ''}
       <script>(() => { const v = ${JSON.stringify(lpVariants)}[new URLSearchParams(location.search).get('t')]; if (!v) return;
         document.querySelector('[data-l1]').textContent = v.lines[0]; document.querySelector('[data-l2]').textContent = v.lines[1]; })();</script>
     </div></section>

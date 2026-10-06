@@ -456,7 +456,9 @@ test('short landing page shows each project once and ends in the form on phones'
   await expect(page.locator('#faq details.qa')).toHaveCount(5);
   await expect(page.locator('.lp-cards .lp-card')).toHaveCount(4);
   if (testInfo.project.name === 'mobile') {
-    await expect(page.locator('.deck-card').first()).toBeHidden();
+    await expect(page.locator('.deck-card').first()).toBeVisible(); // the deck is the work on phones
+    await expect(page.locator('.lp-work')).toBeHidden();
+    await expect(page.locator('.deck-names a[target="_blank"]')).toHaveCount(4);
     await expect(page.locator('#contact')).toBeHidden();
     const faqTop = await page.locator('#faq').evaluate(el => el.getBoundingClientRect().top + scrollY);
     const formTop = await page.locator('.lp-lead-m').evaluate(el => el.getBoundingClientRect().top + scrollY);

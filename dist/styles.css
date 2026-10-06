@@ -1298,12 +1298,16 @@ html:not(.js) .cycle{display:none}
   .steps-compact{gap:26px}
   .steps-compact .step-n{font-size:44px}
   .included-compact .included-list{grid-template-columns:1fr;gap:18px;padding:0}
-  /* Phones: no card deck under the headline (the work appears once, in the next section); the button leads to the form. */
-  .lp-short .deck-card{display:none}
-  .lp-short .lead-deck{height:auto;padding:0;margin:0}
-  .lp-short .lp-deck-cta{position:static;width:100%;justify-content:center;margin-top:6px}
-  .lp-short .lp-hero{padding-bottom:30px}
+  /* Phones: the dealt deck under the headline is the work; four names under it open the live sites, and the
+     separate works section is hidden so every project appears once. */
+  .lp-short .lp-work{display:none}
+  .lp-short .deck-names{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 8px;margin-top:14px}
+  .lp-short .lp-hero{padding-bottom:14px}
+  .lp-short .process{padding-top:44px}
   /* The page ends in the form; the sticky bar carries WhatsApp and call. */
   .lp-short .contact{display:none}
   .lp-short .lp-lead-m{padding-bottom:40px}
 }
+.deck-names{display:none}
+.deck-names a{display:inline-flex;align-items:center;gap:4px;min-height:32px;padding:0 11px;border-radius:999px;font-size:13px;font-weight:600;color:var(--paper);box-shadow:inset 0 0 0 1px rgb(247 241 232/.28)}
+.deck-names svg{width:12px;height:12px}
