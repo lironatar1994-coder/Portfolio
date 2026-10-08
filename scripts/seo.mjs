@@ -89,8 +89,20 @@ export async function enhanceSite(folder,{origin=process.env.SITE_ORIGIN || null
     const schema=origin?[...schemaPage(path,projectSearchTitles[p.slug],description,origin,{about:{'@type':'CreativeWork',name:p.hebrew,url:p.url,creator:{'@id':absolute('/#organization',origin)}}}),breadcrumbSchema([['בית','/'],['עבודות','/#work'],[p.hebrew,path]],origin)]:[];
     await writeFile(file,metadata(html,{title:projectSearchTitles[p.slug],description,path,origin,nodes:schema,image:`/images/${p.slug}-desktop-20261004.webp`}));
   }
+  // The full sales page is canonical; its short campaign variant shares that identity.
+  const landingPath='/lp/', landingTitle='בניית אתר לעסק — עיצוב אישי, מושלם בטלפון | LA webs';
+  const landingDescription='אתר שמציג את העסק שלכם ומקל על הלקוחות לפנות: אפיון, עיצוב ופיתוח בהתאמה אישית. צפו בעבודות של LA webs ודברו איתנו על האתר הבא שלכם.';
+  for(const path of ['/lp/','/lp/short/']) {
+    const file=resolve(folder,`.${path}`,'index.html');let html;
+    try{html=await readFile(file,'utf8');}catch{continue;}
+    if(origin)html=html.replace(/<meta name="robots" content="noindex,follow">/g,'<meta name="robots" content="index,follow">');
+    html=metadata(html,{title:landingTitle,description:landingDescription,path:landingPath,origin,nodes:schemaPage(landingPath,landingTitle,landingDescription,origin)});
+    // These pages retain their own design stylesheet; no service-page styles are needed.
+    html=html.replace(/<link rel="stylesheet" href="\/seo\.css[^\"]*">/g,'');
+    await writeFile(file,html);
+  }
   // Update the links in every footer, including generated service pages.
-  const indexable=['/',...projects.map(p=>`/work/${p.slug}/`),'/services/',...services.map(s=>`/services/${s.slug}/`),'/about/'];
+  const indexable=['/',...projects.map(p=>`/work/${p.slug}/`),'/services/',...services.map(s=>`/services/${s.slug}/`),'/about/','/lp/'];
   const actual=[];
   for(const path of indexable) {
     const file=resolve(folder,`.${path}`,'index.html');

@@ -395,7 +395,8 @@ test('the hero hand turns by itself, names the front project and can be paused',
 test('ads landing page matches the ad group and writes the WhatsApp message from the form', async ({ page, context }) => {
   const errors = observeErrors(page);
   await page.goto('/lp/?t=hazmanot');
-  await expect(page.locator('meta[name="robots"][content*="noindex"]').first()).toHaveCount(1);
+  await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute('content', 'index,follow');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://lawebs.co.il/lp/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('מערכת הזמנות אונליין' + 'לעסק שלך.');
   await expect(page.locator('form.lead:visible input[name="w"]:checked')).toHaveValue('מערכת הזמנות');
   await expect(page.locator('.site-nav')).toHaveCount(0); // no navigation leaks on the ad page
@@ -449,7 +450,8 @@ test('short landing page shows each project once and ends in the form on phones'
   const response = await page.goto('/lp/short/');
   expect(response.status()).toBe(200);
   await ready(page);
-  await expect(page.locator('meta[name="robots"][content*="noindex"]').first()).toHaveCount(1);
+  await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute('content', 'index,follow');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://lawebs.co.il/lp/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('אתר שנבנה לעסק שלך');
   await expect(page.locator('.scene')).toHaveCount(0);
   await expect(page.locator('.inc-stage')).toHaveCount(0);
