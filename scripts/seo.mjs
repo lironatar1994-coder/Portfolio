@@ -102,7 +102,7 @@ export async function enhanceSite(folder,{origin=process.env.SITE_ORIGIN || null
   }
   if(origin) {
     await writeFile(resolve(folder,'sitemap.xml'),`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${actual.map(path=>`<url><loc>${esc(absolute(path,origin))}</loc></url>`).join('')}</urlset>`);
-    await writeFile(resolve(folder,'robots.txt'),`User-agent: *\nAllow: /\nSitemap: ${absolute('/sitemap.xml',origin)}\nSitemap: ${absolute('/seder/sitemap.xml',origin)}\n`);
+    await writeFile(resolve(folder,'robots.txt'),`User-agent: *\nAllow: /\nSitemap: ${absolute('/sitemap.xml',origin)}\nSitemap: ${absolute('/seder/sitemap.xml',origin)}\nSitemap: ${absolute('/cv/sitemap.xml',origin)}\nSitemap: ${absolute('/alenu/sitemap.xml',origin)}\n`);
   }
   console.log(`SEO: ${actual.length} indexable pages, service content and structured data.`);
   const scriptFile=resolve(folder,'app.js');
