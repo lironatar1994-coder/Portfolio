@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 Sitemap: https://lawebs.co.il/sitemap.xml
 Sitemap: https://lawebs.co.il/seder/sitemap.xml
+Sitemap: https://lawebs.co.il/cv/sitemap.xml
+Sitemap: https://lawebs.co.il/alenu/sitemap.xml
