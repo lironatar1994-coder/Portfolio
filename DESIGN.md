@@ -1,3 +1,16 @@
+# LA webs — redesign after the Israeli benchmark (18 October 2026)
+
+Research: docs/studio-research-israel-20261018.md (24 Israeli studio, freelancer, builder and platform sites, captured on desktop and phone). The studio palette and both fonts stay; what changed is how they are used.
+
+- Hero: a full-bleed cobalt poster. Two type voices: line 1 in Plex 700, line 2 in Frank Ruhl Libre 900 and the largest type on the page (`?hero=b` previews Plex weight contrast for the 5-owner screenshot test). The slogan "העסק שלך. האתר שמתאים לו." moves to the closing section. One action on the first screen at every size; the real deck sits beside it with previous / pause / next.
+- Each project appears at most twice: once in the hero deck, once in its own slot. Pizza HaTanur is labelled a demo everywhere and has its own chapter (#demo); it is no longer presented as a client.
+- The work is filtered by need (chips are links to the service pages without JavaScript). Four featured panels alternate dark and light; the rest are hairline rows. Nothing hides behind a swipe.
+- New chapters: founder (#founder), prices and services (#price, #services). The process shows only real artefacts: the message the button sends, a labelled illustration, and this site's own WhatsApp link preview.
+- The closing section is a composer that writes the WhatsApp message; the deck returns around the visitor's own card. Nothing is stored.
+- H2 periods are retired; the period stays on the hero line, the wordmark and the closing line. No kickers, no project counts.
+- Every WhatsApp button sends its own first message (docs/whatsapp-prefills.md). Phones get a labelled two-button contact bar instead of the floating bubble.
+- Business facts live in src/facts.mjs. Invented values are wrapped in draft() and marked data-placeholder; npm run check and deploy.ps1 refuse to publish them. Live pills come from scripts/check-live.mjs, never from the build.
+
 # LA webs — committed visual direction (6 October 2026)
 
 The current production identity is `studio`: daylight canvas #F7F9FC, navy #17243B, cobalt action #244BE8, secondary text #52627A. White lead forms have pale blue chat surfaces, dark readable labels and cobalt buttons. Paid landing pages retain navy opening chapters and light reading sections. Client project colours remain intact. This replaces the paper/terracotta and all-dark default identities described in the historical notes below.

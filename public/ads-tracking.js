@@ -43,12 +43,13 @@
       load('https://connect.facebook.net/en_US/fbevents.js');
     }
   };
-  window.LA_trackContact = method => {
+  window.LA_trackContact = (method, cta) => {
+    const place = String(cta || '').slice(0, 40); // which button (data-cta), matching its WhatsApp first message
     if (!ready || Date.now() - lastContact < 1500) return;
     lastContact = Date.now();
-    window.gtag?.('event', 'contact_intent', { method, landing_page: location.pathname, ...attribution });
+    window.gtag?.('event', 'contact_intent', { method, cta: place, landing_page: location.pathname, ...attribution });
     if (valid(c.contactConversion, /^AW-\d+\/[\w-]+$/)) window.gtag?.('event', 'conversion', { send_to: c.contactConversion });
-    window.fbq?.('track', 'Contact', { method });
+    window.fbq?.('track', 'Contact', { method, cta: place });
   };
   if (!google.length && !meta) return;
   if (consent === 'granted') return init();

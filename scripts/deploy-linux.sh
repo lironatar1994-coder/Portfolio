@@ -8,6 +8,8 @@ test -f "$base/incoming/$revision.tar.gz"
 mkdir -p "$release"
 tar -xzf "$base/incoming/$revision.tar.gz" -C "$release"
 SITE_ORIGIN=https://lawebs.co.il node "$release/scripts/build.mjs"
+# Placeholder facts (src/facts.mjs) are never published, even with --skip-checks.
+if grep -rlq --include='*.html' 'data-placeholder' "$release/dist"; then echo 'Placeholder facts in the build (src/facts.mjs); refusing to publish.' >&2; exit 1; fi
 if [ "${2:-}" != '--skip-checks' ]; then node "$release/scripts/check.mjs"; fi
 test -f "$release/dist/index.html"
 chown -R www-data:www-data "$release/dist"

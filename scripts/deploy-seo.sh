@@ -15,6 +15,7 @@ cp "$bundle/public/seo.css" "$stage/seo.css"
 cp "$bundle"/public/images/*-card-20261004-*w.webp "$stage/images/"
 SITE_ORIGIN=https://lawebs.co.il node "$bundle/scripts/seo.mjs" "$stage"
 node "$bundle/scripts/seo-check.mjs" "$stage"
+if grep -rlq --include='*.html' 'data-placeholder' "$stage"; then echo 'Placeholder facts in the build (src/facts.mjs); refusing to publish.' >&2; exit 1; fi
 test -f "$stage/googled4a548acdeaf1123.html"
 rollback() {
   cp -a "$backup/nginx.conf" "$config"

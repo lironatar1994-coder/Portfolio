@@ -21,20 +21,6 @@ export const projects = [
     scope: ['עיצוב אתר', 'פיתוח מערכת', 'הרשמה לאירועים', 'התאמה למובייל'],
   },
   {
-    slug: 'libi', name: 'Libi Diamonds', hebrew: 'ליבי יהלומים', short: 'ליבי',
-    kicker: 'קטלוג תכשיטי יהלומים בחוויית מובייל', categoryLabel: 'קטלוג תכשיטים',
-    domain: 'libidiamonds.co.il', url: 'https://www.libidiamonds.co.il/',
-    colors: { bg: '#10181c', fg: '#eef1f1', accent: '#cbbf9f', soft: '#141f22' },
-    palette: [['#10181c', 'פחם'], ['#141a1d', 'לילה'], ['#e8eaea', 'אפור קר'], ['#ffffff', 'לבן']],
-    fonts: ['Heebo'],
-    headline: 'לתת לכל פרט מקום לנצוץ.',
-    description: 'קטלוג למותג תכשיטי יהלומים. צילומי מוצר, גוונים עמוקים ופרטים מדויקים נותנים לתכשיטים את הבמה, עם דרך ישירה לפנייה ולייעוץ.',
-    idea: 'התכשיט במרכז. שילוב של צילום מוצר, ירוק עמוק והרבה מרחב מאפשר לחומר, לצורה ולפרטים הקטנים לדבר.',
-    build: 'קטגוריות תכשיטים, חיפוש ועמודי מוצר בחוויית גלישה המיועדת לטלפון. פרטי התכשיט נגישים לצד אפשרות לפנות לייעוץ.',
-    scope: ['עיצוב דיגיטלי', 'קטלוג מוצרים', 'עמודי תכשיטים', 'חוויית מובייל'],
-    mobileFirst: true,
-  },
-  {
     slug: 'miryam', name: 'Miryam Zelig', hebrew: 'מרים זליג', short: 'מרים',
     kicker: 'אתר תדמית למאפרת כלות וערב', categoryLabel: 'אתר תדמית · ביוטי',
     domain: 'miryamzelig.co.il', url: 'https://miryamzelig.co.il/',
@@ -47,6 +33,9 @@ export const projects = [
     build: 'גלריית עבודות, תמונות לפני ואחרי ופנייה לבדיקת זמינות בוואטסאפ. התמונות והתוכן מקבלים מקום גם במסך קטן.',
     scope: ['עיצוב אתר', 'פיתוח', 'גלריית עבודות', 'לפני ואחרי'],
     beforeAfter: true,
+    // The comparison images in public/images/miryam-before|after.webp show two different people, so the case page hides
+    // the slider. Replace them with a real matched pair from the client, then set this to true.
+    beforeAfterPairChecked: false,
   },
   {
     slug: 'pinhas', name: 'Pinhas Ratzon', hebrew: 'פנחס רצון', short: 'פנחס',

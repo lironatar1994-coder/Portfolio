@@ -1,0 +1,99 @@
+{
+  "rows": [
+    {
+      "route": "/",
+      "width": 1440,
+      "status": 200,
+      "theme": "studio",
+      "overflow": false,
+      "share": "https://lawebs.co.il/images/la-webs-share-studio-20261006.jpg",
+      "canonical": "https://lawebs.co.il/",
+      "tracking": [],
+      "violations": [],
+      "errors": []
+    },
+    {
+      "route": "/lp/",
+      "width": 1440,
+      "status": 200,
+      "theme": "studio",
+      "overflow": false,
+      "share": "https://lawebs.co.il/images/la-webs-share-studio-20261006.jpg",
+      "canonical": "https://lawebs.co.il/lp/",
+      "tracking": [],
+      "violations": [],
+      "errors": []
+    },
+    {
+      "route": "/lp/short/",
+      "width": 1440,
+      "status": 200,
+      "theme": "studio",
+      "overflow": false,
+      "share": "https://lawebs.co.il/images/la-webs-share-studio-20261006.jpg",
+      "canonical": "https://lawebs.co.il/lp/short/",
+      "tracking": [],
+      "violations": [],
+      "errors": []
+    },
+    {
+      "route": "/cv/",
+      "width": 1440,
+      "status": 200,
+      "overflow": false,
+      "share": "https://lawebs.co.il/cv/og.png",
+      "canonical": "https://lawebs.co.il/cv/",
+      "tracking": [],
+      "violations": [],
+      "errors": []
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "status": 200,
+      "theme": "studio",
+      "overflow": false,
+      "share": "https://lawebs.co.il/images/la-webs-share-studio-20261006.jpg",
+      "canonical": "https://lawebs.co.il/",
+      "tracking": [],
+      "violations": [],
+      "errors": []
+    },
+    {
+      "route": "/lp/",
+      "width": 390,
+      "status": 200,
+      "theme": "studio",
+      "overflow": false,
+      "share": "https://lawebs.co.il/images/la-webs-share-studio-20261006.jpg",
+      "canonical": "https://lawebs.co.il/lp/",
+      "tracking": [],
+      "violations": [],
+      "errors": []
+    },
+    {
+      "route": "/lp/short/",
+      "width": 390,
+      "status": 200,
+      "theme": "studio",
+      "overflow": false,
+      "share": "https://lawebs.co.il/images/la-webs-share-studio-20261006.jpg",
+      "canonical": "https://lawebs.co.il/lp/short/",
+      "tracking": [],
+      "violations": [],
+      "errors": []
+    },
+    {
+      "route": "/cv/",
+      "width": 390,
+      "status": 200,
+      "overflow": false,
+      "share": "https://lawebs.co.il/cv/og.png",
+      "canonical": "https://lawebs.co.il/cv/",
+      "tracking": [],
+      "violations": [],
+      "errors": []
+    }
+  ],
+  "problems": []
+}

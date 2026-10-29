@@ -1,0 +1,75 @@
+/* Preview-only control. Not part of any of the three designs — it exists so
+   the three visual worlds can be compared. Delete this component and its
+   usages before publishing (see REPLACE-ME.md). */
+
+/* Bottom-anchored so it never collides with a design's own top nav.
+   On phones it floats clear of each variant's fixed action bar. */
+.wrap {
+  position: fixed;
+  inset-block-end: calc(env(safe-area-inset-bottom) + 4.6rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.4rem;
+  border-radius: 12px;
+  background: rgba(10, 12, 16, 0.82);
+  backdrop-filter: blur(10px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.9);
+  font-family: var(--f-label), system-ui, sans-serif;
+}
+
+@media (min-width: 900px) {
+  .wrap {
+    inset-block-end: 1.1rem;
+  }
+}
+
+.tag {
+  padding-inline: 0.5rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: nowrap;
+}
+
+.link {
+  padding: 0.32rem 0.7rem;
+  border-radius: 7px;
+  font-size: 0.76rem;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.66);
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.link:hover,
+.link:focus-visible {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.on {
+  background: #fff;
+  color: #0a0c10;
+  font-weight: 700;
+}
+
+.on:hover,
+.on:focus-visible {
+  background: #fff;
+  color: #0a0c10;
+}
+
+@media (max-width: 560px) {
+  .tag {
+    display: none;
+  }
+  .link {
+    padding-inline: 0.55rem;
+    font-size: 0.7rem;
+  }
+}

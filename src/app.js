@@ -15,13 +15,13 @@ const goLive = img => {
    line runs to the next turn. It rests while hovered or focused, while off screen and while the tab is hidden, and
    stops for good once the visitor pauses it or takes over. Reduced motion starts it paused. */
 const TURN_EVERY = 4000;
-function rotator(root, cycleEl, advance, frontCard) {
+function rotator(root, cycleEl, advance, frontCard, back = null) {
   const toggle = $('.cycle-toggle', cycleEl), text = $('.cycle-text', cycleEl);
   let timer = 0, holds = 0, visible = true, started = false, stopped = reduceMotion.matches;
   cycleEl.style.setProperty('--cycle', `${TURN_EVERY}ms`);
   const label = () => {
     toggle.setAttribute('aria-pressed', String(stopped));
-    toggle.setAttribute('aria-label', stopped ? 'הפעלת ההחלפה האוטומטית' : 'עצירת ההחלפה האוטומטית');
+    toggle.setAttribute('aria-label', 'עצירת ההחלפה האוטומטית');
   };
   const show = () => {
     const card = frontCard();
@@ -43,14 +43,22 @@ function rotator(root, cycleEl, advance, frontCard) {
   };
   const stop = () => { stopped = true; label(); run(); };
   toggle.addEventListener('click', () => { if (stopped) { stopped = false; label(); run(); } else stop(); });
+  // Previous / next: the visitor takes over, so the hand stops turning by itself.
+  for (const button of $$('.cycle-step', cycleEl)) button.addEventListener('click', () => {
+    if (Number(button.dataset.step) > 0) advance(); else back?.();
+    text.setAttribute('aria-live', 'polite'); // a deliberate step is announced; automatic turns stay silent
+    show(); stop();
+  });
   const hold = delta => { holds = Math.max(0, holds + delta); run(); };
   root.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') hold(1); });
   root.addEventListener('pointerleave', event => { if (event.pointerType === 'mouse') hold(-1); });
-  root.addEventListener('focusin', () => hold(1));
-  root.addEventListener('focusout', () => hold(-1));
+  // focus on the hand's own controls does not hold it, or play would do nothing until focus left
+  root.addEventListener('focusin', event => { if (!cycleEl.contains(event.target)) hold(1); });
+  root.addEventListener('focusout', event => { if (!cycleEl.contains(event.target)) hold(-1); });
   if ('IntersectionObserver' in window) new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; run(); }, { threshold: 0.25 }).observe(root);
   document.addEventListener('visibilitychange', run);
   label();
+  toggle.addEventListener('click', () => text.setAttribute('aria-live', 'off'));
   return { start: () => { started = true; run(); }, stop, show };
 }
 
@@ -62,12 +70,14 @@ function closeMenu() {
   menuButton.setAttribute('aria-expanded', 'false');
   navigation.classList.remove('is-open');
   document.body.style.overflow = '';
+  document.body.classList.remove('menu-open');
 }
 menuButton?.addEventListener('click', () => {
   const open = menuButton.getAttribute('aria-expanded') !== 'true';
   menuButton.setAttribute('aria-expanded', String(open));
   navigation.classList.toggle('is-open', open);
   document.body.style.overflow = open ? 'hidden' : '';
+  document.body.classList.toggle('menu-open', open);
   if (open) navigation.querySelector('a')?.focus({ preventScroll: true });
 });
 navigation?.addEventListener('click', event => { if (event.target.closest('a')) closeMenu(); });
@@ -152,7 +162,7 @@ if (hand) {
   let offset = 0;
   const posOf = i => wrap(base[i] + offset);
   const front = () => cardEls[base.findIndex((b, i) => posOf(i) === 0)];
-  let handTurns = null; // the hand turns by itself once the deal has landed (see rotator)
+  let handTurns = null; // the hand turns by itself once the deal has landed (see rotator); reduced motion starts it paused
   const layout = () => { cardEls.forEach((card, i) => {
     const pos = posOf(i);
     const prev = Number(card.style.getPropertyValue('--pos'));
@@ -170,15 +180,24 @@ if (hand) {
   // dir = +1 turns the ring toward the start side in RTL (the front card slides left, the card on its right comes forward)
   const turn = steps => { offset -= steps; layout(); };
   layout();
+  const handCycle = $('.cycle', hand);
+  if (handCycle) handTurns = rotator(hand, handCycle, () => turn(1), front, () => turn(-1));
+  // The markup starts the hand waiting for its deal (so slow phones never show it twice); only the phone deal uses it.
+  const dealsHere = !reduceMotion.matches && 'IntersectionObserver' in window && mobile.matches && $('.hand-cards', hand);
+  if (!dealsHere) hand.classList.remove('is-waiting', 'is-closed');
+  if (reduceMotion.matches) handTurns?.start(); // starts paused; play works
+  // A card behind the front one that gets keyboard focus comes to the front, so focus is never hidden.
+  hand.addEventListener('focusin', event => {
+    const i = cardEls.indexOf(event.target.closest('.hand-card'));
+    if (i < 0 || posOf(i) === 0 || !event.target.matches(':focus-visible')) return;
+    handTurns?.stop(); turn(posOf(i));
+  });
   if (!reduceMotion.matches) {
     // Phones: the hand sits under the headline on the first screen. The cards spring out into the fan once
     // when it is in view, then the front card comes alive.
     const cardsBox = $('.hand-cards', hand);
-    const handCycle = $('.cycle', hand);
-    if (handCycle) handTurns = rotator(hand, handCycle, () => turn(1), front);
     const comeAlive = () => handTurns?.start();
-    if (cardsBox && 'IntersectionObserver' in window && mobile.matches) {
-      hand.classList.add('is-waiting', 'is-closed');
+    if (dealsHere) {
       const dealObserver = new IntersectionObserver(([entry]) => {
         if (!entry.isIntersecting || entry.intersectionRatio < 0.3) return;
         dealObserver.unobserve(hand);
@@ -233,10 +252,11 @@ if (hand) {
       if (decisive) turn(dx < 0 ? 1 : -1);
     };
     hand.addEventListener('pointerup', release);
-    hand.addEventListener('pointercancel', settle);
+    hand.addEventListener('pointercancel', () => { settle(); pressed = null; moved = false; }); // no click follows a cancel (e.g. the page scrolled)
     hand.addEventListener('click', event => {
-      if (moved) { event.preventDefault(); moved = false; return; }
+      if (event.target.closest('.cycle')) return; // previous / pause / next are buttons, not a card: never reuse an old press
       if (event.detail === 0) return; // keyboard activation: let the focused link work as a link
+      if (moved) { event.preventDefault(); moved = false; pressed = null; return; }
       const card = pressed || event.target.closest('.hand-card');
       pressed = null;
       if (!card) return;
@@ -249,14 +269,15 @@ if (hand) {
 }
 
 /* ---------- Pre-decode heavy captures just before they enter the viewport ---------- */
-const heavy = $$('.hand, .card, .case .row, .stack-item');
+const heavy = $$('.hand, .card, .case .row, .stack-item, .demo');
 if (heavy.length && 'IntersectionObserver' in window) {
   const warm = new IntersectionObserver(entries => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
       warm.unobserve(entry.target);
       for (const img of entry.target.querySelectorAll('img')) {
-        if (img.checkVisibility && !img.checkVisibility()) continue; // hidden on this screen size: never fetch it
+        const hidden = img.checkVisibility ? !img.checkVisibility() : img.getClientRects().length === 0;
+        if (hidden || img.dataset.src) continue; // hidden on this screen size: never fetch it (deferred tours load below)
         img.loading = 'eager'; img.decode?.().catch(() => {});
       }
     }
@@ -273,22 +294,35 @@ if (revealTargets.length && 'IntersectionObserver' in window && !reduceMotion.ma
     for (const entry of entries) if (entry.isIntersecting) { entry.target.classList.add('in'); observer.unobserve(entry.target); }
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
   revealTargets.forEach(target => observer.observe(target));
+  document.addEventListener('focusin', event => { const target = event.target.closest('.reveal'); if (target) { target.classList.add('in'); observer.unobserve(target); } });
 } else revealTargets.forEach(target => target.classList.add('in'));
 
-/* ---------- Floating WhatsApp: appears once the visitor is into the work, hidden over the contact block ---------- */
-const floating = $('.wa-float');
-const contact = $('#contact');
-if (floating) {
-  const start = $('#work') || $('main');
-  let overContact = false, queued = false;
+/* ---------- Contact bar (phones): WhatsApp and call, once the hero's own button has scrolled away ----------
+   It steps aside over the closing section and the footer (which carry the same actions), while typing, and while the
+   menu is open (CSS). Pages without the hero show it after a short scroll. */
+const contactBar = $('.contact-bar');
+if (contactBar) {
+  const heroActions = $('#hero-actions');
+  let heroVisible = Boolean(heroActions), endVisible = false, typing = false, queued = false;
   const update = () => {
     queued = false;
-    const past = start.getBoundingClientRect().top < innerHeight * 0.5;
-    floating.classList.toggle('is-hidden', !past || overContact);
+    const past = heroActions ? !heroVisible && heroActions.getBoundingClientRect().bottom < 0 : scrollY > 240;
+    const on = past && !endVisible && !typing;
+    contactBar.classList.toggle('is-on', on);
+    contactBar.inert = !on;
   };
-  if (contact && 'IntersectionObserver' in window) new IntersectionObserver(([entry]) => { overContact = entry.isIntersecting; update(); }, { threshold: 0.1 }).observe(contact);
+  if ('IntersectionObserver' in window) {
+    if (heroActions) new IntersectionObserver(([entry]) => { heroVisible = entry.isIntersecting; update(); }).observe(heroActions);
+    const seen = new Set();
+    const ends = new IntersectionObserver(entries => {
+      for (const entry of entries) entry.isIntersecting ? seen.add(entry.target) : seen.delete(entry.target);
+      endVisible = seen.size > 0; update();
+    }, { threshold: 0.02 });
+    $$('#contact, .site-footer').forEach(el => ends.observe(el));
+  }
+  document.addEventListener('focusin', event => { typing = event.target.matches('input:not([type="radio"]), textarea, select'); update(); });
+  document.addEventListener('focusout', () => { typing = false; requestAnimationFrame(update); });
   addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
-  addEventListener('resize', update);
   update();
 }
 
@@ -349,19 +383,21 @@ if (desktopFan) {
   const fanCards = $$('.fan-card', desktopFan);
   let fanOffset = 0;
   const slotOf = i => ((i - 2 + fanOffset + 2) % 5 + 5) % 5 - 2;
+  const FAN_STEP = 10; // degrees between neighbouring cards (build.mjs writes the same step inline)
   const place = () => fanCards.forEach((card, i) => {
     const slot = slotOf(i), prev = Number(card.dataset.slot ?? i - 2);
     const wrapping = Math.abs(slot - prev) > 2;
     card.dataset.slot = slot;
     card.classList.toggle('is-wrapping', wrapping);
     card.classList.toggle('is-centre', slot === 0);
-    card.style.setProperty('--angle', `${slot * 14}deg`);
+    card.style.setProperty('--angle', `${slot * FAN_STEP}deg`);
     card.style.setProperty('--layer', wrapping ? 0 : 5 - Math.abs(slot));
-    if (wrapping) setTimeout(() => { card.style.setProperty('--layer', 5 - Math.abs(slot)); card.classList.remove('is-wrapping'); }, 1100);
+    clearTimeout(card._wrapTimer);
+    if (wrapping) card._wrapTimer = setTimeout(() => { card.style.setProperty('--layer', 5 - Math.abs(Number(card.dataset.slot))); card.classList.remove('is-wrapping'); }, 1100);
   });
   const fanCycle = $('.fan-stage .cycle');
-  const fanTurns = fanCycle ? rotator(desktopFan, fanCycle, () => { fanOffset -= 1; place(); }, () => $('.fan-card.is-centre', desktopFan)) : null;
-  const openFan = () => {
+  const fanTurns = fanCycle ? rotator(desktopFan, fanCycle, () => { openFan(); fanOffset -= 1; place(); }, () => $('.fan-card.is-centre', desktopFan), () => { openFan(); fanOffset += 1; place(); }) : null;
+  function openFan() {
     if (opened) return;
     opened = true;
     desktopFan.classList.add('is-open');
@@ -375,7 +411,7 @@ if (desktopFan) {
         card.addEventListener('focusin', wake);
       }
     }, reduceMotion.matches ? 0 : 1350);
-  };
+  }
   if (reduceMotion.matches || !('IntersectionObserver' in window)) openFan();
   else {
     const fanObserver = new IntersectionObserver(entries => {
@@ -392,13 +428,40 @@ if (desktopFan) {
   reduceMotion.addEventListener('change', event => { if (event.matches) openFan(); });
 }
 
-/* Featured panels: each frame tours its site while it is on screen and rests when it leaves. */
+/* Touring captures (.frame.auto) are fetched shortly before they scroll into view, and only where they are shown. */
+const deferredShots = $$('.frame.auto img[data-src]');
+const loadShot = img => { if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; } };
+if (deferredShots.length) {
+  if ('IntersectionObserver' in window) {
+    const shotObserver = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const img = entry.target;
+        if (img.checkVisibility ? !img.checkVisibility() : img.getClientRects().length === 0) continue; // e.g. the desktop capture on phones
+        shotObserver.unobserve(img); loadShot(img);
+      }
+    }, { rootMargin: '100% 0px 100% 0px' });
+    deferredShots.forEach(img => shotObserver.observe(img));
+  } else deferredShots.forEach(loadShot);
+}
+
+/* Featured panels and the demo: each frame tours its site while it is on screen and rests when it leaves. A tour rests
+   while its panel is hovered or focused, and its pause button stops it for good (WCAG 2.2.2). */
 const tours = $$('.frame.auto');
 if (tours.length && 'IntersectionObserver' in window && !reduceMotion.matches) {
   const tourObserver = new IntersectionObserver(entries => {
     for (const entry of entries) entry.target.classList.toggle('is-live', entry.isIntersecting);
   }, { threshold: 0.35 });
   tours.forEach(frame => tourObserver.observe(frame));
+}
+for (const toggle of $$('.tour-toggle')) {
+  const panel = toggle.closest('.stack-panel, .demo');
+  if (reduceMotion.matches) { toggle.hidden = true; continue; } // nothing moves
+  toggle.addEventListener('click', () => {
+    const paused = toggle.getAttribute('aria-pressed') !== 'true';
+    toggle.setAttribute('aria-pressed', String(paused)); // a toggle button: one name, its pressed state says paused
+    panel.classList.toggle('is-tour-paused', paused);
+  });
 }
 
 /* Process scenes: armed scenes hold on their first frame. A scene starts from the beginning once most of it is on
@@ -450,13 +513,14 @@ if (includedBlock && $('.inc-stage', includedBlock) && !reduceMotion.matches && 
 }
 
 /* ---------- Leads: report every WhatsApp, call and form contact (Google Ads tag only on the landing page) ---------- */
-const trackLead = method => {
+const trackLead = (method, cta) => {
   // Opening WhatsApp or the dialer is contact intent; delivery of a real enquiry is not observable here.
-  window.LA_trackContact?.(method);
+  // cta names the place on the page (data-cta), matching the distinct WhatsApp prefill sent from there.
+  window.LA_trackContact?.(method, cta);
 };
 document.addEventListener('click', event => {
   const link = event.target.closest('a[href^="https://wa.me"], a[href^="tel:"]');
-  if (link) trackLead(link.href.startsWith('tel:') ? 'call' : 'whatsapp');
+  if (link) trackLead(link.href.startsWith('tel:') ? 'call' : 'whatsapp', link.dataset.cta);
 });
 
 /* ---------- Landing page form: write the WhatsApp message from the visitor's answers ---------- */
@@ -573,9 +637,11 @@ if (stackItems.length > 1 && !reduceMotion.matches) {
   let queued = false;
   const update = () => {
     queued = false;
-    const stuck = getComputedStyle(stackItems[0]).position === 'sticky';
-    stackItems.forEach((item, i) => {
-      const next = stackItems[i + 1];
+    const shown = stackItems.filter(item => !item.hidden);
+    const stuck = shown.length > 0 && getComputedStyle(shown[0]).position === 'sticky';
+    stackItems.forEach(item => { if (item.hidden) item.style.removeProperty('--cover'); });
+    shown.forEach((item, i) => {
+      const next = shown[i + 1];
       if (!stuck || !next) { item.style.removeProperty('--cover'); return; }
       // 0 while the next panel is below the fold, 1 once it has reached its own resting place
       const top = next.getBoundingClientRect().top, rest = parseFloat(getComputedStyle(next).top) || 0;
@@ -586,5 +652,85 @@ if (stackItems.length > 1 && !reduceMotion.matches) {
   const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
   addEventListener('scroll', schedule, { passive: true });
   addEventListener('resize', schedule);
+  addEventListener('la:filter', schedule);
   update();
+}
+
+/* ---------- The work, filtered by need: chips are links to the service pages without JS, filters with it ---------- */
+const workSection = $('#work');
+const needChips = workSection ? $$('.need-chip[data-need]', workSection) : [];
+if (needChips.length) {
+  const status = $('#work-status');
+  const filtered = $$('.stack-item[data-need], .work-row[data-need]', workSection);
+  const labels = Object.fromEntries(needChips.map(chip => [chip.dataset.need, chip.textContent.trim()]));
+  const apply = (need, announce) => {
+    needChips.forEach(chip => chip.setAttribute('aria-pressed', String(chip.dataset.need === need)));
+    workSection.dataset.need = need;
+    for (const item of filtered) item.hidden = need !== 'all' && item.dataset.need !== need;
+    // the stacked panels keep even offsets for whatever is shown
+    $$('.stack-item:not([hidden])', workSection).forEach((item, i) => item.style.setProperty('--n', i));
+    dispatchEvent(new Event('la:filter'));
+    if (!announce) return;
+    status.textContent = need === 'all' ? 'מוצגות כל העבודות' : `מוצגות עבודות מסוג: ${labels[need]}`;
+  };
+  for (const chip of needChips) {
+    chip.setAttribute('role', 'button');
+    chip.addEventListener('click', event => { event.preventDefault(); apply(chip.dataset.need, true); });
+    chip.addEventListener('keydown', event => { if (event.key === ' ') { event.preventDefault(); chip.click(); } });
+  }
+  apply('all', false);
+  // a hero card leads to its panel; if a filter hides that panel, show all the work first
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href^="#project-"]');
+    const target = link && document.getElementById(link.hash.slice(1));
+    if (target?.hidden) apply('all', false);
+  }, true);
+}
+
+/* ---------- Closing composer: the message writes itself and the visitor's card fills in. Nothing is stored. ---------- */
+for (const form of $$('form.composer')) {
+  const text = $('.composer-text', form), hidden = $('input[name="text"]', form);
+  const card = form.closest('.contact')?.querySelector('.closing-next');
+  const wire = card && $('.next-wire', card), name = card && $('.next-name', card);
+  const compose = () => {
+    const data = new FormData(form);
+    const say = String(data.get('need') ?? 'אתר'), has = data.get('has'), business = String(data.get('biz') || '').trim().slice(0, 60);
+    const hello = business ? `היי LA webs, כאן ${business}.` : 'היי LA webs,';
+    const ask = say ? `אשמח לשמוע על ${say} לעסק שלי.` : 'אשמח לשמוע מה יתאים לעסק שלי.';
+    const site = has === 'כן' ? ' יש לי אתר היום.' : has === 'לא' ? ' עוד אין לי אתר.' : '';
+    return { message: `${hello} ${ask}${site}`, business };
+  };
+  const update = () => {
+    const { message, business } = compose();
+    text.textContent = message; hidden.value = message;
+    if (wire) wire.dataset.kind = $('input[name="need"]:checked', form)?.dataset.kind || 'site';
+    if (name) name.textContent = business;
+  };
+  form.addEventListener('input', update);
+  form.addEventListener('change', update);
+  update();
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    update();
+    const source = window.LA_contactSource?.() || '';
+    const url = `${form.action}?text=${encodeURIComponent(hidden.value + source)}`;
+    trackLead('form', 'composer');
+    const opened = window.open(url, '_blank');
+    if (opened) opened.opener = null;
+    else location.href = url;
+  });
+}
+
+/* ---------- Case pages: send the project to a partner (native share, or copy the link) ---------- */
+for (const button of $$('.share-button')) {
+  const label = button.innerHTML;
+  const status = button.parentElement.querySelector('[data-share-status]');
+  const done = text => { button.lastChild.textContent = ` ${text}`; if (status) status.textContent = text; setTimeout(() => { button.innerHTML = label; if (status) status.textContent = ''; }, 2500); };
+  if (navigator.share) {
+    button.hidden = false;
+    button.addEventListener('click', () => navigator.share({ title: button.dataset.shareTitle, url: location.href }).catch(() => {}));
+  } else if (navigator.clipboard) {
+    button.hidden = false;
+    button.addEventListener('click', () => navigator.clipboard.writeText(location.href).then(() => done('הקישור הועתק'), () => {}));
+  }
 }

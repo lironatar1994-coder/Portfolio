@@ -31,6 +31,12 @@ Browser tests run in Microsoft Edge (change `channel` in `playwright.config.js` 
 - Card faces for the phone hero and the work cards, `public/images/<slug>-card.webp`, are 585×820 crops of the top of each mobile capture; regenerate them after a recapture. `blank.webp` is the 2px mobile source for the desktop hero frame, which phones hide.
 - Add a project: append it to `src/projects.mjs` and `src/presentation.mjs`, capture it, and add a `<slug>-desktop.webp` viewport capture for `og:image`.
 
+## Facts, prices and placeholders
+
+- Business facts (founder lines, commitments, prices, timelines, hours, project status) are in `src/facts.mjs`. Values wrapped in `draft()` are invented placeholders: the build marks them with `data-placeholder`, and `npm run check` and `deploy.ps1` refuse to publish while any remain. Replace a value and remove `draft()` once it is confirmed.
+- Before deploying, run `node scripts/check-live.mjs`. It fetches every project site and writes `docs/live-status.json`; a project shows its "באוויר" pill only while its last check passed.
+- WhatsApp first messages per button: `docs/whatsapp-prefills.md`.
+
 ## Images to create
 
 The website-value section uses two user-provided WhatsApp screenshots in `public/images/whatsapp-*-example.*`. Their original proportions are preserved and links open the full-size images. The contact section uses `contact.webp`. Earlier studio/process generated images remain archived; they are no longer displayed. Asset provenance is recorded in `docs/website-value-release.md`.

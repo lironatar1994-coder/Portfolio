@@ -18,6 +18,9 @@ try {
     $env:SITE_ORIGIN = $SiteOrigin
     if (-not $Origin) { throw 'Set -Origin to the Git remote before publishing.' }
     Run npm.cmd @('run', 'build')
+    # Placeholder facts (src/facts.mjs) are never published, even with -SkipChecks.
+    $drafts = @(Get-ChildItem -Path dist -Recurse -Filter *.html | Select-String -Pattern 'data-placeholder' -List)
+    if ($drafts.Count) { throw "Placeholder facts remain in $($drafts.Count) page(s). Confirm or remove them in src/facts.mjs before publishing." }
     if (-not $SkipChecks) {
         Run npm.cmd @('run', 'check')
         Run git @('diff', '--check')

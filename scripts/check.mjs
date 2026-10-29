@@ -12,7 +12,10 @@ for(const page of pages){
  if(/^google-site-verification: google[a-z0-9]+\.html\s*$/.test(html))continue;
  if(!html.includes('lang="he" dir="rtl"'))failures.push(`${page}: missing Hebrew/RTL`);
  if((html.match(/<h1\b/g)||[]).length!==1)failures.push(`${page}: must have one h1`);
- if(/<!--(?:HEADER|FOOTER|PROJECTS|CONTACT|MARK|ARROW)-->/u.test(html))failures.push(`${page}: unresolved template`);
+ if(/<!--[A-Z]+-->/u.test(html))failures.push(`${page}: unresolved template`);
+ // Invented facts (src/facts.mjs draft values) are marked in the HTML; they must never be published.
+ const drafts=(html.match(/data-placeholder/g)||[]).length;
+ if(drafts)failures.push(`${page}: ${drafts} placeholder fact(s) from src/facts.mjs — confirm or remove them before publishing`);
  for(const [,reference] of html.matchAll(/(?:src|href)="([^"#]+)(?:#[^"]*)?"/g)){
    if(!reference.startsWith('/') || reference.startsWith('//'))continue;
    const target=resolve(dist,`.${reference.split('?')[0]}`);

@@ -1,0 +1,1436 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   פנקס התורים · THE APPOINTMENT BOOK
+   Oxblood bookcloth binding, gold-foil blocking, inset ledger plates in cool
+   stock, vermilion rubber-stamp ink, graphite for anything not yet committed.
+   RTL book anatomy: spine on the right, fore-edge index tabs on the left.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.book {
+  /* ── binding ── */
+  --cloth: #4e1319;
+  --cloth-deep: #300a0f;
+  --cloth-hi: #6d2027;
+  --foil: #c9a24b;
+  --foil-hi: #f0dba0;
+
+  /* ── ledger stock (cool, deliberately NOT cream) ── */
+  --paper: #dce3e3;
+  --paper-shade: #c9d3d4;
+  --paper-edge: #b3c0c1;
+  --rule-line: rgba(20, 66, 82, 0.16);
+  --margin-rule: #bf4a3e;
+
+  /* ── marks ── */
+  --ink: #16232e;
+  --ink-soft: #4a5b69;
+  --pencil: #737a7e;
+  --stamp: #c33c29;
+  --stamp-deep: #94291a;
+
+  --rule: 2.5rem;
+  --spine: clamp(26px, 3.4vw, 60px);
+  --tabw: clamp(0px, 0px, 0px);
+
+  --focus: #f0dba0;
+  --selection-bg: #c33c29;
+  --selection-fg: #fff;
+
+  position: relative;
+  min-height: 100svh;
+  color: var(--paper);
+  font-family: var(--f-body), system-ui, sans-serif;
+  background-color: var(--cloth);
+  background-image:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.13) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 3px),
+    radial-gradient(140% 70% at 50% -10%, rgba(255, 214, 170, 0.09), transparent 62%),
+    radial-gradient(100% 60% at 50% 108%, rgba(0, 0, 0, 0.5), transparent 60%);
+}
+
+/* Woven-cloth grain. Pointer-events off, sits under everything. */
+.book::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (min-width: 900px) {
+  .book {
+    --tabw: clamp(54px, 5vw, 76px);
+  }
+}
+
+/* ─────────────────────────── SPINE (right edge) ─────────────────────── */
+
+/* A Hebrew book is bound on the right: the spine takes the inline-start edge. */
+.spine {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: var(--spine);
+  z-index: 30;
+  pointer-events: none;
+  background: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 0.55) 0%,
+    var(--cloth-deep) 8%,
+    var(--cloth-hi) 34%,
+    var(--cloth) 68%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  box-shadow: -18px 0 34px -18px rgba(0, 0, 0, 0.75);
+}
+
+/* Gold rules blocked into the spine, as on a bound diary. */
+.spine::before,
+.spine::after {
+  content: '';
+  position: absolute;
+  inset-inline: 22%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--foil), transparent);
+  opacity: 0.55;
+}
+.spine::before {
+  top: 12vh;
+}
+.spine::after {
+  bottom: 12vh;
+}
+
+/* ─────────────────────── RIBBON MARKER (scroll depth) ───────────────── */
+
+.ribbon {
+  position: fixed;
+  top: 0;
+  inset-inline-start: calc(var(--spine) + clamp(10px, 2vw, 26px));
+  width: clamp(9px, 1.1vw, 15px);
+  z-index: 31;
+  pointer-events: none;
+  height: var(--ribbon-h, 12%);
+  background: linear-gradient(90deg, var(--stamp-deep), var(--stamp) 45%, #e0684f 70%, var(--stamp-deep));
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.45);
+  /* Driven per animation frame from scroll depth; easing a layout property
+     here would only add lag and thrash, so none is declared. */
+}
+
+/* Swallow-tail cut at the ribbon's end. */
+.ribbon::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  height: clamp(10px, 1.4vw, 16px);
+  background: inherit;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 55%, 0 100%);
+}
+
+@media (max-width: 640px) {
+  .ribbon {
+    display: none;
+  }
+}
+
+/* ─────────────────────── INDEX TABS (left fore-edge) ────────────────── */
+
+/* Index tabs live on the fore-edge — the left, opposite the binding. */
+.tabs {
+  position: fixed;
+  inset-inline-end: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+}
+
+@media (min-width: 900px) {
+  .tabs {
+    display: flex;
+  }
+}
+
+.tab {
+  position: relative;
+  inset-inline-end: calc(-1 * clamp(10px, 1.2vw, 18px));
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: clamp(66px, 7vw, 96px);
+  width: var(--tabw);
+  padding: 0.5rem clamp(6px, 0.7vw, 10px) 0.5rem 0;
+  font-family: var(--f-label), system-ui, sans-serif;
+  font-size: clamp(0.7rem, 0.78vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  background: linear-gradient(to left, var(--paper-edge), var(--paper) 40%);
+  border-radius: 3px 0 0 3px;
+  box-shadow: -2px 2px 6px rgba(0, 0, 0, 0.4);
+  transition:
+    inset-inline-end 0.2s cubic-bezier(0.2, 0.9, 0.3, 1),
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.tab:hover,
+.tab:focus-visible {
+  inset-inline-end: 0;
+  color: var(--ink);
+}
+
+.tabOn {
+  inset-inline-end: 0;
+  color: #fff;
+  background: linear-gradient(to left, var(--stamp-deep), var(--stamp) 45%);
+  box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* ─────────────────────────────── LEAF ───────────────────────────────── */
+
+.leaf {
+  position: relative;
+  z-index: 5;
+  margin-inline-start: var(--spine);
+  margin-inline-end: 0;
+  padding-inline: clamp(0.75rem, 3vw, 3rem);
+  padding-block: clamp(1rem, 3vw, 2.5rem) clamp(4rem, 8vw, 7rem);
+}
+
+@media (min-width: 900px) {
+  .leaf {
+    margin-inline-end: calc(var(--tabw) - clamp(10px, 1.2vw, 18px));
+  }
+}
+
+.inner {
+  max-width: 78rem;
+  margin-inline: auto;
+}
+
+/* ──────────────────────────── FOIL MASTHEAD ─────────────────────────── */
+
+.masthead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding-block: clamp(1rem, 3vw, 2rem) clamp(1.5rem, 4vw, 3rem);
+}
+
+.foilBlock {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.foilName {
+  font-family: var(--f-display), serif;
+  font-weight: 900;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  background: linear-gradient(168deg, #8d6c2a 0%, var(--foil-hi) 34%, var(--foil) 52%, #7d5d22 78%, var(--foil-hi) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Blind-stamp: the foil sits in a debossed impression. */
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.55)) drop-shadow(0 -1px 0 rgba(255, 220, 160, 0.12));
+}
+
+.foilRule {
+  height: 2px;
+  width: clamp(90px, 14vw, 190px);
+  background: linear-gradient(90deg, var(--foil), rgba(201, 162, 75, 0.15));
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.foilRole {
+  font-family: var(--f-label), sans-serif;
+  font-size: clamp(0.78rem, 1.1vw, 0.95rem);
+  letter-spacing: 0.06em;
+  color: rgba(240, 219, 160, 0.75);
+}
+
+.mastRight {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.mastMeta {
+  font-family: var(--f-mono), ui-monospace, monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  color: rgba(240, 219, 160, 0.5);
+  text-align: end;
+  line-height: 1.5;
+}
+
+/* ─────────────────────────── LEDGER PLATE ───────────────────────────── */
+
+.plate {
+  position: relative;
+  background-color: var(--paper);
+  color: var(--ink);
+  /* square where it enters the binding, cut-edge round on the fore-edge */
+  border-radius: 5px 2px 2px 5px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 26px 50px -24px rgba(0, 0, 0, 0.75),
+    0 3px 12px rgba(0, 0, 0, 0.35);
+  --focus: #94291a;
+}
+
+/* Printed rules + the red margin column on the right (Hebrew notebook). */
+.ruled {
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(var(--rule) - 1px),
+      var(--rule-line) calc(var(--rule) - 1px) var(--rule)
+    );
+  background-position: 0 var(--rule-offset, 0);
+}
+
+/* Cut page edge, on the fore-edge side. */
+.plate::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: 6px;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.16), transparent);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* The gutter shadow where the leaf disappears into the binding. */
+.plate::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: clamp(14px, 2.2vw, 30px);
+  background: linear-gradient(to right, rgba(20, 45, 55, 0.28), transparent);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.marginRule {
+  position: relative;
+}
+
+.marginRule::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: clamp(2.25rem, 4.5vw, 4rem);
+  width: 1px;
+  background: var(--margin-rule);
+  opacity: 0.45;
+}
+
+/* ───────────────────────────── SECTIONS ─────────────────────────────── */
+
+.section {
+  scroll-margin-top: 5rem;
+  margin-block-start: clamp(2.5rem, 7vw, 6rem);
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: clamp(1rem, 2.4vw, 1.75rem) clamp(1.1rem, 3vw, 2.5rem);
+  border-block-end: 2px solid rgba(20, 66, 82, 0.35);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), transparent);
+}
+
+.sectionNo {
+  font-family: var(--f-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--stamp-deep);
+}
+
+.sectionTitle {
+  font-family: var(--f-display), serif;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 3.4vw, 2.5rem);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.sectionNote {
+  font-family: var(--f-label), sans-serif;
+  font-size: clamp(0.74rem, 1vw, 0.85rem);
+  color: var(--ink-soft);
+}
+
+.sectionBody {
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+/* ───────────────────────────── COVER / HERO ─────────────────────────── */
+
+.cover {
+  position: relative;
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+  padding-block-end: clamp(1rem, 3vw, 2rem);
+}
+
+@media (min-width: 1080px) {
+  .cover {
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+    gap: clamp(2rem, 4vw, 4rem);
+  }
+}
+
+.coverPitch {
+  padding-block-start: clamp(0.5rem, 2vw, 2rem);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--f-label), sans-serif;
+  font-size: clamp(0.75rem, 1vw, 0.88rem);
+  letter-spacing: 0.04em;
+  color: rgba(240, 219, 160, 0.82);
+  padding-block-end: clamp(1rem, 2.4vw, 1.6rem);
+}
+
+.eyebrow::before {
+  content: '';
+  width: clamp(20px, 3vw, 42px);
+  height: 1px;
+  background: var(--foil);
+  opacity: 0.7;
+}
+
+.h1 {
+  font-family: var(--f-display), serif;
+  font-weight: 900;
+  font-size: clamp(2.9rem, 7.6vw, 6rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: #fdf6ec;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.h1 em {
+  font-style: normal;
+  display: block;
+  background: linear-gradient(172deg, #8d6c2a, var(--foil-hi) 38%, var(--foil) 60%, #7d5d22 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.45));
+}
+
+.lede {
+  max-width: 40ch;
+  margin-block-start: clamp(1.25rem, 3vw, 2rem);
+  font-size: clamp(1.05rem, 1.35vw, 1.2rem);
+  line-height: 1.75;
+  color: rgba(245, 232, 218, 0.84);
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  margin-block-start: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+/* ───────────────────────── STAMP (the primary action) ───────────────── */
+
+.stampBtn {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.85rem clamp(1.4rem, 3vw, 2.4rem);
+  font-family: var(--f-stamp), sans-serif;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.15;
+  color: #fff;
+  background: var(--stamp);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  outline: 3px solid var(--stamp);
+  outline-offset: 0;
+  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.8);
+  transform: rotate(-1.4deg);
+  transition:
+    transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1),
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.stampBtn small {
+  font-family: var(--f-label), sans-serif;
+  font-size: 0.62em;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.stampBtn:hover,
+.stampBtn:focus-visible {
+  transform: rotate(-1.4deg) scale(1.035);
+  background: #d9482f;
+  box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.9);
+}
+
+.stampBtn:active {
+  transform: rotate(-1.4deg) scale(0.97);
+}
+
+.ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.4rem;
+  font-family: var(--f-label), sans-serif;
+  font-size: clamp(0.9rem, 1.15vw, 1rem);
+  color: rgba(245, 232, 218, 0.9);
+  border-block-end: 1px solid rgba(201, 162, 75, 0.55);
+  transition: color 0.18s ease, border-color 0.18s ease, gap 0.18s ease;
+}
+
+.ghostBtn:hover,
+.ghostBtn:focus-visible {
+  color: var(--foil-hi);
+  border-color: var(--foil-hi);
+  gap: 0.85rem;
+}
+
+/* ───────────────────── THE OPEN PAGE (hero ledger) ──────────────────── */
+
+.today {
+  position: relative;
+  padding: clamp(1rem, 2.5vw, 1.75rem) clamp(0.9rem, 2vw, 1.5rem) clamp(1.25rem, 3vw, 2rem);
+}
+
+.todayHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-inline: clamp(0.35rem, 1vw, 0.75rem);
+  padding-block-end: clamp(0.75rem, 2vw, 1.25rem);
+  border-block-end: 2px solid rgba(20, 66, 82, 0.3);
+}
+
+.todayLabel {
+  font-family: var(--f-label), sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+}
+
+.todayDate {
+  font-family: var(--f-display), serif;
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2.1vw, 1.6rem);
+  color: var(--ink);
+}
+
+/* Date stamp — vermilion, rotated, roughened at the edges. */
+.dateStamp {
+  align-self: flex-start;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.4rem 0.9rem;
+  font-family: var(--f-stamp), sans-serif;
+  font-size: clamp(0.8rem, 1.2vw, 1rem);
+  line-height: 1.2;
+  color: var(--stamp-deep);
+  border: 2px solid var(--stamp-deep);
+  border-radius: 3px;
+  transform: rotate(5deg);
+  opacity: 0.82;
+  mix-blend-mode: multiply;
+  filter: url(#roughInk);
+}
+
+.dateStamp span {
+  font-family: var(--f-mono), monospace;
+  font-size: 0.62em;
+  letter-spacing: 0.1em;
+}
+
+.rows {
+  padding-block-start: 0.5rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: var(--rule);
+  padding-inline: clamp(0.35rem, 1vw, 0.75rem);
+  border-block-end: 1px solid var(--rule-line);
+}
+
+.rowTime {
+  font-family: var(--f-mono), monospace;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+
+.rowName {
+  font-family: var(--f-display), serif;
+  font-size: clamp(0.95rem, 1.35vw, 1.1rem);
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowName b {
+  font-weight: 700;
+}
+
+.rowName i {
+  font-style: normal;
+  color: var(--ink-soft);
+  font-family: var(--f-body), sans-serif;
+  font-size: 0.85em;
+}
+
+/* On a phone the line is too short to carry both; the business name wins
+   rather than being cut mid-word by an ellipsis. */
+@media (max-width: 560px) {
+  .rowName i {
+    display: none;
+  }
+  .row {
+    grid-template-columns: 2.9rem minmax(0, 1fr) auto;
+    gap: 0.5rem;
+  }
+}
+
+.rowMark {
+  font-family: var(--f-label), sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--stamp-deep);
+  border: 1px solid currentColor;
+  padding: 0.05rem 0.4rem;
+  border-radius: 2px;
+  opacity: 0.7;
+  transform: rotate(-2deg);
+}
+
+/* The empty line the visitor is invited to take. */
+.rowOpen {
+  --rule-line: rgba(20, 66, 82, 0.3);
+  background: linear-gradient(90deg, rgba(195, 60, 41, 0.09), transparent 70%);
+}
+
+.rowOpen .rowName {
+  font-family: var(--f-body), sans-serif;
+  color: var(--pencil);
+}
+
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  vertical-align: -0.16em;
+  margin-inline-start: 2px;
+  background: var(--stamp);
+  animation: blink 1.15s steps(1) infinite;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.todayFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-inline: clamp(0.35rem, 1vw, 0.75rem);
+  padding-block-start: clamp(1rem, 2.4vw, 1.5rem);
+}
+
+.pencilNote {
+  font-family: var(--f-body), sans-serif;
+  font-size: 0.85rem;
+  color: var(--pencil);
+  max-width: 34ch;
+}
+
+/* ─────────────────────────── THESIS BAND ────────────────────────────── */
+
+.thesis {
+  margin-block-start: clamp(2.5rem, 7vw, 6rem);
+  display: grid;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .thesis {
+    grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+  }
+}
+
+.thesisKicker {
+  font-family: var(--f-label), sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: rgba(240, 219, 160, 0.7);
+  padding-block-end: 0.75rem;
+}
+
+.thesisTitle {
+  font-family: var(--f-display), serif;
+  font-weight: 700;
+  font-size: clamp(1.7rem, 3.6vw, 2.9rem);
+  line-height: 1.12;
+  color: #fdf6ec;
+}
+
+.thesisBody {
+  font-size: clamp(1.02rem, 1.3vw, 1.15rem);
+  line-height: 1.8;
+  color: rgba(245, 232, 218, 0.78);
+  border-inline-start: 2px solid rgba(201, 162, 75, 0.4);
+  padding-inline-start: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+/* ───────────────────────────── AUDIENCES ───────────────────────────── */
+
+.audList {
+  display: grid;
+  gap: 0;
+}
+
+.audItem {
+  display: grid;
+  gap: 0.35rem 1.5rem;
+  padding: clamp(0.9rem, 2.2vw, 1.4rem) 0;
+  border-block-end: 1px solid var(--rule-line);
+}
+
+@media (min-width: 800px) {
+  .audItem {
+    grid-template-columns: 13rem minmax(0, 1fr);
+    align-items: baseline;
+  }
+}
+
+.audItem:last-child {
+  border-block-end: 0;
+}
+
+.audLabel {
+  font-family: var(--f-display), serif;
+  font-weight: 700;
+  font-size: clamp(1.1rem, 1.7vw, 1.35rem);
+  color: var(--ink);
+}
+
+.audQ {
+  font-family: var(--f-display), serif;
+  font-style: italic;
+  font-size: clamp(1rem, 1.4vw, 1.12rem);
+  color: var(--stamp-deep);
+}
+
+.audA {
+  font-size: clamp(0.95rem, 1.2vw, 1.02rem);
+  color: var(--ink-soft);
+  line-height: 1.7;
+  grid-column: -2 / -1;
+}
+
+/* ──────────────────────────── WORK LEDGER ──────────────────────────── */
+
+.demoTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--f-label), sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--stamp-deep);
+  border: 1px dashed currentColor;
+  padding: 0.2rem 0.55rem;
+  border-radius: 2px;
+}
+
+.entry {
+  border-block-end: 1px solid var(--rule-line);
+}
+
+.entry:last-of-type {
+  border-block-end: 0;
+}
+
+.entryBtn {
+  display: grid;
+  width: 100%;
+  gap: 0.2rem 1rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  padding: clamp(0.9rem, 2vw, 1.3rem) clamp(0.25rem, 1vw, 0.75rem);
+  text-align: start;
+  transition: background 0.18s ease;
+}
+
+.entryBtn:hover,
+.entryBtn:focus-visible {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.entryNo {
+  font-family: var(--f-mono), monospace;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  padding-inline-end: 0.5rem;
+}
+
+.entryMain {
+  min-width: 0;
+}
+
+.entryName {
+  display: block;
+  font-family: var(--f-display), serif;
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2.1vw, 1.55rem);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.entryMeta {
+  display: block;
+  font-family: var(--f-body), sans-serif;
+  font-size: clamp(0.83rem, 1.05vw, 0.92rem);
+  color: var(--ink-soft);
+  padding-block-start: 0.15rem;
+}
+
+.entryRight {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+}
+
+.entryStamp {
+  font-family: var(--f-stamp), sans-serif;
+  font-size: 0.78rem;
+  color: var(--stamp-deep);
+  border: 2px solid currentColor;
+  border-radius: 2px;
+  padding: 0.1rem 0.5rem;
+  transform: rotate(-4deg);
+  opacity: 0.75;
+  mix-blend-mode: multiply;
+  filter: url(#roughInk);
+  white-space: nowrap;
+}
+
+.entryChevron {
+  width: 1.6rem;
+  height: 1.6rem;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(20, 66, 82, 0.3);
+  border-radius: 50%;
+  color: var(--ink-soft);
+  transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1), background 0.2s ease;
+}
+
+.entryOpen .entryChevron {
+  transform: rotate(180deg);
+  background: var(--stamp);
+  border-color: var(--stamp);
+  color: #fff;
+}
+
+.entryPanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.42s cubic-bezier(0.22, 0.85, 0.28, 1);
+}
+
+.entryOpen .entryPanel {
+  grid-template-rows: 1fr;
+}
+
+.entryPanelInner {
+  overflow: hidden;
+}
+
+.entryDetail {
+  display: grid;
+  gap: clamp(1rem, 2.5vw, 2rem);
+  padding: 0 clamp(0.25rem, 1vw, 0.75rem) clamp(1.25rem, 3vw, 2rem);
+}
+
+@media (min-width: 820px) {
+  .entryDetail {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  }
+}
+
+.shot {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--paper-shade);
+  box-shadow: 0 12px 26px -14px rgba(0, 0, 0, 0.7);
+}
+
+.shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Photo corner, as if pasted into the book. */
+.shot::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(45deg, rgba(20, 40, 50, 0.55), rgba(20, 40, 50, 0.05));
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.shotCaption {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  padding: 0.4rem 0.65rem;
+  font-family: var(--f-mono), monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.85);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent);
+}
+
+.detailLabel {
+  font-family: var(--f-label), sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--stamp-deep);
+  padding-block-end: 0.35rem;
+}
+
+.detailText {
+  font-size: clamp(0.94rem, 1.15vw, 1.02rem);
+  line-height: 1.75;
+  color: var(--ink-soft);
+}
+
+.builtList {
+  padding-block-start: 1.1rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.builtItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: start;
+  font-size: clamp(0.9rem, 1.1vw, 0.98rem);
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.builtTick {
+  width: 1.05rem;
+  height: 1.05rem;
+  margin-block-start: 0.22rem;
+  flex: none;
+  color: var(--stamp);
+}
+
+/* A slip pasted onto the page, held by its own ruled box — not a card with a
+   coloured bar down one side. */
+.outcome {
+  position: relative;
+  margin-block-start: 1.25rem;
+  padding: 0.85rem 1rem;
+  background: rgba(195, 60, 41, 0.06);
+  border: 1px solid rgba(195, 60, 41, 0.38);
+  border-radius: 2px;
+  font-size: clamp(0.92rem, 1.1vw, 1rem);
+  line-height: 1.65;
+  color: var(--ink);
+}
+
+.outcome b {
+  display: block;
+  font-family: var(--f-label), sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--stamp-deep);
+  padding-block-end: 0.25rem;
+}
+
+/* ───────────────────────────── PROOF GRID ──────────────────────────── */
+
+.proofGrid {
+  display: grid;
+  gap: 1px;
+  background: rgba(20, 66, 82, 0.18);
+}
+
+@media (min-width: 720px) {
+  .proofGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .proofGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.proofCell {
+  background: var(--paper);
+  padding: clamp(1.25rem, 2.6vw, 1.9rem);
+  transition: background 0.25s ease;
+}
+
+.proofCell:hover {
+  background: #e5ebeb;
+}
+
+.proofN {
+  font-family: var(--f-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--stamp-deep);
+}
+
+.proofTitle {
+  font-family: var(--f-display), serif;
+  font-weight: 700;
+  font-size: clamp(1.1rem, 1.7vw, 1.28rem);
+  line-height: 1.25;
+  color: var(--ink);
+  padding-block: 0.5rem 0.6rem;
+}
+
+.proofBody {
+  font-size: clamp(0.9rem, 1.1vw, 0.98rem);
+  line-height: 1.72;
+  color: var(--ink-soft);
+}
+
+/* ──────────────────────────── PROCESS ──────────────────────────────── */
+
+.steps {
+  display: grid;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+@media (min-width: 880px) {
+  .steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.step {
+  position: relative;
+  padding: clamp(1.1rem, 2.4vw, 1.6rem);
+  background: rgba(220, 227, 227, 0.06);
+  border: 1px solid rgba(201, 162, 75, 0.22);
+}
+
+.stepN {
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  font-family: var(--f-stamp), sans-serif;
+  font-size: 1.15rem;
+  color: var(--foil-hi);
+  border: 2px solid rgba(201, 162, 75, 0.5);
+  border-radius: 50%;
+  margin-block-end: 0.9rem;
+}
+
+.stepTitle {
+  font-family: var(--f-display), serif;
+  font-weight: 700;
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  color: #fdf6ec;
+  line-height: 1.25;
+}
+
+.stepBody {
+  padding-block-start: 0.55rem;
+  font-size: 0.94rem;
+  line-height: 1.7;
+  color: rgba(245, 232, 218, 0.7);
+}
+
+.stepNote {
+  display: inline-block;
+  margin-block-start: 0.9rem;
+  font-family: var(--f-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: rgba(240, 219, 160, 0.62);
+  border-block-start: 1px solid rgba(201, 162, 75, 0.28);
+  padding-block-start: 0.45rem;
+}
+
+/* ─────────────────────────── TESTIMONIALS ──────────────────────────── */
+
+.quotes {
+  display: grid;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+@media (min-width: 860px) {
+  .quotes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.quote {
+  position: relative;
+  padding: clamp(1.25rem, 2.6vw, 1.75rem);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 16px 30px -20px rgba(0, 0, 0, 0.8);
+}
+
+.quote:nth-child(2) {
+  transform: rotate(-0.5deg);
+}
+.quote:nth-child(3) {
+  transform: rotate(0.6deg);
+}
+
+.quoteText {
+  font-family: var(--f-display), serif;
+  font-size: clamp(1.02rem, 1.4vw, 1.15rem);
+  line-height: 1.65;
+}
+
+.quoteMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block-start: 1rem;
+  margin-block-start: 1rem;
+  border-block-start: 1px solid var(--rule-line);
+  font-family: var(--f-label), sans-serif;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.quoteMeta em {
+  font-style: normal;
+  color: var(--pencil);
+}
+
+/* ─────────────────────────────── FAQ ───────────────────────────────── */
+
+.faqItem {
+  border-block-end: 1px solid var(--rule-line);
+}
+
+.faqItem:last-child {
+  border-block-end: 0;
+}
+
+.faqBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: clamp(0.9rem, 2vw, 1.25rem) 0;
+  text-align: start;
+  font-family: var(--f-display), serif;
+  font-weight: 700;
+  font-size: clamp(1.02rem, 1.5vw, 1.2rem);
+  color: var(--ink);
+  transition: color 0.18s ease;
+}
+
+.faqBtn:hover,
+.faqBtn:focus-visible {
+  color: var(--stamp-deep);
+}
+
+.faqSign {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(20, 66, 82, 0.3);
+  border-radius: 50%;
+  font-family: var(--f-mono), monospace;
+  font-size: 0.95rem;
+  line-height: 1;
+  transition: transform 0.25s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.faqOpen .faqSign {
+  transform: rotate(45deg);
+  background: var(--stamp);
+  border-color: var(--stamp);
+  color: #fff;
+}
+
+.faqPanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.38s cubic-bezier(0.22, 0.85, 0.28, 1);
+}
+
+.faqOpen .faqPanel {
+  grid-template-rows: 1fr;
+}
+
+.faqPanelInner {
+  overflow: hidden;
+}
+
+.faqAnswer {
+  padding-block-end: clamp(1rem, 2.4vw, 1.5rem);
+  max-width: 62ch;
+  font-size: clamp(0.95rem, 1.15vw, 1.03rem);
+  line-height: 1.8;
+  color: var(--ink-soft);
+}
+
+/* ─────────────────────────── CLOSING SLOT ──────────────────────────── */
+
+.close {
+  position: relative;
+  margin-block-start: clamp(3rem, 8vw, 7rem);
+  padding: clamp(1.75rem, 4.5vw, 3.5rem);
+  overflow: hidden;
+}
+
+.closeGrid {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .closeGrid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  }
+}
+
+.closeKicker {
+  font-family: var(--f-label), sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--stamp-deep);
+  padding-block-end: 0.75rem;
+}
+
+.closeTitle {
+  font-family: var(--f-display), serif;
+  font-weight: 900;
+  font-size: clamp(1.8rem, 4.2vw, 3.1rem);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.closeBody {
+  max-width: 44ch;
+  padding-block-start: 1rem;
+  font-size: clamp(1rem, 1.25vw, 1.1rem);
+  line-height: 1.78;
+  color: var(--ink-soft);
+}
+
+.closeReassure {
+  padding-block-start: 1rem;
+  font-size: 0.88rem;
+  color: var(--pencil);
+}
+
+/* The open slot, drawn as the next ruled line in the book. */
+.slot {
+  position: relative;
+  padding: clamp(1.1rem, 2.6vw, 1.75rem);
+  background: rgba(195, 60, 41, 0.06);
+  border: 2px dashed rgba(195, 60, 41, 0.4);
+}
+
+.slotHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--f-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--stamp-deep);
+  padding-block-end: 0.9rem;
+  border-block-end: 1px solid rgba(195, 60, 41, 0.3);
+}
+
+.slotLine {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: var(--rule);
+  font-family: var(--f-display), serif;
+  font-size: clamp(1.1rem, 1.9vw, 1.4rem);
+  color: var(--pencil);
+  border-block-end: 1px solid var(--rule-line);
+}
+
+.slotActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding-block-start: clamp(1.1rem, 2.6vw, 1.6rem);
+}
+
+.mailBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--f-label), sans-serif;
+  font-size: 0.94rem;
+  color: var(--ink-soft);
+  border-block-end: 1px solid rgba(20, 66, 82, 0.35);
+  padding-block-end: 0.2rem;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+
+.mailBtn:hover,
+.mailBtn:focus-visible {
+  color: var(--stamp-deep);
+  border-color: var(--stamp-deep);
+}
+
+/* ─────────────────────────────── FOOTER ────────────────────────────── */
+
+.footer {
+  margin-block-start: clamp(2.5rem, 6vw, 4.5rem);
+  padding-block-start: clamp(1.25rem, 3vw, 2rem);
+  border-block-start: 1px solid rgba(201, 162, 75, 0.25);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--f-label), sans-serif;
+  font-size: 0.8rem;
+  color: rgba(245, 232, 218, 0.5);
+}
+
+.footNotice {
+  max-width: 52ch;
+  line-height: 1.7;
+}
+
+/* ───────────────────── MOBILE ACTION BAR ───────────────────────────── */
+
+.mobileBar {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem calc(0.65rem + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--cloth-deep), rgba(48, 10, 15, 0.94));
+  border-block-start: 1px solid rgba(201, 162, 75, 0.28);
+  backdrop-filter: blur(6px);
+}
+
+@media (min-width: 900px) {
+  .mobileBar {
+    display: none;
+  }
+}
+
+.mobileBar .stampBtn {
+  flex: 1;
+  padding-block: 0.7rem;
+  transform: rotate(-0.8deg);
+}
+
+.mobileNote {
+  font-family: var(--f-label), sans-serif;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: rgba(240, 219, 160, 0.65);
+  max-width: 9rem;
+}
+
+/* Extra bottom room so the fixed bar never covers the last line. */
+@media (max-width: 899px) {
+  .leaf {
+    padding-block-end: 7rem;
+  }
+}
+
+/* ─────────────────────────── REVEAL MOTION ─────────────────────────── */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 0.85, 0.28, 1);
+}
+
+.revealIn {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

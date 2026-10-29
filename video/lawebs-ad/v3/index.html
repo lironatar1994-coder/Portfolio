@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LA webs · סרטון סטודיו</title>
+<style>
+@font-face{font-family:Plex;font-weight:500;src:url(assets/fonts/plex-hebrew-500-hebrew.woff2) format('woff2');unicode-range:U+0590-05FF,U+200C-2010,U+20AA,U+FB1D-FB4F}
+@font-face{font-family:Plex;font-weight:500;src:url(assets/fonts/plex-hebrew-500-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+2190-2193,U+00D7}
+@font-face{font-family:Plex;font-weight:600;src:url(assets/fonts/plex-hebrew-600-hebrew.woff2) format('woff2');unicode-range:U+0590-05FF,U+200C-2010,U+20AA,U+FB1D-FB4F}
+@font-face{font-family:Plex;font-weight:600;src:url(assets/fonts/plex-hebrew-600-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+2190-2193,U+00D7}
+@font-face{font-family:Plex;font-weight:700;src:url(assets/fonts/plex-hebrew-700-hebrew.woff2) format('woff2');unicode-range:U+0590-05FF,U+200C-2010,U+20AA,U+FB1D-FB4F}
+@font-face{font-family:Plex;font-weight:700;src:url(assets/fonts/plex-hebrew-700-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+2190-2193,U+00D7}
+@font-face{font-family:Frank;font-weight:300 900;src:url(assets/fonts/frank-ruhl-libre-hebrew.woff2) format('woff2');unicode-range:U+0590-05FF,U+FB1D-FB4F}
+@font-face{font-family:Frank;font-weight:300 900;src:url(assets/fonts/frank-ruhl-libre-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F}
+/* A quiet studio reel: the studio's ink, paper and terracotta, the wordmark's serif for the statements. */
+:root{--bg:#151210;--ink:#f4eee6;--muted:rgba(244,238,230,.6);--faint:rgba(244,238,230,.14);--acc:#e9825d;--accent:#b84a2c;--card:#1f1b18;--shadow:rgba(0,0,0,.55);--glow:rgba(184,74,44,.32);--grain:.07}
+body.light{--bg:#f3ede4;--ink:#231f1b;--muted:#6c6258;--faint:rgba(35,31,27,.12);--acc:#b84a2c;--card:#fbf7f1;--shadow:rgba(35,31,27,.22);--glow:rgba(184,74,44,.14);--grain:.045}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;height:100%;overflow:hidden}
+body{font-family:Plex,sans-serif;color:var(--ink)}
+#stage{position:absolute;left:50%;top:50%;width:1080px;height:1920px;overflow:hidden;background:var(--bg);transform-origin:center center;transform:translate(-50%,-50%)}
+body.capture #stage{left:0;top:0;transform:none}
+#play{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:rgba(10,8,6,.55);border:0;cursor:pointer;font:600 34px Plex;color:#fff}
+#play span{background:#b84a2c;padding:22px 40px;border-radius:999px}
+#theme{position:fixed;left:16px;top:16px;z-index:101;font:600 18px Plex;padding:10px 16px;border-radius:999px;border:0;background:#fff;color:#231f1b;cursor:pointer}
+.abs{position:absolute;inset:0}
+#bgcol{opacity:0}
+#light{position:absolute;width:1500px;height:1500px;left:-210px;top:150px;border-radius:50%;background:radial-gradient(closest-side,var(--glow),transparent);filter:blur(20px)}
+#grain{z-index:60;opacity:var(--grain);mix-blend-mode:overlay;pointer-events:none;background-size:512px 512px;image-rendering:pixelated}
+body.light #grain{mix-blend-mode:multiply}
+#vig{z-index:59;background:radial-gradient(130% 85% at 50% 45%,transparent 55%,rgba(0,0,0,.42) 100%);pointer-events:none}
+body.light #vig{background:radial-gradient(130% 85% at 50% 45%,transparent 60%,rgba(120,90,60,.16) 100%)}
+.scene{position:absolute;inset:0;display:none;z-index:2}
+/* type */
+.disp{font-family:Frank,serif;font-weight:500;line-height:1;letter-spacing:-.012em}
+.lab{font:500 27px/1 Plex;letter-spacing:.05em;color:var(--muted)}
+.mask{display:block;overflow:hidden;padding:.08em 0 .2em;margin:-.08em 0 -.2em}
+.mask>span{display:inline-block;will-change:transform}
+.acc{color:var(--acc)}
+.c{position:absolute;left:0;right:0;text-align:center}
+
+/* floating work, out of focus (opening and end) */
+#floaters{position:absolute;inset:0;z-index:1}
+.fl{position:absolute;border-radius:30px;overflow:hidden;background:#222;box-shadow:0 30px 60px rgba(0,0,0,.35)}
+.fl img{width:100%;display:block}
+
+/* phones */
+.ph{position:absolute;width:500px;height:1027px;transform-origin:50% 55%}
+.frame{position:absolute;inset:0;border-radius:92px;background:linear-gradient(150deg,#7a746c,#2b2825 20%,#161412 50%,#2d2a27 80%,#6b655e);box-shadow:0 70px 140px var(--shadow),inset 0 0 0 2px rgba(255,255,255,.22)}
+.frame::before{content:"";position:absolute;inset:7px;border-radius:85px;background:#050505}
+.frame::after{content:"";position:absolute;left:-5px;top:220px;width:5px;height:140px;border-radius:3px 0 0 3px;background:#3a3632;box-shadow:0 -86px 0 #3a3632}
+.scr{position:absolute;left:21px;top:21px;width:458px;height:985px;border-radius:72px;overflow:hidden;background:#0d0d0d;isolation:isolate}
+.scr::after{content:"";position:absolute;inset:0;z-index:30;border-radius:inherit;background:linear-gradient(118deg,rgba(255,255,255,.16),rgba(255,255,255,0) 32%);pointer-events:none}
+.layer{position:absolute;inset:0;overflow:hidden}
+.layer img{position:absolute;left:0;top:80px;width:100%;height:auto;display:block}
+.island{position:absolute;top:17px;left:50%;width:140px;height:40px;margin-left:-70px;border-radius:999px;background:#000;z-index:22}
+.status{position:absolute;inset:0 0 auto;height:80px;z-index:21;display:flex;align-items:center;justify-content:space-between;padding:4px 40px 0 48px;direction:ltr;font:600 25px Plex;backdrop-filter:blur(14px)}
+.status svg{width:92px;height:20px;fill:currentColor}
+.status.dark{background:rgba(12,10,8,.62);color:#fff}
+.status.light{background:rgba(247,243,238,.86);color:#1d1b19}
+
+/* S0: opening statement */
+#s0 .lab{top:520px}
+#s0 .disp{font-size:128px}
+#o1{top:600px}#o2{top:730px}#o3{top:860px}
+
+/* S1: selected work */
+#s1{color:#f7f1e8}
+#s1 .row{position:absolute;left:84px;right:84px;top:248px;display:flex;justify-content:space-between;align-items:center}
+#s1 .row .lab{color:inherit;opacity:.62}
+.count{position:relative;width:120px;height:28px;direction:ltr}
+.count span{position:absolute;inset:0;text-align:left}
+.pname,.pkick{position:absolute;left:0;right:0;text-align:center}
+.pname{top:304px;font-size:104px}
+.pkick{top:432px;font:500 36px/1.2 Plex;opacity:.7}
+#ph1{left:290px;top:560px}
+
+/* S2: every detail is planned */
+#s2 .disp.h{font-size:112px}
+#s2 .sub{top:404px;font:500 36px/1.3 Plex;color:var(--muted)}
+#dcard{position:absolute;overflow:hidden;background:#111;box-shadow:0 50px 100px var(--shadow);z-index:3}
+#dcard img{position:absolute;left:0;width:100%;height:auto}
+#ovl{position:absolute;left:560px;top:520px;width:440px;height:952px;z-index:4;pointer-events:none}
+.col{position:absolute;top:0;bottom:0;background:rgba(232,96,127,.13);border-left:1px solid rgba(232,96,127,.55);border-right:1px solid rgba(232,96,127,.55);transform-origin:top}
+.red{position:absolute;width:2px;background:#ff5d8a;transform-origin:top}
+.red::before,.red::after{content:"";position:absolute;left:-9px;width:20px;height:2px;background:#ff5d8a}
+.red::before{top:0}.red::after{bottom:0}
+.redh{position:absolute;height:2px;background:#ff5d8a;transform-origin:right}
+.redh::before,.redh::after{content:"";position:absolute;top:-9px;width:2px;height:20px;background:#ff5d8a}
+.redh::before{left:0}.redh::after{right:0}
+.tag{position:absolute;background:#ff5d8a;color:#fff;font:600 22px/1 Plex;padding:7px 10px;border-radius:7px;direction:ltr;white-space:nowrap}
+#selb{position:absolute;border:3px solid #ff5d8a;border-radius:999px}
+#selb i{position:absolute;width:18px;height:18px;background:#fff;border:3px solid #ff5d8a;border-radius:4px}
+#selb i:nth-child(1){left:-10px;top:-10px}#selb i:nth-child(2){right:-10px;top:-10px}#selb i:nth-child(3){left:-10px;bottom:-10px}#selb i:nth-child(4){right:-10px;bottom:-10px}
+#selb b{position:absolute;right:0;top:-46px;background:#ff5d8a;color:#fff;font:600 22px/1 Plex;padding:8px 12px;border-radius:7px;white-space:nowrap}
+#cursor{position:absolute;left:0;top:0;z-index:20;width:60px;height:60px;transform-origin:6px 4px}
+#cursor svg{width:60px;height:60px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))}
+#cursor b{position:absolute;left:44px;top:50px;background:var(--accent);color:#fff;font:600 22px/1 Plex;padding:8px 12px;border-radius:9px 9px 9px 2px;white-space:nowrap;direction:ltr}
+#pal{position:absolute;left:80px;top:540px;width:440px}
+.sw{position:relative;height:96px;margin-bottom:14px;display:flex;align-items:center;gap:22px;padding:0 24px;border-radius:24px;background:var(--card);box-shadow:0 18px 40px -20px var(--shadow);border:1px solid var(--faint)}
+.sw i{flex:none;width:58px;height:58px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(127,127,127,.25)}
+.sw b{font:600 32px Plex}
+.sw span{margin-inline-start:auto;font:500 24px Plex;color:var(--muted);direction:ltr}
+#spec{position:absolute;left:80px;top:990px;width:440px;height:330px;border-radius:28px;background:var(--card);border:1px solid var(--faint);box-shadow:0 18px 40px -20px var(--shadow);padding:30px 34px;overflow:hidden}
+#spec .big{font:500 150px/1 Frank;letter-spacing:-.01em}
+#spec .nm{margin-top:18px;font:600 30px Plex}
+#spec .nm2{margin-top:8px;font:500 24px Plex;color:var(--muted)}
+
+/* S3: built for the phone */
+#s3 .disp{font-size:92px}
+#m1{top:262px}#m2{top:370px}
+#ph3{left:290px;top:600px}
+#wa{position:absolute;inset:0;z-index:25;background:#efeae2;opacity:0}
+#wa .top{position:absolute;inset:0 0 auto;height:190px;padding:96px 26px 0;background:#fff;display:flex;align-items:center;gap:18px;border-bottom:1px solid #e3e3e3}
+#wa .top svg{width:34px;height:34px;flex:none;color:#1f2c34}
+#wa .av{flex:none;width:66px;height:66px;border-radius:50%;background:#c19b45;color:#fff;display:grid;place-items:center;font:600 32px Plex}
+#wa .nm b{display:block;font:600 30px Plex;color:#111b21}
+#wa .nm span{display:block;font:500 22px Plex;color:#667781}
+#wa .day{position:absolute;left:50%;top:226px;transform:translateX(-50%);background:#fff;color:#54656f;font:500 22px Plex;padding:8px 16px;border-radius:12px;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+#wa .bar{position:absolute;left:18px;right:18px;bottom:34px;display:flex;align-items:center;gap:14px}
+#wa .in{flex:1;min-height:84px;border-radius:42px;background:#fff;padding:20px 28px;font:500 28px/1.35 Plex;color:#111b21;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+#wa .in i{display:inline-block;width:3px;height:30px;background:#00a884;vertical-align:-5px;margin-inline-start:2px}
+#wa .send{flex:none;width:84px;height:84px;border-radius:50%;background:#00a884;display:grid;place-items:center}
+#wa .send svg{width:38px;height:38px;color:#fff}
+#tap{position:absolute;z-index:30;width:120px;height:120px;border-radius:50%;border:5px solid #fff;box-shadow:0 0 0 3px rgba(0,0,0,.18);transform:translate(-50%,-50%);opacity:0}
+#mark{position:absolute;width:2px;height:2px}
+
+/* S4: how it works */
+#s4 .lab{top:300px}
+.stp{position:absolute;left:0;right:0;text-align:center}
+.stp .n{font:600 28px/1 Plex;letter-spacing:.08em;color:var(--acc);direction:ltr}
+.stp .disp{font-size:150px;margin-top:12px}
+#st1{top:420px}#st2{top:680px}#st3{top:940px}
+#after{top:1230px;font:500 40px Plex;color:var(--muted)}
+
+/* S5: end */
+#logo{position:absolute;left:0;right:0;top:330px;display:flex;justify-content:center;align-items:center;gap:24px;direction:ltr}
+#logo .mono{width:116px;height:116px;border-radius:50%;background:var(--accent);display:grid;place-items:center;box-shadow:0 16px 40px rgba(184,74,44,.4)}
+#logo .mono img{width:72px;height:72px}
+#logo .wm{font:500 112px/1 Frank;letter-spacing:-.01em}
+#logo .wm i{display:inline-block;width:.17em;height:.17em;background:var(--acc);margin-left:.06em;border-radius:.03em}
+#e1{top:540px}#e2{top:640px}
+#s5 .disp.t{font-size:92px}
+#div{position:absolute;left:390px;width:300px;top:812px;height:3px;background:var(--acc);transform-origin:center}
+#e3{top:862px}
+#tel{top:916px;font:500 104px/1 Frank;direction:ltr;letter-spacing:.01em}
+#url{top:1052px;font:500 40px Plex;color:var(--muted);direction:ltr}
+</style>
+</head>
+<body>
+<audio id="music" src="assets/soundtrack.mp3" preload="auto"></audio>
+<button id="play" type="button"><span>הפעלה עם סאונד</span></button>
+<button id="theme" type="button">כהה / בהיר</button>
+<div id="stage">
+  <div class="abs" id="bgcol"></div>
+  <div id="light"></div>
+  <div id="floaters"></div>
+
+  <!-- S0: websites for businesses that care about the details -->
+  <div class="scene" id="s0">
+    <div class="c lab" id="o0">LA webs · סטודיו לעיצוב ופיתוח אתרים</div>
+    <div class="c disp mask" id="o1"><span>אתרים לעסקים</span></div>
+    <div class="c disp mask" id="o2"><span>שאכפת להם</span></div>
+    <div class="c disp mask acc" id="o3"><span>מהפרטים.</span></div>
+  </div>
+
+  <!-- S1: selected work -->
+  <div class="scene" id="s1">
+    <div class="row"><span class="lab">עבודות נבחרות</span><span class="lab count" id="count"></span></div>
+    <div id="names"></div>
+    <div class="ph" id="ph1">
+      <div class="frame" id="fr1"></div>
+      <div class="scr" id="scr1">
+        <div id="layers"></div>
+        <div class="status dark" id="st1b"><b>9:41</b><svg viewBox="0 0 54 12"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/><path d="M27.5 3.2a8.6 8.6 0 0 1 11 0l-1.3 1.4a6.6 6.6 0 0 0-8.4 0zM29.9 5.8a5.2 5.2 0 0 1 6.2 0L33 9.4z"/><rect x="42" y="1.5" width="10" height="9" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.1"/><rect x="43.6" y="3.1" width="6.8" height="5.8" rx="1.3"/></svg></div>
+        <div class="island" id="is1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2: every detail is planned (Koral Events, with its real palette, typeface and measurements) -->
+  <div class="scene" id="s2">
+    <div class="c disp mask h" id="d1" style="top:262px"><span>כל פרט מתוכנן.</span></div>
+    <div class="c sub" id="d2">גופנים, צבעים, מרווחים. שום דבר לא במקרה.</div>
+    <div id="dcard"><img src="assets/hd/koral.jpg" alt=""></div>
+    <div id="ovl">
+      <div id="cols"></div>
+      <div class="red" id="r1"></div><span class="tag" id="t1">47</span>
+      <div class="red" id="r2"></div><span class="tag" id="t2">23</span>
+      <div class="red" id="r3"></div><span class="tag" id="t3">40</span>
+      <div class="redh" id="r4"></div><span class="tag" id="t4">20</span>
+      <div id="selb"><i></i><i></i><i></i><i></i><b>כפתור · 58px</b></div>
+    </div>
+    <div id="pal"></div>
+    <div id="spec"><div class="big">אבג</div><div class="nm">Frank Ruhl Libre</div><div class="nm2">לכותרות · Heebo לטקסט</div></div>
+    <div id="cursor"><svg viewBox="0 0 24 24"><path d="M4 2.5 19.5 12l-7 1.6-3.2 6.6Z" fill="#fff" stroke="#1d1b19" stroke-width="1.4" stroke-linejoin="round"/></svg><b>LA webs</b></div>
+  </div>
+
+  <!-- S3: built for the phone first, and every button leads to a conversation -->
+  <div class="scene" id="s3">
+    <div class="c disp mask" id="m1"><span>נבנה קודם לטלפון.</span></div>
+    <div class="c disp mask" id="m2"><span>ומוביל ישר <span class="acc">לשיחה.</span></span></div>
+    <div class="ph" id="ph3">
+      <div class="frame"></div>
+      <div class="scr">
+        <div class="layer"><img src="assets/hd/pinhas-full.jpg" alt=""></div>
+        <div id="mark" style="left:122px;top:122px"></div>
+        <div id="wa">
+          <div class="top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg><span class="av">פ</span><span class="nm"><b>פנחס רצון · עו״ד</b><span>חשבון עסקי</span></span></div>
+          <span class="day">היום</span>
+          <div class="bar"><div class="in" id="typed"></div><span class="send"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12 21 4l-6 16-3-7-9-1Z" transform="scale(-1 1) translate(-24 0)"/></svg></span></div>
+        </div>
+        <div class="status dark"><b>9:41</b><svg viewBox="0 0 54 12"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/><path d="M27.5 3.2a8.6 8.6 0 0 1 11 0l-1.3 1.4a6.6 6.6 0 0 0-8.4 0zM29.9 5.8a5.2 5.2 0 0 1 6.2 0L33 9.4z"/><rect x="42" y="1.5" width="10" height="9" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.1"/><rect x="43.6" y="3.1" width="6.8" height="5.8" rx="1.3"/></svg></div>
+        <div class="island"></div>
+      </div>
+    </div>
+    <div id="tap"></div>
+  </div>
+
+  <!-- S4: how it works -->
+  <div class="scene" id="s4">
+    <div class="c lab" id="hw">איך זה עובד</div>
+    <div class="stp" id="st1"><div class="n">01</div><div class="disp mask"><span>שיחה.</span></div></div>
+    <div class="stp" id="st2"><div class="n">02</div><div class="disp mask"><span>עיצוב.</span></div></div>
+    <div class="stp" id="st3"><div class="n">03</div><div class="disp mask"><span class="acc">השקה.</span></div></div>
+    <div class="c" id="after">ואנחנו כאן גם אחרי.</div>
+  </div>
+
+  <!-- S5: end -->
+  <div class="scene" id="s5">
+    <div id="logo"><span class="mono"><img src="assets/la-monogram-white.svg" alt=""></span><span class="wm">LA webs<i></i></span></div>
+    <div class="c disp mask t" id="e1"><span>העסק שלך.</span></div>
+    <div class="c disp mask t" id="e2"><span>האתר שמתאים <span class="acc">לו.</span></span></div>
+    <div id="div"></div>
+    <div class="c lab" id="e3">לשיחת ייעוץ</div>
+    <div class="c" id="tel">050-861-1888</div>
+    <div class="c" id="url">lawebs.co.il</div>
+  </div>
+
+  <div class="abs" id="vig"></div>
+  <div class="abs" id="grain"></div>
+</div>
+
+<script>
+const DURATION = 30, FPS = 30;
+const $ = s => document.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const P = (t, a, d) => clamp((t - a) / d);
+const eo = x => x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
+const eq = x => 1 - Math.pow(1 - x, 5);
+const eio = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const back = x => { const c = 1.4; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, x) => a + (b - a) * x;
+const params = new URLSearchParams(location.search);
+if (params.get('theme') === 'light') document.body.classList.add('light');
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const mix = (a, b, x) => a.map((v, i) => Math.round(lerp(v, b[i], x)));
+const rgb = c => `rgb(${c.join(',')})`;
+
+/* ---------- grain: one seeded noise tile, shifted every frame ---------- */
+{
+  const cv = document.createElement('canvas'); cv.width = cv.height = 256;
+  const g = cv.getContext('2d'), im = g.createImageData(256, 256); let s = 12345;
+  for (let i = 0; i < im.data.length; i += 4) { s = (s * 16807) % 2147483647; const v = s % 256; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; }
+  g.putImageData(im, 0, 0); $('#grain').style.backgroundImage = `url(${cv.toDataURL()})`;
+}
+
+/* ---------- build ---------- */
+const FLOAT = [['pizza', 190, 470, 250, -10, .8], ['koral', 905, 610, 270, 8, .55], ['pinhas', 150, 1290, 290, 6, .45], ['miryam', 935, 1390, 250, -7, .9], ['libi', 540, 1720, 300, 3, .65]];
+const floaters = FLOAT.map(([slug, x, y, w, r, d]) => { const el = document.createElement('div'); el.className = 'fl'; el.innerHTML = `<img src="assets/hd/${slug}.jpg" alt="">`; el.style.width = `${w}px`; $('#floaters').append(el); return { el, x, y, w, r, d }; });
+
+// the selected work, in order; the last (Koral) stays on its first screen and becomes the design card of S2
+const WORK = [
+  { n: 'פיצת התנור', k: 'מערכת הזמנות לפיצרייה', img: 'assets/hd/pizza-flow.webp', bg: '#141614', fg: '#f7f1e8', acc: '#e2563f', st: 'dark', scroll: 1250 },
+  { n: 'פנחס רצון', k: 'משרד עורכי דין', img: 'assets/hd/pinhas-full.jpg', bg: '#14110c', fg: '#f3efe8', acc: '#c9a55a', st: 'dark', scroll: 1080 },
+  { n: 'ליבי יהלומים', k: 'קטלוג תכשיטים', img: 'assets/hd/libi-full.jpg', bg: '#10181c', fg: '#eef1f1', acc: '#cbbf9f', st: 'light', scroll: 1300 },
+  { n: 'מרים זליג', k: 'אתר תדמית למאפרת כלות', img: 'assets/hd/miryam-full.jpg', bg: '#f3e2da', fg: '#2b1f1a', acc: '#a8694f', st: 'light', scroll: 1200 },
+  { n: 'קורל אירועים', k: 'אתר והרשמה לאירועים', img: 'assets/hd/koral.jpg', bg: '#1b0f24', fg: '#f7f1e8', acc: '#e8607f', st: 'dark', scroll: 0 }
+];
+const L = [3, 5, 7, 9, 11];                        // each project lands on a bar
+const layers = WORK.map(w => { const el = document.createElement('div'); el.className = 'layer'; el.innerHTML = `<img src="${w.img}" alt="">`; $('#layers').append(el); return el; });
+const names = WORK.map((w, i) => {
+  const n = document.createElement('div'); n.className = 'pname disp mask'; n.innerHTML = `<span>${w.n}</span>`;
+  const k = document.createElement('div'); k.className = 'pkick mask'; k.innerHTML = `<span>${w.k}</span>`;
+  $('#names').append(n, k); return [n, k];
+});
+const counts = WORK.map((w, i) => { const el = document.createElement('span'); el.textContent = `0${i + 1} / 05`; $('#count').append(el); return el; });
+
+// S2: Koral's real palette; the measured layout values are on the tags (css px at 390 wide)
+const PAL = [['#160c1d', 'סגול לילה'], ['#e8607f', 'ורוד קורל'], ['#2e1b38', 'קטיפה'], ['#f7f1e8', 'שנהב']];
+const swatches = PAL.map(([h, n]) => { const el = document.createElement('div'); el.className = 'sw'; el.innerHTML = `<i style="background:${h}"></i><b>${n}</b><span>${h}</span>`; $('#pal').append(el); return el; });
+const K = 440 / 390;                               // card px per css px
+const cols = [0, 1, 2, 3].map(i => { const el = document.createElement('div'); el.className = 'col'; const m = 20 * K, g = 16 * K, w = (440 - 2 * m - 3 * g) / 4; el.style.left = `${m + i * (w + g)}px`; el.style.width = `${w}px`; $('#cols').append(el); return el; });
+const RED = [['#r1', '#t1', 479, 526], ['#r2', '#t2', 552, 575], ['#r3', '#t3', 633, 673]];
+RED.forEach(([r, tg, a, b]) => { const x = 46; Object.assign($(r).style, { left: `${x}px`, top: `${a * K}px`, height: `${(b - a) * K}px` }); Object.assign($(tg).style, { left: `${x + 16}px`, top: `${((a + b) / 2) * K - 15}px` }); });
+Object.assign($('#r4').style, { left: '0px', top: `${720 * K}px`, width: `${20 * K}px` }); Object.assign($('#t4').style, { left: `${20 * K + 10}px`, top: `${720 * K - 15}px` });
+Object.assign($('#selb').style, { left: `${20 * K - 6}px`, top: `${575 * K - 6}px`, width: `${350 * K + 12}px`, height: `${58 * K + 12}px` });
+const TYPED = 'שלום, הגעתי דרך האתר ואשמח לייעוץ';
+
+/* ---------- timing (120 BPM: a bar every 2s) ---------- */
+const S = { s0: [0, 3.15], s1: [2.85, 13], s2: [13, 19.05], s3: [18.95, 23.05], s4: [22.95, 25.55], s5: [25.45, 30.01] };
+window.CUTS = [3, 5, 7, 9, 11, 13, 19, 23, 25.5];
+const show = (el, t, [a, b]) => { const v = t >= a && t < b; el.style.display = v ? 'block' : 'none'; return v; };
+// a masked line: rises into place at `a`, leaves upwards at `b`
+function line(el, t, a, b = 99, d = .8) {
+  const pi = eq(P(t, a, d)), po = eio(P(t, b, .45));
+  el.firstElementChild.style.transform = `translateY(${(1 - pi) * 118 - po * 118}%)`;
+}
+function fade(el, t, a, b = 99, y = 24) {
+  const pi = eq(P(t, a, .7)), po = eio(P(t, b, .4));
+  el.style.opacity = Math.min(pi, 1 - po); el.style.transform = `translateY(${(1 - pi) * y - po * y}px)`;
+}
+const stagePt = el => { const r = el.getBoundingClientRect(), s = $('#stage').getBoundingClientRect(), k = s.width / 1080; return [(r.left + r.width / 2 - s.left) / k, (r.top + r.height / 2 - s.top) / k]; };
+const swipe = (t, j) => j === 0 ? 1 : eio(P(t, L[j] - .35, .6));
+
+function render(t) {
+  const f = Math.floor(t * FPS / 2);                 // the grain moves every second frame, like film
+  $('#grain').style.backgroundPosition = `${(f * 146) % 512}px ${(f * 302) % 512}px`;
+  $('#light').style.transform = `translate(${Math.sin(t * .35) * 140}px, ${Math.cos(t * .27) * 180}px)`;
+
+  // the colour of the selected work fills the frame from 3 to 13
+  let c = hex(WORK[0].bg), fg = hex(WORK[0].fg);
+  for (let j = 1; j < 5; j++) { const s = swipe(t, j); c = mix(c, hex(WORK[j].bg), s); fg = mix(fg, hex(WORK[j].fg), s); }
+  $('#bgcol').style.background = rgb(c);
+  $('#bgcol').style.opacity = eio(P(t, 2.75, .45)) * (1 - eio(P(t, 13.05, .5)));
+  $('#s1').style.color = rgb(fg);
+
+  // out-of-focus work drifting behind the opening and the end
+  const fo = Math.max(1 - eio(P(t, 2.7, .5)), eio(P(t, 25.4, .8)));
+  floaters.forEach(({ el, x, y, w, r, d }) => {
+    const yy = y - (t % 30) * (14 + d * 26) + (t > 20 ? 260 : 0);
+    el.style.opacity = fo * .34;
+    el.style.filter = `blur(${7 + d * 9}px)`;
+    el.style.transform = `translate(${x - w / 2}px, ${yy - w}px) rotate(${r + Math.sin(t * .4 + d * 5) * 2}deg)`;
+  });
+
+  /* S0: the statement */
+  if (show($('#s0'), t, S.s0)) {
+    $('#o0').style.opacity = 1 - eio(P(t, 2.6, .35));
+    line($('#o1'), t, .05, 2.55); line($('#o2'), t, .35, 2.62); line($('#o3'), t, .65, 2.69);
+  }
+
+  /* S1: selected work */
+  if (show($('#s1'), t, S.s1)) {
+    fade($('#s1 .row'), t, 3.1, 12.7, 16);
+    WORK.forEach((w, j) => {
+      const [n, k] = names[j], inAt = j === 0 ? 3.25 : L[j] - .12, outAt = j === 4 ? 12.68 : L[j + 1] - .38;
+      line(n, t, inAt, outAt); line(k, t, inAt + .08, outAt + .03);
+      counts[j].style.opacity = Math.min(P(t, inAt, .3), 1 - P(t, outAt, .2));
+    });
+    // the phone rises with the first project, turns gently, and settles flat before handing its screen to S2
+    const rise = back(P(t, 3.0, .75)), tilt = eio(P(t, 3.4, .8)) * (1 - eio(P(t, 12.5, .45)));
+    $('#ph1').style.transform = `perspective(2600px) translateY(${(1 - rise) * 1300 + Math.sin(t * 1.3) * 6 * tilt}px) rotateY(${tilt * (-7 + Math.sin(t * .7) * 2)}deg) rotateX(${tilt * 3}deg)`;
+    const handoff = P(t, 12.8, .2);
+    $('#fr1').style.opacity = 1 - handoff; $('#is1').style.opacity = 1 - handoff;
+    const st = $('#st1b'), active = Math.min(4, Math.max(0, Math.floor((t - 2.65) / 2)));
+    st.className = `status ${WORK[active].st}`; st.style.opacity = 1 - handoff;
+    $('#scr1').style.background = 'transparent';
+    layers.forEach((el, j) => {
+      const s = swipe(t, j), sn = j < 4 ? swipe(t, j + 1) : 0;
+      const vis = s > 0 && sn < 1;
+      el.style.display = vis ? 'block' : 'none';
+      if (!vis) return;
+      el.style.zIndex = j;
+      el.style.transform = `translateX(${(1 - s) * -100 + sn * 35}%)`;
+      el.style.filter = sn > 0 ? `brightness(${1 - sn * .55})` : 'none';
+      const sc = j < 4 ? eio(P(t, L[j] + .2, 1.5)) * WORK[j].scroll : 0;
+      el.firstElementChild.style.transform = `translateY(${-sc}px)`;
+    });
+  }
+
+  /* S2: every detail is planned */
+  if (show($('#s2'), t, S.s2)) {
+    const lt = t - 13, out = 5.65;
+    // the Koral screen leaves the phone and becomes the design card
+    const m = eio(P(lt, 0, .7));
+    const A = [311, 581, 458, 985], B = [560, 520, 440, 952];
+    const dc = $('#dcard');
+    Object.assign(dc.style, { left: `${lerp(A[0], B[0], m)}px`, top: `${lerp(A[1], B[1], m)}px`, width: `${lerp(A[2], B[2], m)}px`, height: `${lerp(A[3], B[3], m)}px`, borderRadius: `${lerp(72, 40, m)}px` });
+    dc.querySelector('img').style.top = `${lerp(80, 0, m)}px`;
+    const po = eio(P(lt, out, .4));
+    dc.style.opacity = 1 - po; dc.style.transform = `translateY(${po * -40}px)`;
+    line($('#d1'), t, 13.2, 13 + out); fade($('#d2'), t, 13.55, 13 + out);
+    // the grid, the measured spacing, the button, the palette and the typeface, in that order
+    cols.forEach((el, i) => { const p = eq(P(lt, .7 + i * .07, .6)); el.style.transform = `scaleY(${p})`; el.style.opacity = (1 - po) * (1 - P(lt, 2.3, .5) * .55); });
+    ['#r1', '#r2', '#r3'].forEach((r, i) => { const p = eq(P(lt, 1.2 + i * .14, .45)); $(r).style.transform = `scaleY(${p})`; $(r).style.opacity = 1 - po; });
+    $('#r4').style.transform = `scaleX(${eq(P(lt, 1.62, .45))})`; $('#r4').style.opacity = 1 - po;
+    ['#t1', '#t2', '#t3', '#t4'].forEach((tg, i) => { const p = back(P(lt, 1.35 + i * .14, .4)); $(tg).style.opacity = P(lt, 1.35 + i * .14, .15) * (1 - po); $(tg).style.transform = `scale(${p})`; });
+    const sb = back(P(lt, 2.05, .45));
+    $('#selb').style.opacity = P(lt, 2.05, .12) * (1 - po); $('#selb').style.transform = `scale(${lerp(1.06, 1, sb)})`;
+    // the designer's cursor goes to the button and clicks it
+    const cur = $('#cursor'), to = [B[0] + 220, B[1] + 604 * K], from = [1150, 1700];
+    const cp = eio(P(lt, 1.3, .7)), press = Math.sin(P(lt, 1.98, .16) * Math.PI);
+    const cx = lerp(from[0], to[0], cp), cy = lerp(from[1], to[1], cp) + (lt > 2.3 ? eio(P(lt, 2.3, .6)) * 180 : 0);
+    cur.style.opacity = P(lt, 1.3, .15) * (1 - P(lt, 2.8, .3)); cur.style.transform = `translate(${cx - 6}px, ${cy - 4}px) scale(${1 - press * .14})`;
+    swatches.forEach((el, i) => { const at = 2.45 + i * .14; fade(el, t, 13 + at, 13 + out - .05 + i * .03, 30); });
+    fade($('#spec'), t, 13 + 3.15, 13 + out + .1, 30);
+  }
+
+  /* S3: built for the phone, and one tap opens the conversation */
+  if (show($('#s3'), t, S.s3)) {
+    const lt = t - 19, out = 3.72;
+    line($('#m1'), t, 19.12, 19 + out); line($('#m2'), t, 19.36, 19 + out + .06);
+    const rise = back(P(lt, .1, .75)), tilt = eio(P(lt, .5, .9));
+    const po = eio(P(lt, out, .35));
+    $('#ph3').style.transform = `perspective(2600px) translateY(${(1 - rise) * 1300 + po * 240 + Math.sin(t * 1.4) * 6 * tilt}px) rotateY(${tilt * (8 + Math.sin(t * .8) * 2)}deg) rotateX(${tilt * 3}deg)`;
+    $('#ph3').style.opacity = 1 - po;
+    const [mx, my] = stagePt($('#mark')), tp = P(lt, 1.9, .45), tap = $('#tap');
+    tap.style.left = `${mx}px`; tap.style.top = `${my}px`;
+    tap.style.opacity = tp > 0 && tp < 1 ? (1 - tp) * (1 - po) : 0; tap.style.transform = `translate(-50%,-50%) scale(${lerp(.35, 1.5, eo(tp))})`;
+    const wo = eio(P(lt, 2.15, .45)), wa = $('#wa');
+    wa.style.opacity = P(lt, 2.15, .12); wa.style.transformOrigin = '122px 122px'; wa.style.transform = `scale(${lerp(.15, 1, wo)})`; wa.style.borderRadius = `${lerp(60, 0, wo)}px`;
+    const n = Math.round(clamp((lt - 2.65) / 1.0) * TYPED.length);
+    $('#typed').innerHTML = TYPED.slice(0, n) + (lt > 2.55 && lt < 3.75 && Math.floor(lt * 3) % 2 === 0 ? '<i></i>' : '');
+    $('#wa .send').style.transform = `scale(${1 + Math.sin(P(lt, 3.6, .3) * Math.PI) * .12})`;
+  }
+
+  /* S4: how it works */
+  if (show($('#s4'), t, S.s4)) {
+    const out = 2.2;
+    fade($('#hw'), t, 23.05, 23 + out);
+    [['#st1', .1], ['#st2', .62], ['#st3', 1.14]].forEach(([s, a], i) => {
+      fade($(`${s} .n`), t, 23 + a - .05, 23 + out + i * .04, 14);
+      line($(`${s} .mask`), t, 23 + a, 23 + out + i * .05);
+    });
+    fade($('#after'), t, 23 + 1.6, 23 + out + .1);
+  }
+
+  /* S5: the studio, the promise, the call */
+  if (show($('#s5'), t, S.s5)) {
+    const lt = t - 25.5;
+    const lp = eq(P(lt, .1, .8));
+    $('#logo').style.opacity = P(lt, .1, .4); $('#logo').style.transform = `translateY(${(1 - lp) * 30}px)`;
+    line($('#e1'), t, 25.85); line($('#e2'), t, 26.05);
+    $('#div').style.transform = `scaleX(${eio(P(lt, .95, .6))})`;
+    fade($('#e3'), t, 26.6); fade($('#tel'), t, 26.75, 99, 30); fade($('#url'), t, 27.0);
+  }
+}
+
+window.render = render; window.DURATION = DURATION; window.FPS = FPS;
+function fit() { const k = Math.min(innerWidth / 1080, innerHeight / 1920); $('#stage').style.transform = `translate(-50%,-50%) scale(${k})`; }
+if (params.has('capture')) { document.body.classList.add('capture'); $('#play').remove(); $('#theme').remove(); render(0); }
+else {
+  addEventListener('resize', fit); fit();
+  const music = $('#music');
+  const loop = () => { render(music.currentTime % DURATION); requestAnimationFrame(loop); };
+  music.addEventListener('ended', () => { music.currentTime = 0; music.play(); });
+  render(0);
+  $('#theme').addEventListener('click', () => { document.body.classList.toggle('light'); render(music.currentTime % DURATION); });
+  $('#play').addEventListener('click', () => { $('#play').remove(); music.currentTime = 0; music.play(); requestAnimationFrame(loop); });
+}
+</script>
+</body>
+</html>

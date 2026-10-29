@@ -1,0 +1,24 @@
+{
+  "status": "PUBLISHED",
+  "pageName": "La webs - בניית אתרים לעסקים",
+  "category": "Web Designer",
+  "bio": "אתרי תדמית, דפי נחיתה וקטלוגים לעסקים. עיצוב ופיתוח לפי הצרכים של העסק, עם קישורים לפנייה בטלפון ובוואטסאפ. לצפייה בעבודות ולשיחה על האתר שלך: lawebs.co.il",
+  "website": "https://lawebs.co.il/",
+  "phone": "+972508611888",
+  "email": "lawebsmng@gmail.com",
+  "profile": "lawebs-profile-v2-full.png",
+  "cover": "lawebs-cover-v2.png",
+  "actionButton": {
+    "type": "Contact us",
+    "url": "https://lawebs.co.il/lp/short/"
+  },
+  "address": null,
+  "openingHours": null,
+  "paidAdvertising": false,
+  "pageUrl": "https://www.facebook.com/profile.php?id=61595036915639",
+  "pageProfileId": "61595036915639",
+  "metaAssetId": "1391722694022082",
+  "whatsappConnected": false,
+  "coverPhotoUrl": "https://www.facebook.com/photo/?fbid=122100184245501230&set=a.122100165327501230",
+  "profilePhotoUrl": "https://www.facebook.com/photo/?fbid=122100195345501230&set=a.122100163113501230"
+}
