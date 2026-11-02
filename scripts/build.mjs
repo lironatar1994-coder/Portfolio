@@ -292,7 +292,7 @@ const contact = `<section class="contact" id="contact" aria-labelledby="contact-
 
 const footer = `<footer class="site-footer"><div class="wrap">
   <p class="footer-mark" aria-hidden="true">LA webs<i class="dot"></i></p>
-  <nav class="footer-links" aria-label="ניווט בתחתית העמוד"><a href="/#work">העבודות</a><a href="/#process">התהליך</a><a href="tel:${studio.tel}">טלפון</a><a href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer">וואטסאפ</a></nav>
+  <nav class="footer-links" aria-label="ניווט בתחתית העמוד"><a href="/#work">העבודות</a><a href="/#process">התהליך</a><a href="https://lawebs.co.il/cv/">כתיבת ושדרוג קורות חיים</a><a href="tel:${studio.tel}">טלפון</a><a href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer">וואטסאפ</a></nav>
   <div class="footer-bottom"><span>© ${new Date().getFullYear()} LA webs. מעוצב ומפותח אצלנו.</span><span class="legal-links"><a href="/privacy/">מדיניות פרטיות</a><a href="/accessibility/">הצהרת נגישות</a></span><a class="back-top" href="#top">למעלה <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></a></div>
 </div></footer>
 <a class="wa-float" href="${escape(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${chat}<span>וואטסאפ</span></a>
