@@ -19,5 +19,5 @@ for(const page of pages){
    try{await stat(reference.endsWith('/')?resolve(target,'index.html'):target);}catch{failures.push(`${page}: missing ${reference}`);}
  }
 }
-for(const file of ['src/app.js','src/joker.js','src/joker.mjs','src/projects.mjs','scripts/build.mjs','scripts/serve.mjs'])execFileSync(process.execPath,['--check',resolve(root,file)]);
+for(const file of ['src/app.js','src/next.js','src/next.mjs','src/projects.mjs','scripts/build.mjs','scripts/serve.mjs'])execFileSync(process.execPath,['--check',resolve(root,file)]);
 if(failures.length){console.error(failures.join('\n'));process.exitCode=1;}else console.log(`Verified ${pages.length} HTML pages, local references, Hebrew/RTL, and JavaScript syntax.`);
