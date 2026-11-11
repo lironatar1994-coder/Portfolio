@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import { projects, studio } from '../src/projects.mjs';
 import { presentation } from '../src/presentation.mjs';
 import { enhanceSite } from './seo.mjs';
+import { jokerPage } from '../src/joker.mjs';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const destination = resolve(root, 'dist');
@@ -480,6 +481,11 @@ export async function build() {
     await mkdir(resolve(destination, l.path), { recursive: true });
     await writeFile(resolve(destination, l.path, 'index.html'), legalPage(l).replace(/[	 ]+$/gm, ''));
   }
+  // The joker concept page: its own stylesheet and script, kept out of the sitemap while it is a preview.
+  const jokerVersion = createHash('sha256').update(await readFile(resolve(root, 'src/joker.css'))).update(await readFile(resolve(root, 'src/joker.js'))).digest('hex').slice(0, 12);
+  for (const file of ['joker.css', 'joker.js']) await cp(resolve(root, 'src', file), resolve(destination, file));
+  await mkdir(resolve(destination, 'joker'), { recursive: true });
+  await writeFile(resolve(destination, 'joker/index.html'), jokerPage({ projects, studio, version: jokerVersion }).replace(/[\t ]+$/gm, ''));
   await mkdir(resolve(destination, 'lp'), { recursive: true });
   await writeFile(resolve(destination, 'lp/index.html'), landingPage().replace(/[\t ]+$/gm, ''));
   await mkdir(resolve(destination, 'lp/short'), { recursive: true });
