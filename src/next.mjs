@@ -17,34 +17,31 @@ const icons = {
 const icon = (key, className) => svg(icons[key], className);
 
 // The sites in the reel, in this order. Only sites that are live and built for a real business or product.
-// wash: a bright take on the client's own colour, shown behind the device on the light stage.
-// icon: the site's own icon. The page loads it to check that the site answers, and shows it in the search card.
-// title and description: the site's real <title> and meta description, as a search engine shows them (read 11 November 2026).
+// tint: a light, bright take on the client's own colour, for the flat disc behind the device.
+// icon: a small file on the site's own server. The page asks for it to learn that the site answers.
+// title: the site's real <title>, as a search engine shows it (read 11 November 2026).
 const reel = [
-  { slug: 'koral', wash: '#ff5c8a', icon: 'https://lawebs.co.il/Koralevents/icon.svg',
-    title: '״אישה לאישה מלכה״ | ערבי נשים לזיכוי הרבות',
-    description: 'ערבי נשים לזיכוי הרבות: שיעורי תורה, הפרשת חלה, לילות בכותל, ערבי העצמה ומסיבות. לנשים בלבד, ללא מטרות רווח. נרשמות בשם ובטלפון, והמקום שלך שמור.' },
-  { slug: 'reuven', wash: '#1eaaf0', icon: 'https://www.dfusreuven.co.il/assets/brand/favicon-32.png',
-    title: 'דפוס ראובן בבני ברק | עיצוב, דפוס ומתנות בעיצוב אישי',
-    description: 'הזמנות וברכונים לשמחות, כרטיסי ביקור ודפוס לעסק, ספלים ומתנות עם תמונה. בוחרים מוצר, מעצבים ורואים תצוגה מקדימה באתר. ז׳בוטינסקי 84, בני ברק.' },
-  { slug: 'miryam', wash: '#ff9770', icon: 'https://miryamzelig.co.il/Miryam_Zelig/icons/miryam-mz-v1-32.png',
-    title: 'מרים זליג · מאפרת כלות, ערב ואירועים — איפור עד הבית',
-    description: 'מרים זליג — מאפרת מקצועית לכלות, ערב ואירועים. שירות VIP עד הבית בכל רחבי הארץ, עם מוצרי היוקרה הטובים בעולם. קביעת תור מהירה בוואטסאפ.' },
-  { slug: 'seder', wash: '#7a6cff', icon: 'https://lawebs.co.il/seder/icon.png',
-    title: 'סדר (Seder) — מסדר את המשימות שלכם | ניהול משימות בעברית',
-    description: 'אפליקציית משימות בעברית: כותבים כמו שמדברים וסדר קובע תאריך ושעה. לוח שנה עברי ולועזי, פרויקטים משותפים ותזכורות בוואטסאפ. בחינם, בטלפון ובמחשב.' },
-  { slug: 'sos', wash: '#ffab1a', icon: 'https://sosbaderech.co.il/favicon.ico',
-    title: 'מנעולן לדלתות ולרכב באזור המרכז — בדרך אליך',
-    description: 'נעולים בחוץ? מענה אנושי לשירות מנעולן, דלתות, צילינדרים ורכבים נעולים. חייגו עכשיו.' },
-  { slug: 'pdf', wash: '#2f6bff', icon: 'https://vee-app.co.il/pdf-studio/pdf-studio-icon-v3.png',
-    title: 'PDF Studio — עריכה והמרה של PDF בעברית, חינם',
-    description: 'עורכים, מחברים, מפצלים, דוחסים וחותמים על PDF — הכול במקום אחד, חינם ובעברית מלאה. בלי הרשמה, בלי התקנה ובלי להמתין בתור.' },
-  { slug: 'pinhas', wash: '#e9b530', icon: 'https://pinhasratzon.co.il/assets/img/brand/pr-icon-96.png',
-    title: 'עורך דין מקרקעין וצוואות בפתח תקווה | עו״ד פנחס רצון',
-    description: 'עו״ד פנחס רצון, 15 שנות ניסיון בעסקאות מקרקעין, מיסוי, רישום בתים משותפים, צוואות וירושות בפתח תקווה ובמרכז.' },
+  { slug: 'koral', tint: '#ffc4d6', icon: 'https://lawebs.co.il/Koralevents/icon.svg',
+    title: '״אישה לאישה מלכה״ | ערבי נשים לזיכוי הרבות' },
+  { slug: 'reuven', tint: '#aee0fb', icon: 'https://www.dfusreuven.co.il/assets/brand/favicon-32.png',
+    title: 'דפוס ראובן בבני ברק | עיצוב, דפוס ומתנות בעיצוב אישי' },
+  { slug: 'miryam', tint: '#ffd3c2', icon: 'https://miryamzelig.co.il/Miryam_Zelig/icons/miryam-mz-v1-32.png',
+    title: 'מרים זליג · מאפרת כלות, ערב ואירועים — איפור עד הבית' },
+  { slug: 'seder', tint: '#c9ecd9', icon: 'https://lawebs.co.il/seder/icon.png',
+    title: 'סדר (Seder) — מסדר את המשימות שלכם | ניהול משימות בעברית' },
+  { slug: 'sos', tint: '#ffdc8c', icon: 'https://sosbaderech.co.il/favicon.ico',
+    title: 'מנעולן לדלתות ולרכב באזור המרכז — בדרך אליך' },
+  // PDF Studio moved: the old vee-app.co.il address now forwards here.
+  { slug: 'pdf', tint: '#bcd0ff', icon: 'https://lawebs.co.il/pdf-studio/favicon.svg', domain: 'lawebs.co.il/pdf-studio', url: 'https://lawebs.co.il/pdf-studio/',
+    title: 'PDF Studio — עריכה והמרה של PDF בעברית, חינם' },
+  { slug: 'pinhas', tint: '#f0dea0', icon: 'https://pinhasratzon.co.il/assets/img/brand/pr-icon-96.png',
+    title: 'עורך דין מקרקעין וצוואות בפתח תקווה | עו״ד פנחס רצון' },
 ];
 
-const index = n => String(n).padStart(2, '0');
+// How much scroll the opening and every site own, in screens. The script reads the same numbers from the page.
+const INTRO = 0.5;
+const EACH = 0.85;
+const wideQuery = '(min-width:900px),(orientation:landscape) and (min-width:620px)';
 
 export function nextPage({ projects, studio, version }) {
   const sites = reel.map(entry => ({ ...projects.find(p => p.slug === entry.slug), ...entry })).filter(p => p.url);
@@ -53,26 +50,22 @@ export function nextPage({ projects, studio, version }) {
   const description = 'אתרים שבנינו לעסקים, ומה שעובד סביבם: בוט וואטסאפ, אוטומציות, CRM, הופעה בגוגל וניטור.';
 
   const titles = sites.map((p, i) => `<div class="title" data-for="${i}">
-            <span class="num"><b>${index(i + 1)}</b> / ${index(count)}</span>
             <h2>${esc(p.hebrew)}</h2>
             <p class="kicker">${esc(p.kicker)}</p>
             <p class="live" data-site="${i}" data-state="checking"><i class="dot" aria-hidden="true"></i><span class="live-text">בודקים…</span><a class="live-link" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(p.hebrew)} — האתר נפתח בחלון חדש"><bdi>${esc(p.domain)}</bdi>${icon('out')}</a></p>
           </div>`).join('\n          ');
 
+  // The opening shows the first three sites, so their pictures load with the page. The rest load once it is idle.
   const devices = sites.map((p, i) => `<div class="device" data-i="${i}" style="--site-bg:${p.colors.bg}">
-            <div class="browser" aria-hidden="true"><span class="bar"><i></i><i></i><i></i><bdi>${esc(p.domain)}</bdi></span><img data-wide="/images/${p.slug}-desktop.webp" src="/images/blank.webp" width="1440" height="1000" alt="" decoding="async"></div>
-            <div class="phone"><img ${i ? `data-src="/images/${p.slug}-mobile-top.webp" src="/images/blank.webp"` : `src="/images/${p.slug}-mobile-top.webp" fetchpriority="high"`} width="585" height="1200" alt="${esc(p.kicker)} — ${esc(p.hebrew)}, בתצוגת טלפון" decoding="async"></div>
+            <div class="browser" aria-hidden="true"><span class="bar"><i></i><i></i><i></i></span><img ${i < 3 ? `src="/images/${p.slug}-desktop.webp" loading="lazy"` : `data-wide="/images/${p.slug}-desktop.webp" src="/images/blank.webp"`} width="1440" height="1000" alt="" decoding="async"></div>
+            <div class="phone"><img ${i < 3 ? `src="/images/${p.slug}-mobile-top.webp"${i ? '' : ' fetchpriority="high"'}` : `data-src="/images/${p.slug}-mobile-top.webp" src="/images/blank.webp"`} width="585" height="1200" alt="${esc(p.kicker)} — ${esc(p.hebrew)}, בתצוגת טלפון" decoding="async"></div>
           </div>`).join('\n          ');
 
-  const serps = sites.map((p, i) => `<div class="serp" data-for="${i}">
-            <span class="serp-tag">${icon('search')}כך זה נראה בחיפוש</span>
-            <div class="serp-top"><span class="serp-ico"><img data-src="${esc(p.icon)}" src="/images/blank.webp" width="18" height="18" alt="" referrerpolicy="no-referrer"></span><span class="serp-who"><b>${esc(p.hebrew)}</b><bdi>${esc(p.domain)}</bdi></span></div>
-            <a class="serp-title" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${esc(p.title)}</a>
-            <p class="serp-desc">${esc(p.description)}</p>
-          </div>`).join('\n          ');
+  const serps = sites.map((p, i) => `<a class="serp" data-for="${i}" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" aria-label="כך האתר מופיע בחיפוש: ${esc(p.title)} — נפתח בחלון חדש">${icon('search')}<span>${esc(p.title)}</span></a>`).join('\n          ');
 
   const pips = sites.map((p, i) => `<button type="button" data-go="${i}" data-state="checking" aria-label="${esc(p.hebrew)}"></button>`).join('');
-  const siteData = sites.map(p => ({ url: p.url, icon: p.icon, wash: p.wash }));
+  const siteData = sites.map(p => ({ url: p.url, icon: p.icon, tint: p.tint }));
+  const first = sites[0].slug;
 
   return `<!doctype html>
 <html lang="he" dir="rtl">
@@ -82,12 +75,14 @@ export function nextPage({ projects, studio, version }) {
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}">
   <meta name="robots" content="noindex,nofollow">
-  <meta name="theme-color" content="#f7f9fc">
+  <meta name="theme-color" content="#ffffff">
   <link rel="icon" href="/la-monogram-32-v2.png" type="image/png" sizes="32x32">
   <link rel="icon" href="/la-monogram-192-v2.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/la-monogram-180-v2.png" sizes="180x180">
-  <link rel="preload" href="/fonts/frank-ruhl-libre-hebrew.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/plex-hebrew-500-hebrew.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/plex-hebrew-700-hebrew.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/plex-hebrew-400-hebrew.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/images/${first}-mobile-top.webp" as="image" type="image/webp" fetchpriority="high">
+  <link rel="preload" href="/images/${first}-desktop.webp" as="image" type="image/webp" media="${wideQuery}">
   <link rel="stylesheet" href="/next.css?v=${version}">
   <script>document.documentElement.classList.add('js')</script>
   <script type="module" src="/next.js?v=${version}"></script>
@@ -99,9 +94,9 @@ export function nextPage({ projects, studio, version }) {
     <a class="top-cta" href="${esc(studio.whatsapp)}" target="_blank" rel="noopener noreferrer" aria-label="לשיחה בוואטסאפ — נפתח בחלון חדש">${icon('chat')}<span>נדבר בוואטסאפ</span></a>
   </header>
   <main id="main">
-    <section class="reel" id="reel" aria-label="אתרים שבנינו">
+    <section class="reel" id="reel" aria-label="אתרים שבנינו" data-intro="${INTRO}" data-each="${EACH}" style="--screens:${(INTRO + EACH * count + 1).toFixed(2)}">
       <div class="stage" data-view="intro">
-        <div class="wash" aria-hidden="true"><i></i></div>
+        <div class="disc" aria-hidden="true"></div>
         <div class="titles">
           <div class="title is-on" data-for="intro">
             <h1>העסק שלך<i class="period">.</i><br>האתר שמתאים לו<i class="period">.</i></h1>
@@ -114,10 +109,10 @@ export function nextPage({ projects, studio, version }) {
         <div class="serps">
           ${serps}
         </div>
-        <p class="hint" aria-hidden="true">גללו ${icon('down')}</p>
+        <span class="hint" aria-hidden="true">${icon('down')}</span>
         <div class="watch">
           <nav class="pips" aria-label="האתרים">${pips}</nav>
-          <p class="watch-text" id="watch-text">בודקים את האתרים…</p>
+          <p class="sr-only" id="watch-text" role="status"></p>
         </div>
       </div>
     </section>
@@ -130,10 +125,10 @@ export function nextPage({ projects, studio, version }) {
           <div class="chat-log" id="chat-log"></div>
         </div>
         <div class="flow" id="flow" aria-hidden="true">
-          <span class="node" style="--tone:#128c4a">${icon('chat')}</span>
-          <span class="node" style="--tone:#6d4aff">${icon('user')}</span>
-          <span class="node" style="--tone:#d97a00">${icon('bell')}</span>
-          <span class="node" style="--tone:#244be8">${icon('cal')}</span>
+          <span class="node">${icon('chat')}</span>
+          <span class="node">${icon('user')}</span>
+          <span class="node">${icon('bell')}</span>
+          <span class="node">${icon('cal')}</span>
           <span class="runner"><i></i></span>
         </div>
         <div class="biz">

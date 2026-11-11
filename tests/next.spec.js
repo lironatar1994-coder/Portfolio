@@ -2,8 +2,8 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const pixel = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
-const INTRO = 0.45;
-const EACH = 0.8;
+const INTRO = 0.5;
+const EACH = 0.85;
 
 // The client sites live on other hosts. The tests answer for them, so the suite never depends on the network.
 async function answerForSites(page, { down = [] } = {}) {
@@ -27,18 +27,52 @@ test('next page moves from one site to the next as the page scrolls', async ({ p
   await scrollScreens(page, restingOn(0));
   await expect(stage).toHaveAttribute('data-view', 'site');
   await expect(page.locator('.title.is-on h2')).toHaveText('קורל אירועים');
-  await expect(page.locator('.serp.is-on .serp-title')).toContainText('אישה לאישה');
+  await expect(page.locator('.serp.is-on')).toContainText('אישה לאישה');
   await expect(page.locator('.pips button').first()).toHaveAttribute('aria-current', 'true');
 
   await scrollScreens(page, restingOn(2));
   await expect(page.locator('.title.is-on h2')).toHaveText('מרים זליג');
   await expect(page.locator('.title.is-on .live-link')).toHaveAttribute('href', 'https://miryamzelig.co.il/');
-  await expect(page.locator('.serp.is-on .serp-title')).toHaveAttribute('href', 'https://miryamzelig.co.il/');
+  await expect(page.locator('.serp.is-on')).toHaveAttribute('href', 'https://miryamzelig.co.il/');
   await expect(page.locator('.device[data-i="2"]')).toBeVisible();
   await expect(page.locator('.device[data-i="4"]')).toBeHidden();
 
   await page.locator('.pips button').nth(4).click();
   await expect(page.locator('.title.is-on h2')).toHaveText('בדרך אליך');
+});
+
+test('next page always comes to rest on one site, wherever the scroll stops', async ({ page }) => {
+  await answerForSites(page);
+  await page.goto('/next/');
+  // Stop just before the next site takes over, and just after: either way one device is in place and the rest are gone.
+  for (const [screens, site] of [[INTRO + EACH * 1.97, 1], [INTRO + EACH * 2.03, 2]]) {
+    await scrollScreens(page, screens);
+    await expect(page.locator('.title.is-on h2')).toHaveText(site === 1 ? 'דפוס ראובן' : 'מרים זליג');
+    await expect.poll(() => page.locator('.device').evaluateAll(devices => devices.filter(device => getComputedStyle(device).visibility === 'visible' && Number(device.style.opacity) > 0.01).map(device => device.dataset.i).join())).toBe(String(site));
+  }
+});
+
+test('next page keeps each screen to a few words', async ({ page }) => {
+  await answerForSites(page);
+  await page.goto('/next/');
+  await expect(page.locator('#watch-text')).toContainText('7 מתוך 7');
+  // The count of sites that answer is for screen readers only. On screen, a dot says it.
+  expect(await page.locator('#watch-text').evaluate(node => node.getBoundingClientRect().width)).toBeLessThanOrEqual(1);
+  await scrollScreens(page, restingOn(0));
+  await expect(page.locator('.title.is-on h2')).toHaveText('קורל אירועים');
+  await expect(page.locator('.device[data-i="1"]')).toBeHidden();
+  await expect(page.locator('.serp.is-on')).toHaveCSS('opacity', '1');
+  const words = await page.locator('.stage').evaluate(stage => {
+    const seen = [];
+    const walker = document.createTreeWalker(stage, NodeFilter.SHOW_TEXT);
+    for (let node; (node = walker.nextNode());) {
+      const box = node.parentElement.getBoundingClientRect();
+      const style = getComputedStyle(node.parentElement);
+      if (node.textContent.trim() && style.visibility === 'visible' && Number(style.opacity) > 0 && box.width > 1 && !node.parentElement.closest('.title:not(.is-on),.serp:not(.is-on)')) seen.push(node.textContent.trim());
+    }
+    return seen;
+  });
+  expect(words).toEqual(['קורל אירועים', 'אתר ומערכת הרשמה לאירועי נשים', 'lawebs.co.il/koralevents', '״אישה לאישה מלכה״ | ערבי נשים לזיכוי הרבות']);
 });
 
 test('next page checks every site and says which ones answer', async ({ page }) => {
@@ -86,7 +120,7 @@ test('next page stays out of search results and passes accessibility checks', as
   const sitemap = await (await page.request.get('/sitemap.xml')).text();
   expect(sitemap).not.toContain('/next/');
   await expect(page.locator('#watch-text')).toContainText('7 מתוך 7');
-  const check = async () => expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  const check = async () => expect((await new AxeBuilder({ page }).analyze()).violations.map(v => `${v.id}: ${v.nodes.map(n => n.html.slice(0, 120) + ' // ' + n.any.map(c => c.message).join(' ')).join(' ## ')}`)).toEqual([]);
   await check();
 
   await scrollScreens(page, restingOn(1));

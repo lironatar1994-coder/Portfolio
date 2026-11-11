@@ -1,5 +1,5 @@
 // The next studio home (/next/): scrolling moves between the sites we built, while the page itself
-// checks that they answer, shows how they look in search, and runs a bot, automation and CRM demo.
+// checks that they answer, shows how they appear in search, and runs a bot, automation and CRM demo.
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -10,19 +10,19 @@ const ease = t => t * t * (3 - 2 * t);
 const sites = JSON.parse($('#sites-data').textContent);
 const reel = $('#reel');
 const stage = $('.stage');
-const wash = $('.wash');
 const titles = $$('.title');
 const devices = $$('.device');
 const serps = $$('.serp');
 const pips = $$('.pips button');
 const count = devices.length;
 
-/* ---- Scroll moves from one site to the next ---- */
+/* ---- Scroll picks the site; the devices then move to it on their own ---- */
 // The opening owns a short stretch of the pinned scroll, then every site owns the same share, measured in screens.
-const INTRO = 0.45;
-const EACH = 0.8;
+// Scrolling only chooses which site is on screen. The move itself runs on a spring, so it is always smooth and
+// always ends resting on one site, however the scroll stopped.
+const INTRO = Number(reel.dataset.intro);
+const EACH = Number(reel.dataset.each);
 const total = INTRO + EACH * count;
-reel.style.setProperty('--screens', (total + 1).toFixed(2));
 
 let view = 'intro';
 function setView(next) {
@@ -32,7 +32,7 @@ function setView(next) {
   for (const title of titles) title.classList.toggle('is-on', title.dataset.for === String(next));
   for (const serp of serps) serp.classList.toggle('is-on', serp.dataset.for === String(next));
   for (const pip of pips) pip.setAttribute('aria-current', String(pip.dataset.go === String(next)));
-  wash.style.backgroundColor = next === 'intro' ? '' : sites[next].wash;
+  if (next === 'intro') stage.style.removeProperty('--tint'); else stage.style.setProperty('--tint', sites[next].tint);
 }
 
 // Where a device sits for a given distance from the site on screen: waiting below, on screen, or receding behind.
@@ -51,54 +51,93 @@ function fan(i) {
 }
 const mix = (a, b, k) => a + (b - a) * k;
 
-function update() {
-  const screen = stage.offsetHeight;
-  const scrolled = clamp(-reel.getBoundingClientRect().top / screen, 0, total);
-  let intro = 0;
-  let position = 0;
-  if (scrolled < INTRO) intro = 1 - scrolled / INTRO;
-  else {
-    const along = Math.min((scrolled - INTRO) / EACH, count - 0.001);
-    const i = Math.floor(along);
-    // A site rests on screen for the first part of its share, then the next one slides over it.
-    position = i < count - 1 ? i + ease(clamp((along - i - 0.45) / 0.55)) : i;
-  }
-  if (reduced) { position = Math.round(position); intro = intro > 0.4 ? 1 : 0; }
-  const k = ease(intro);
+// position: which site is in front. intro: 1 while the opening fan is open. drift: a small lift that follows
+// the finger inside one site's share, so the page never feels stuck while a site rests.
+const keys = ['position', 'intro', 'drift'];
+const goal = { position: 0, intro: 1, drift: 0 };
+const now = { position: 0, intro: 1, drift: 0 };
+const speed = { position: 0, intro: 0, drift: 0 };
+let screen = stage.offsetHeight;
+let reelTop = reel.offsetTop;
+const measure = () => { screen = stage.offsetHeight; reelTop = reel.offsetTop; };
+
+function readScroll() {
+  const scrolled = clamp((scrollY - reelTop) / screen, 0, total);
+  if (scrolled < INTRO / 2) { goal.position = 0; goal.intro = 1; goal.drift = 0; setView('intro'); return; }
+  const along = Math.max(0, (scrolled - INTRO) / EACH);
+  const i = Math.min(count - 1, Math.floor(along));
+  goal.position = i;
+  goal.intro = 0;
+  goal.drift = reduced ? 0 : (0.5 - clamp(along - i)) * 3;
+  setView(i);
+}
+
+const drawn = devices.map(() => '');
+function render() {
+  const k = ease(clamp(now.intro));
   devices.forEach((device, i) => {
-    let p = pose(i - position);
+    let p = pose(i - now.position);
     const open = k > 0 ? fan(i) : null;
     if (open) p = { x: mix(p.x, open.x, k), y: mix(p.y, open.y, k), rotate: mix(p.rotate, open.rotate, k), scale: mix(p.scale, open.scale, k), opacity: mix(p.opacity, open.opacity, k) };
     const hidden = p.opacity < 0.01 || p.y > 127;
-    device.style.visibility = hidden ? 'hidden' : 'visible';
-    device.style.zIndex = k > 0 ? (i === 0 ? 3 : 1) : i + 1;
-    device.style.opacity = p.opacity.toFixed(3);
-    device.style.transform = `translate3d(${p.x.toFixed(2)}%,${p.y.toFixed(2)}%,0) rotate(${p.rotate.toFixed(2)}deg) scale(${p.scale.toFixed(3)})`;
+    const y = p.y + now.drift * (1 - k);
+    const style = hidden ? 'hidden' : `${k > 0 ? (i === 0 ? 3 : 1) : i + 1}|${p.opacity.toFixed(3)}|translate3d(${p.x.toFixed(2)}%,${y.toFixed(2)}%,0) rotate(${p.rotate.toFixed(2)}deg) scale(${p.scale.toFixed(3)})`;
+    if (style === drawn[i]) return;
+    drawn[i] = style;
+    if (hidden) { device.style.visibility = 'hidden'; return; }
+    const [z, opacity, transform] = style.split('|');
+    device.style.visibility = 'visible';
+    device.style.zIndex = z;
+    device.style.opacity = opacity;
+    device.style.transform = transform;
   });
-  setView(intro > 0.35 ? 'intro' : Math.round(position));
 }
 
-let queued = false;
-function requestUpdate() {
-  if (queued) return;
-  queued = true;
-  requestAnimationFrame(() => { queued = false; update(); });
+// A critically damped spring: quick to start, soft to land, never overshoots.
+const STIFF = 120;
+const DAMP = 2 * Math.sqrt(STIFF);
+let running = false;
+let stale = true;
+let last = 0;
+function frame(time) {
+  // The scroll position is read once per frame, here, and never between a style write and the next paint.
+  if (stale) { stale = false; readScroll(); }
+  const dt = Math.min(0.034, (time - last) / 1000 || 0.016);
+  last = time;
+  let moving = false;
+  for (const key of keys) {
+    const gap = goal[key] - now[key];
+    if (reduced || (Math.abs(gap) < 0.0006 && Math.abs(speed[key]) < 0.004)) { now[key] = goal[key]; speed[key] = 0; continue; }
+    speed[key] += (gap * STIFF - speed[key] * DAMP) * dt;
+    now[key] += speed[key] * dt;
+    moving = true;
+  }
+  render();
+  if (moving) requestAnimationFrame(frame); else running = false;
 }
-addEventListener('scroll', requestUpdate, { passive: true });
-addEventListener('resize', requestUpdate);
+function wake() {
+  stale = true;
+  if (running) return;
+  running = true;
+  last = performance.now();
+  requestAnimationFrame(frame);
+}
+addEventListener('scroll', wake, { passive: true });
+addEventListener('resize', () => { measure(); wake(); });
 
 for (const pip of pips) {
   pip.addEventListener('click', () => {
-    const top = reel.getBoundingClientRect().top + scrollY + (INTRO + EACH * Number(pip.dataset.go) + 0.04) * stage.offsetHeight;
+    const top = reelTop + (INTRO + EACH * (Number(pip.dataset.go) + 0.3)) * screen;
     scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
   });
 }
 
-/* ---- Images load after the first paint; the browser frames only on wide screens ---- */
+/* ---- Pictures: the first three come with the page, the rest once it is idle; browser frames only on wide screens ---- */
+const warm = image => { if (image.decode) image.decode().catch(() => {}); };
 let restLoaded = false;
 function loadWide() {
   if (!wide.matches || !restLoaded) return;
-  for (const image of $$('img[data-wide]')) { image.src = image.dataset.wide; image.removeAttribute('data-wide'); }
+  for (const image of $$('img[data-wide]')) { image.src = image.dataset.wide; image.removeAttribute('data-wide'); warm(image); }
 }
 function loadRest() {
   if (restLoaded) return;
@@ -107,14 +146,15 @@ function loadRest() {
     image.addEventListener('error', () => { image.style.visibility = 'hidden'; }, { once: true });
     image.src = image.dataset.src;
     image.removeAttribute('data-src');
+    warm(image);
   }
   loadWide();
 }
-wide.addEventListener('change', () => { loadWide(); requestUpdate(); });
+wide.addEventListener('change', () => { loadWide(); measure(); wake(); });
 
 /* ---- Live check: does every site answer right now? ---- */
-// A site on this same address is asked directly. Any other site is asked for its own icon:
-// the icon only loads when that site's server is really serving it.
+// A site on this same address is asked directly. Any other site is asked for a small file of its own:
+// the file only loads when that site's server is really serving it.
 const states = sites.map(() => 'checking');
 const lives = $$('.live');
 const watchText = $('#watch-text');
@@ -140,14 +180,6 @@ function paintState(i) {
   lives[i].dataset.state = states[i];
   $('.live-text', lives[i]).textContent = stateText[states[i]];
 }
-function paintWatch() {
-  if (!checkedAt) return;
-  const up = states.filter(state => state === 'up').length;
-  const seconds = Math.round((Date.now() - checkedAt) / 1000);
-  const when = seconds < 4 ? 'נבדק עכשיו' : seconds < 60 ? `נבדק לפני ${seconds} שניות` : 'נבדק לפני דקה';
-  const text = `${up} מתוך ${count} אתרים באוויר · ${when}`;
-  if (watchText.textContent !== text) watchText.textContent = text;
-}
 let checking = false;
 async function checkAll() {
   if (checking || document.hidden) return;
@@ -155,13 +187,11 @@ async function checkAll() {
   await Promise.all(sites.map(async (site, i) => { states[i] = (await probe(site)) ? 'up' : 'down'; paintState(i); }));
   checkedAt = Date.now();
   checking = false;
-  paintWatch();
+  watchText.textContent = `${states.filter(state => state === 'up').length} מתוך ${count} אתרים באוויר`;
 }
-setInterval(() => {
-  paintWatch();
-  if (checkedAt && Date.now() - checkedAt > 60000) checkAll();
-}, 1000);
-document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - checkedAt > 60000) checkAll(); });
+const RECHECK = 120000;
+setInterval(() => { if (checkedAt && Date.now() - checkedAt > RECHECK) checkAll(); }, 15000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - checkedAt > RECHECK) checkAll(); });
 
 /* ---- The live scene: bot, automation line, CRM and the owner's phone ---- */
 const sys = $('#sys');
@@ -181,9 +211,9 @@ const paths = {
   bell: '<path d="M6 16.500V11a6 6 0 1 1 12 0v5.500l1.500 2h-15zM10 20.500h4"/>',
 };
 const kinds = {
-  new: { icon: 'user', text: 'לקוח חדש נרשם', tone: '#6d4aff', soft: '#efebff' },
-  booked: { icon: 'cal', text: 'תור נקבע', tone: '#244be8', soft: '#e7edff' },
-  bought: { icon: 'cart', text: 'מוצר נקנה', tone: '#0b7a45', soft: '#e2f6ea' },
+  new: { icon: 'user', text: 'לקוח חדש נרשם', tone: '#d9431f', soft: '#fff0eb' },
+  booked: { icon: 'cal', text: 'תור נקבע', tone: '#1d5fd6', soft: '#eaf2ff' },
+  bought: { icon: 'cart', text: 'מוצר נקנה', tone: '#0b7a45', soft: '#e5f6ec' },
 };
 const iconNode = key => {
   const holder = document.createElement('template');
@@ -194,7 +224,7 @@ function entry(tag, className, kind, iconKey, detail) {
   const item = document.createElement(tag);
   item.className = className;
   item.style.setProperty('--tone', kind.tone);
-  item.style.setProperty('--soft', kind.soft);
+  item.style.setProperty('--row', kind.soft);
   const words = document.createElement('div');
   const strong = document.createElement('b');
   strong.textContent = kind.text;
@@ -220,7 +250,7 @@ function fire(type, detail, note = detail) {
       [{ transform: 'translateX(0)', opacity: 1 }, { transform: `translateX(${100 * direction}%)`, opacity: 1, offset: 0.92 }, { transform: `translateX(${100 * direction}%)`, opacity: 0 }],
       { duration: 1300, easing: 'cubic-bezier(.45,0,.2,1)' });
     nodes.forEach((node, i) => node.animate(
-      [{ transform: 'scale(1)' }, { transform: 'scale(1.24)' }, { transform: 'scale(1)' }],
+      [{ transform: 'scale(1)' }, { transform: 'scale(1.16)' }, { transform: 'scale(1)' }],
       { duration: 460, delay: i * 380, easing: 'ease-out' }));
   }
   later(420, id, () => {
@@ -349,6 +379,10 @@ if ('IntersectionObserver' in window) {
 } else { sysActive = true; chatStarted = true; runChat(); }
 
 /* ---- Start ---- */
-update();
-checkAll();
-if ('requestIdleCallback' in window) requestIdleCallback(loadRest, { timeout: 2000 }); else setTimeout(loadRest, 1200);
+// The first state is drawn at once. The other pictures and the live check wait until the page itself has loaded.
+readScroll();
+for (const key of keys) now[key] = goal[key];
+render();
+const idle = action => ('requestIdleCallback' in window ? requestIdleCallback(action, { timeout: 2000 }) : setTimeout(action, 600));
+const afterLoad = () => idle(() => { loadRest(); checkAll(); });
+if (document.readyState === 'complete') afterLoad(); else addEventListener('load', afterLoad, { once: true });
